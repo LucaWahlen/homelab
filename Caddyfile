@@ -1,0 +1,16 @@
+{
+	auto_https off
+}
+
+pebble.lucawahlen.com:80 {
+    reverse_proxy localhost:3000
+}
+
+http://proxmox.lucawahlen.com {
+	reverse_proxy 192.168.178.210:8006 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+	}
+}
+
