@@ -1,0 +1,8 @@
+k3s_version: "v1.30.5+k3s1"
+
+argocd_version: "v2.13.2"
+
+# Same repo this file lives in, used for the ArgoCD app-of-apps bootstrap.
+git_repo_url: "git@github.com:youruser/homelab.git"
+git_revision: "main"
+apps_path: "apps/applications"

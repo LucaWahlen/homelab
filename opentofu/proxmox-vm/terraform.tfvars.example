@@ -1,0 +1,34 @@
+proxmox_endpoint  = "https://proxmox.example.lan:8006/"
+proxmox_api_token = "terraform@pve!terraform=00000000-0000-0000-0000-000000000000"
+proxmox_insecure  = true
+
+proxmox_node = "pve"
+storage_pool = "local-lvm"
+
+# All three default sensibly - override only if your Proxmox setup differs
+# or you point cloud_image_url at a different distro's image.
+# image_datastore_id needs the "Import" content type enabled (Datacenter ->
+# Storage -> <datastore> -> Edit -> Content), not just the default ISO one.
+# cloud_image_file_name must end in a real disk-image extension (.qcow2 etc)
+# for the "Import" content type to accept it, regardless of the URL's own name.
+# cloud_image_url       = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+# cloud_image_file_name = "noble-server-cloudimg-amd64.qcow2"
+# image_datastore_id    = "local"
+
+vm_id   = 8000
+vm_name = "k3s-01"
+
+# Node has 12 vCPU / 32GB RAM / 1TB SSD - sized to use most of it,
+# leaving headroom for Proxmox itself.
+vm_cores     = 10
+vm_memory    = 24576
+vm_disk_size = 800
+
+network_bridge = "vmbr0"
+vm_ip_address  = "192.168.1.50"
+vm_subnet_mask = 24
+vm_gateway     = "192.168.1.1"
+dns_servers    = ["1.1.1.1", "8.8.8.8"]
+
+vm_user        = "ubuntu"
+ssh_public_key = "ssh-ed25519 AAAA... you@yourhost"

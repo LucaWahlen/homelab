@@ -1,0 +1,27 @@
+---
+- name: Create argocd namespace
+  ansible.builtin.shell: |
+    k3s kubectl create namespace argocd --dry-run=client -o yaml | k3s kubectl apply -f -
+  changed_when: false
+
+- name: Install ArgoCD
+  ansible.builtin.command: >
+    k3s kubectl apply -n argocd
+    -f https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd_version }}/manifests/install.yaml
+  register: argocd_install
+  changed_when: "'created' in argocd_install.stdout or 'configured' in argocd_install.stdout"
+
+- name: Wait for ArgoCD server to be available
+  ansible.builtin.command: k3s kubectl -n argocd rollout status deployment/argocd-server --timeout=300s
+  changed_when: false
+
+- name: Render root Application manifest (app-of-apps)
+  ansible.builtin.template:
+    src: root-app.yaml.j2
+    dest: /tmp/root-app.yaml
+    mode: "0644"
+
+- name: Apply root Application manifest
+  ansible.builtin.command: k3s kubectl apply -f /tmp/root-app.yaml
+  register: root_app_apply
+  changed_when: "'created' in root_app_apply.stdout or 'configured' in root_app_apply.stdout"

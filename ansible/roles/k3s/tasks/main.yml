@@ -1,0 +1,41 @@
+---
+- name: Check if k3s is already installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary
+
+- name: Download k3s install script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: /tmp/k3s-install.sh
+    mode: "0755"
+  when: not k3s_binary.stat.exists
+
+- name: Install k3s server
+  ansible.builtin.command: /tmp/k3s-install.sh
+  environment:
+    INSTALL_K3S_VERSION: "{{ k3s_version }}"
+    INSTALL_K3S_EXEC: "server --write-kubeconfig-mode 644"
+  when: not k3s_binary.stat.exists
+
+- name: Wait for k3s node to be Ready
+  ansible.builtin.command: k3s kubectl wait --for=condition=Ready node --all --timeout=180s
+  changed_when: false
+  register: k3s_ready
+  retries: 5
+  delay: 10
+  until: k3s_ready.rc == 0
+
+- name: Fetch kubeconfig from the node
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /tmp/homelab-kubeconfig
+    flat: true
+
+- name: Write local kubeconfig with the node's real address
+  become: false
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ lookup('file', '/tmp/homelab-kubeconfig') | regex_replace('127.0.0.1', ansible_host) }}"
+    dest: "{{ playbook_dir }}/../kubeconfig"
+    mode: "0600"

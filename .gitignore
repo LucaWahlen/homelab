@@ -1,0 +1,25 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+
+# Ansible
+*.retry
+ansible/inventory/hosts.yml
+ansible/group_vars/all.yml
+kubeconfig
+*.kubeconfig
+
+# Secrets / keys
+*.pem
+*.key
+.vault_pass
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

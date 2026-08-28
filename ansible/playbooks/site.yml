@@ -1,0 +1,8 @@
+---
+- name: Bootstrap k3s + ArgoCD
+  hosts: k3s_server
+  become: true
+  roles:
+    - qemu-guest-agent
+    - k3s
+    - argocd
