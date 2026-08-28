@@ -90,7 +90,12 @@ ansible-playbook playbooks/site.yml
 This installs k3s (single-node server), installs ArgoCD into the `argocd`
 namespace, and applies a root ArgoCD `Application` that watches
 `apps/applications/` in this repo - from here on, apps are added via `git
-push`, not by re-running Ansible.
+push`, not by re-running Ansible. That includes ArgoCD's own `Ingress` and
+its `server.insecure` config (`apps/argocd/`, since TLS terminates at the
+Cloudflare Tunnel in step 3, not at ArgoCD itself) - it's git-managed like
+any other app. Ansible's only remaining job here is waiting for that one
+app to sync and then restarting `argocd-server`, since nothing else
+restarts it when its config changes.
 
 A kubeconfig for the cluster is written to `./kubeconfig` (gitignored) -
 step 3 needs this file, so run it from the same checkout:
@@ -105,6 +110,11 @@ Get the initial ArgoCD admin password:
 ```sh
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d
 ```
+
+The ArgoCD UI is reachable at `https://argocd.lucawahlen.com` once step 3's
+tunnel is up (it's covered by the same wildcard, no extra config needed).
+The `argocd` CLI needs `--grpc-web` when talking to it through the ingress:
+`argocd login argocd.lucawahlen.com --grpc-web`.
 
 ## 3. Expose services on *.lucawahlen.com
 

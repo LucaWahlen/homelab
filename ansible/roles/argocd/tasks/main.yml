@@ -25,3 +25,26 @@
   ansible.builtin.command: k3s kubectl apply -f /tmp/root-app.yaml
   register: root_app_apply
   changed_when: "'created' in root_app_apply.stdout or 'configured' in root_app_apply.stdout"
+
+# The root app cascades into apps/applications/argocd.yaml (git-managed:
+# apps/argocd/manifests/ - the server's Ingress and its server.insecure
+# ConfigMap patch), same as any other app. Nothing here applies that config
+# directly - this just waits for ArgoCD to have actually synced it, since
+# that's the one piece that can't be pure GitOps: a ConfigMap change doesn't
+# restart the pod that reads it.
+- name: Wait for the argocd child Application to sync
+  ansible.builtin.shell: |
+    k3s kubectl -n argocd get application argocd -o jsonpath='{.status.sync.status}' 2>/dev/null || true
+  register: argocd_config_sync
+  changed_when: false
+  retries: 18
+  delay: 10
+  until: argocd_config_sync.stdout == "Synced"
+
+- name: Restart ArgoCD server to pick up insecure mode
+  ansible.builtin.command: k3s kubectl -n argocd rollout restart deployment/argocd-server
+  changed_when: true
+
+- name: Wait for ArgoCD server to be available after restart
+  ansible.builtin.command: k3s kubectl -n argocd rollout status deployment/argocd-server --timeout=300s
+  changed_when: false
