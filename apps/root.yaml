@@ -6,11 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: {{ git_repo_url }}
-    targetRevision: {{ git_revision }}
-    path: {{ apps_path }}
-    directory:
-      recurse: false
+    repoURL: https://github.com/LucaWahlen/homelab.git
+    targetRevision: main
+    path: apps/applications
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

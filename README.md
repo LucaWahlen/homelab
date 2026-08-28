@@ -53,10 +53,11 @@ depends on.
 - An SSH key pair you're happy to have injected into the VM.
 - This repo pushed to a git remote the cluster can reach (ArgoCD pulls from
   it directly). Simplest: a **public** GitHub repo with an `https://`
-  `git_repo_url` (`ansible/inventory/group_vars/all.yml`) and matching
-  `repoURL` in every `apps/applications/*.yaml` - ArgoCD needs no
-  credentials for that. A private repo needs a deploy key registered with
-  ArgoCD separately (not covered by this repo).
+  `repoURL` set in `apps/root.yaml` and every `apps/applications/*.yaml` -
+  ArgoCD needs no credentials for that. If you forked/copied this repo,
+  update `repoURL` in those files to your own clone URL first. A private
+  repo needs a deploy key registered with ArgoCD separately (not covered by
+  this repo).
 
 ## 1. Provision the VM with OpenTofu
 
@@ -82,8 +83,7 @@ a 12 vCPU / 32GB / 1TB node for Proxmox itself. Adjust `vm_cores`,
 cd ansible
 cp inventory/hosts.yml.example inventory/hosts.yml
 cp inventory/group_vars/all.yml.example inventory/group_vars/all.yml
-# set ansible_host to the vm_ip_address from step 1, and git_repo_url to
-# this repo's actual clone URL
+# set ansible_host to the vm_ip_address from step 1
 ansible-playbook playbooks/site.yml
 ```
 
@@ -143,7 +143,8 @@ ArgoCD syncs the `cloudflared` app (already wired into the app-of-apps),
 
 See [apps/README.md](apps/README.md) for the app-of-apps pattern. In short:
 drop manifests under `apps/<name>/manifests/`, add a matching `Application`
-in `apps/applications/<name>.yaml`, push - ArgoCD does the rest.
+in `apps/applications/<name>.yaml`, list it in
+`apps/applications/kustomization.yaml`, push - ArgoCD does the rest.
 
 ## Convenience targets
 

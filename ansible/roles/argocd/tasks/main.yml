@@ -15,14 +15,12 @@
   ansible.builtin.command: k3s kubectl -n argocd rollout status deployment/argocd-server --timeout=300s
   changed_when: false
 
-- name: Render root Application manifest (app-of-apps)
-  ansible.builtin.template:
-    src: root-app.yaml.j2
-    dest: /tmp/root-app.yaml
-    mode: "0644"
-
+# apps/root.yaml is the source of truth (plain, git-tracked, same as every
+# other Application manifest) - applied as-is, not templated from group_vars.
 - name: Apply root Application manifest
-  ansible.builtin.command: k3s kubectl apply -f /tmp/root-app.yaml
+  ansible.builtin.command: k3s kubectl apply -f -
+  args:
+    stdin: "{{ lookup('file', playbook_dir + '/../../apps/root.yaml') }}"
   register: root_app_apply
   changed_when: "'created' in root_app_apply.stdout or 'configured' in root_app_apply.stdout"
 
