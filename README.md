@@ -52,7 +52,11 @@ depends on.
 - [Ansible](https://docs.ansible.com/) installed.
 - An SSH key pair you're happy to have injected into the VM.
 - This repo pushed to a git remote the cluster can reach (ArgoCD pulls from
-  it directly) - SSH deploy key or HTTPS token, as required by your remote.
+  it directly). Simplest: a **public** GitHub repo with an `https://`
+  `git_repo_url` (`ansible/inventory/group_vars/all.yml`) and matching
+  `repoURL` in every `apps/applications/*.yaml` - ArgoCD needs no
+  credentials for that. A private repo needs a deploy key registered with
+  ArgoCD separately (not covered by this repo).
 
 ## 1. Provision the VM with OpenTofu
 

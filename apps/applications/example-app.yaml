@@ -6,9 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    # Replace with your actual repo URL (same as git_repo_url in
-    # ansible/group_vars/all.yml).
-    repoURL: git@github.com:youruser/homelab.git
+    repoURL: https://github.com/LucaWahlen/homelab.git
     targetRevision: main
     path: apps/example-app/manifests
   destination:

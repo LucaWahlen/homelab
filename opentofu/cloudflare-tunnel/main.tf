@@ -1,7 +1,12 @@
+resource "random_id" "tunnel_secret" {
+  byte_length = 32
+}
+
 resource "cloudflare_zero_trust_tunnel_cloudflared" "homelab" {
   account_id = var.cloudflare_account_id
   name       = var.tunnel_name
   config_src = "cloudflare"
+  secret     = random_id.tunnel_secret.b64_std
 }
 
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab" {
@@ -31,11 +36,6 @@ resource "cloudflare_record" "wildcard" {
   proxied = true
 }
 
-data "cloudflare_zero_trust_tunnel_cloudflared_token" "homelab" {
-  account_id = var.cloudflare_account_id
-  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.homelab.id
-}
-
 # Namespace + Secret for the in-cluster cloudflared connector (apps/cloudflared).
 # ArgoCD's CreateNamespace=true also covers the namespace as a fallback, but
 # creating it here means the Secret can always be placed into it.
@@ -52,6 +52,6 @@ resource "kubernetes_secret" "cloudflared_credentials" {
   }
 
   data = {
-    TUNNEL_TOKEN = data.cloudflare_zero_trust_tunnel_cloudflared_token.homelab.token
+    TUNNEL_TOKEN = cloudflare_zero_trust_tunnel_cloudflared.homelab.tunnel_token
   }
 }
