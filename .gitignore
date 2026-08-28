@@ -10,7 +10,7 @@ crash.*.log
 # Ansible
 *.retry
 ansible/inventory/hosts.yml
-ansible/group_vars/all.yml
+ansible/inventory/group_vars/all.yml
 kubeconfig
 *.kubeconfig
 

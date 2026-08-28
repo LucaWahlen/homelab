@@ -77,20 +77,16 @@ a 12 vCPU / 32GB / 1TB node for Proxmox itself. Adjust `vm_cores`,
 ```sh
 cd ansible
 cp inventory/hosts.yml.example inventory/hosts.yml
-cp group_vars/all.yml.example group_vars/all.yml
+cp inventory/group_vars/all.yml.example inventory/group_vars/all.yml
 # set ansible_host to the vm_ip_address from step 1, and git_repo_url to
 # this repo's actual clone URL
 ansible-playbook playbooks/site.yml
 ```
 
-This installs `qemu-guest-agent` (Ubuntu's cloud image doesn't include it -
-Proxmox will show accurate memory stats and a graceful shutdown once it's
-running, though the VM itself doesn't declare the agent channel in its
-config, so features like backup freeze/thaw aren't wired up), installs k3s
-(single-node server), installs ArgoCD into the `argocd` namespace, and
-applies a root ArgoCD `Application` that watches `apps/applications/` in
-this repo - from here on, apps are added via `git push`, not by re-running
-Ansible.
+This installs k3s (single-node server), installs ArgoCD into the `argocd`
+namespace, and applies a root ArgoCD `Application` that watches
+`apps/applications/` in this repo - from here on, apps are added via `git
+push`, not by re-running Ansible.
 
 A kubeconfig for the cluster is written to `./kubeconfig` (gitignored) -
 step 3 needs this file, so run it from the same checkout:

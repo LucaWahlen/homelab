@@ -3,6 +3,5 @@
   hosts: k3s_server
   become: true
   roles:
-    - qemu-guest-agent
     - k3s
     - argocd
