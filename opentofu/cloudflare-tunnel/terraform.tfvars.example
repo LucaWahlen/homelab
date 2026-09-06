@@ -1,13 +1,6 @@
 cloudflare_api_token  = "your-cloudflare-api-token"
 cloudflare_account_id = "your-cloudflare-account-id"
-cloudflare_zone_id    = "zone-id-for-lucawahlen.com"
+cloudflare_zone_id    = "your-cloudflare-zone-id"
 
 domain      = "lucawahlen.com"
-tunnel_name = "homelab"
-
-# Default assumes k3s's built-in Traefik ingress controller.
-reverse_proxy_service = "http://traefik.kube-system.svc.cluster.local:80"
-
-# Default assumes you run this from the same checkout, after step 2's
-# Ansible run wrote ansible/kubeconfig - override only if that's not true.
-# kubeconfig_path = "../../ansible/kubeconfig"
+tunnel_name = "cloudflared"
