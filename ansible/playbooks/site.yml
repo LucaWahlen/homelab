@@ -1,4 +1,14 @@
 ---
+- name: Wait for VM to finish booting (cloud-init + sshd)
+  hosts: k3s_server
+  gather_facts: false
+  tasks:
+    - name: Wait for SSH connection
+      ansible.builtin.wait_for_connection:
+        connect_timeout: 10
+        sleep: 5
+        timeout: 300
+
 - name: Bootstrap k3s + ArgoCD
   hosts: k3s_server
   become: true
