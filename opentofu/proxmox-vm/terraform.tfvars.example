@@ -4,7 +4,7 @@ proxmox_api_token = "terraform@pve!terraform=00000000-0000-0000-0000-00000000000
 proxmox_node = "pve"
 storage_pool = "local-lvm"
 
-vm_id   = 8000
+vm_id   = 100
 vm_name = "k3s"
 
 vm_cores     = 12
