@@ -1,0 +1,24 @@
+{
+  "name": "homelab",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,readonly",
+    "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind",
+    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind"
+  ],
+  "remoteEnv": {
+    "TF_VAR_proxmox_endpoint": "${localEnv:TF_VAR_proxmox_endpoint}",
+    "TF_VAR_proxmox_api_token": "${localEnv:TF_VAR_proxmox_api_token}",
+    "TF_VAR_proxmox_node": "${localEnv:TF_VAR_proxmox_node}",
+    "TF_VAR_storage_pool": "${localEnv:TF_VAR_storage_pool}",
+    "TF_VAR_vm_ip_address": "${localEnv:TF_VAR_vm_ip_address}",
+    "TF_VAR_vm_gateway": "${localEnv:TF_VAR_vm_gateway}",
+    "TF_VAR_ssh_public_key": "${localEnv:TF_VAR_ssh_public_key}",
+    "TF_VAR_cloudflare_api_token": "${localEnv:TF_VAR_cloudflare_api_token}",
+    "TF_VAR_cloudflare_account_id": "${localEnv:TF_VAR_cloudflare_account_id}",
+    "TF_VAR_cloudflare_zone_id": "${localEnv:TF_VAR_cloudflare_zone_id}"
+  },
+  "postCreateCommand": "tofu version && ansible --version && opencode --version && make --version | head -1"
+}
