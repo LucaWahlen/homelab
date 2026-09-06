@@ -15,22 +15,29 @@
   ansible.builtin.command: k3s kubectl -n argocd rollout status deployment/argocd-server --timeout=300s
   changed_when: false
 
-# apps/root.yaml is the source of truth (plain, git-tracked, same as every
-# other Application manifest) - applied as-is, not templated from group_vars.
-- name: Apply root Application manifest
-  ansible.builtin.command: k3s kubectl apply -f -
-  args:
-    stdin: "{{ lookup('file', playbook_dir + '/../../apps/root.yaml') }}"
-  register: root_app_apply
-  changed_when: "'created' in root_app_apply.stdout or 'configured' in root_app_apply.stdout"
+# Every app under apps/ carries its own Application manifest next to its
+# manifests/ dir (apps/<name>/application.yaml) - git-tracked, plain, not
+# templated from group_vars. Each file is piped to kubectl as-is, and
+# nothing is staged on the node. Re-running this role is what registers
+# newly added Applications - everything after that is ArgoCD's automated
+# sync.
+- name: Apply Application manifests
+  ansible.builtin.command:
+    argv: [k3s, kubectl, apply, -f, -]
+    stdin: "{{ item }}"
+  loop: "{{ query('ansible.builtin.fileglob', playbook_dir + '/../../apps/*/application.yaml') | sort }}"
+  loop_control:
+    label: "{{ item | basename }}"
+  register: apps_apply
+  changed_when: "'created' in apps_apply.stdout or 'configured' in apps_apply.stdout"
 
-# The root app cascades into apps/applications/argocd.yaml (git-managed:
-# apps/argocd/manifests/ - the server's Ingress and its server.insecure
-# ConfigMap patch), same as any other app. Nothing here applies that config
-# directly - this just waits for ArgoCD to have actually synced it, since
-# that's the one piece that can't be pure GitOps: a ConfigMap change doesn't
-# restart the pod that reads it.
-- name: Wait for the argocd child Application to sync
+# apps/argocd/application.yaml (git-managed: apps/argocd/manifests/ - the
+# server's Ingress and its server.insecure ConfigMap patch) is applied like
+# any other app. Nothing here applies that config directly - this just waits
+# for ArgoCD to have actually synced it, since that's the one piece that
+# can't be pure GitOps: a ConfigMap change doesn't restart the pod that
+# reads it.
+- name: Wait for the argocd Application to sync
   ansible.builtin.shell: |
     k3s kubectl -n argocd get application argocd -o jsonpath='{.status.sync.status}' 2>/dev/null || true
   register: argocd_config_sync

@@ -39,7 +39,7 @@ variable "kubeconfig_path" {
 }
 
 variable "cloudflared_namespace" {
-  description = "Namespace the cloudflared connector runs in - must match apps/applications/cloudflared.yaml"
+  description = "Namespace the cloudflared connector runs in - must match apps/cloudflared/manifests"
   type        = string
   default     = "cloudflared"
 }
