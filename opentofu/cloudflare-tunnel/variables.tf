@@ -23,7 +23,7 @@ variable "domain" {
 variable "tunnel_name" {
   description = "Name of the Cloudflare Tunnel"
   type        = string
-  default     = "homelab"
+  default     = "k3s"
 }
 
 variable "reverse_proxy_service" {

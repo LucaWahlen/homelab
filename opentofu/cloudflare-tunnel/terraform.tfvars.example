@@ -3,4 +3,4 @@ cloudflare_account_id = "your-cloudflare-account-id"
 cloudflare_zone_id    = "your-cloudflare-zone-id"
 
 domain      = "lucawahlen.com"
-tunnel_name = "cloudflared"
+tunnel_name = "k3s"

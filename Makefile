@@ -1,4 +1,4 @@
-.PHONY: init plan apply destroy ansible-bootstrap
+.PHONY: init plan apply destroy
 
 init:
 	cd opentofu/proxmox-vm && tofu init
