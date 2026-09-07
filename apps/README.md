@@ -1,35 +1,36 @@
 # Apps
 
-This directory holds every application ArgoCD manages on the cluster, using
-the "app-of-apps" pattern.
+This directory holds every application ArgoCD manages on the cluster.
 
 ## How it works
 
-Everything ArgoCD does is defined here, not in Ansible - `apps/` is the
-single source of truth. Ansible's only job is applying `apps/root.yaml`
-as-is (`ansible/roles/argocd`) to bootstrap the chain below; from there,
-every change is a `git push`, not a re-run of Ansible.
+Everything ArgoCD manages is defined here, not in Ansible - `apps/` is the
+single source of truth. Ansible's only job is registering the Applications
+below (`ansible/roles/argocd` pipes every `apps/*/application.yaml` into
+`k3s kubectl apply` on the node); from there, every change is ArgoCD's
+automated sync.
 
-1. `apps/root.yaml` is the root ArgoCD `Application`, pointing at
-   `apps/applications/`. ArgoCD auto-detects the `kustomization.yaml` there
-   and builds it like any other Kustomize source.
-2. Each resource listed in `apps/applications/kustomization.yaml` is itself
-   an ArgoCD `Application`, pointing at that app's manifests elsewhere
-   under `apps/` - including `apps/argocd/`, which configures ArgoCD's own
-   Ingress and `server.insecure` setting the same way as any other app.
-3. ArgoCD syncs automatically (prune + self-heal), so once `apps/root.yaml`
-   is applied once, adding a new app is just a `git push`.
+1. Each app lives in `apps/<name>/`: its `application.yaml` is the ArgoCD
+   `Application` pointing at the `manifests/` next to it. Each Application
+   is fully individual - its own namespace, sync policy, Helm or kustomize
+   source, whatever - no conventions imposed. `apps/argocd/` configures
+   ArgoCD's own Ingress and `server.insecure` setting the same way as any
+   other app.
+2. ArgoCD syncs each Application automatically (prune + self-heal), so once
+   an Application is registered, changes to its manifests are just a
+   `git push` - no Ansible re-run.
 
 ## Adding a new app
 
 1. Create `apps/<name>/manifests/` with plain Kubernetes YAML and a
-   `kustomization.yaml` listing them.
-2. Add `apps/applications/<name>.yaml`, an `Application` resource pointing
+   `kustomization.yaml` listing them (copy `apps/example-app/manifests/` as
+   a starting point).
+2. Add `apps/<name>/application.yaml`, an `Application` resource pointing
    `source.path` at `apps/<name>/manifests` (copy
-   `apps/applications/example-app.yaml` as a starting point), and list it in
-   `apps/applications/kustomization.yaml`'s `resources`.
-3. Commit and push. ArgoCD picks it up on its next sync (default: within a
-   few minutes, or trigger manually from the ArgoCD UI/CLI).
+   `apps/example-app/application.yaml` as a starting point).
+3. Register it by re-running the ArgoCD role
+   (`ansible-playbook ansible/playbooks/site.yml`). This one-time apply is
+   the only Ansible involvement; subsequent changes are a `git push`.
 
 `apps/example-app/` is a working demo (nginx) - safe to delete once you have
 real apps in place.

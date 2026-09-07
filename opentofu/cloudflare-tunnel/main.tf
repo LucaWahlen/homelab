@@ -36,19 +36,14 @@ resource "cloudflare_record" "wildcard" {
   proxied = true
 }
 
-# Namespace + Secret for the in-cluster cloudflared connector (apps/cloudflared).
-# ArgoCD's CreateNamespace=true also covers the namespace as a fallback, but
-# creating it here means the Secret can always be placed into it.
-resource "kubernetes_namespace" "cloudflared" {
-  metadata {
-    name = var.cloudflared_namespace
-  }
-}
-
+# Secret for the in-cluster cloudflared connector (apps/cloudflared). The
+# namespace itself is owned by ArgoCD (CreateNamespace=true on the cloudflared
+# Application) - managing it here too would collide with every ArgoCD sync,
+# and this apply is documented to run after the Ansible bootstrap anyway.
 resource "kubernetes_secret" "cloudflared_credentials" {
   metadata {
     name      = "cloudflared-credentials"
-    namespace = kubernetes_namespace.cloudflared.metadata[0].name
+    namespace = var.cloudflared_namespace
   }
 
   data = {

@@ -41,31 +41,31 @@ variable "image_datastore_id" {
 variable "vm_id" {
   description = "VM ID to assign to the new VM"
   type        = number
-  default     = 8000
+  default     = 100
 }
 
 variable "vm_name" {
   description = "Name/hostname of the VM"
   type        = string
-  default     = "k3s-01"
+  default     = "k3s"
 }
 
 variable "vm_cores" {
   description = "Number of vCPUs for the VM"
   type        = number
-  default     = 10
+  default     = 12
 }
 
 variable "vm_memory" {
   description = "RAM for the VM, in MB"
   type        = number
-  default     = 24576
+  default     = 30720
 }
 
 variable "vm_disk_size" {
   description = "Disk size for the VM, in GB"
   type        = number
-  default     = 800
+  default     = 500
 }
 
 variable "storage_pool" {
