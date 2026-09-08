@@ -23,6 +23,11 @@
     "TF_VAR_cloudflare_account_id": "${localEnv:TF_VAR_cloudflare_account_id}",
     "TF_VAR_cloudflare_zone_id": "${localEnv:TF_VAR_cloudflare_zone_id}"
   },
+  "customizations": {
+    "vscode": {
+      "extensions": ["sst-dev.opencode"]
+    }
+  },
   "remoteUser": "vscode",
   "postCreateCommand": "tofu version && ansible --version && opencode --version && make --version | head -1"
 }
