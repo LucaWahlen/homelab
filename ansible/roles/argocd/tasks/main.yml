@@ -56,11 +56,15 @@
 # manifest and applies it - decrypted with the local sops key during the
 # build. Skipped once ArgoCD manages itself; re-runs then only refresh the
 # age key above.
+# Applied server-side: the applicationsets CRD alone exceeds the 256 KiB
+# annotation limit, which client-side apply trips over because it stashes the
+# full manifest in the last-applied-configuration annotation. force-conflicts
+# keeps re-runs over a partial/legacy install safe.
 - name: Bootstrap-apply ArgoCD via kustomize
   when: argocd_state.stdout != 'managed'
   ansible.builtin.shell: |
     kustomize build --enable-alpha-plugins --enable-exec --enable-helm \
-      {{ playbook_dir }}/../../apps/argocd/manifests | kubectl apply -f -
+      {{ playbook_dir }}/../../apps/argocd/manifests | kubectl apply --server-side --force-conflicts -f -
   environment:
     KUBECONFIG: "{{ argocd_env.KUBECONFIG }}"
     SOPS_AGE_KEY_FILE: "{{ sops_age_key_file }}"

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Seal the cloudflared tunnel token from tofu state into Git. Idempotent: the
-# sealed file is only rewritten when the token actually changed - commit it then.
+# sealed file is only rewritten when the token actually changed - it is then
+# committed and pushed so ArgoCD (which syncs from the remote repo) deploys
+# the new token.
 set -eu
 cd "$(dirname "$0")/.."
 
@@ -33,4 +35,10 @@ stringData:
   TUNNEL_TOKEN: $token
 EOF
 sops encrypt --in-place "$target"
-echo "Sealed $target - commit it"
+# Only the sealed secret is committed, never unrelated local changes. A failed
+# push aborts the run loudly: ArgoCD syncs from the remote and would otherwise
+# deploy a stale token.
+git add "$target"
+git commit --message "update cloudflared tunnel token" -- "$target"
+git push
+echo "Sealed $target - committed and pushed"
