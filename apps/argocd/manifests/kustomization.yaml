@@ -35,7 +35,13 @@ helmCharts:
           - name: SOPS_AGE_KEY_FILE
             value: /sops-age/keys.txt
         # KSOPS v4 ships an installer that drops the ksops plugin and a
-        # matching kustomize build into the shared emptyDir.
+        # matching kustomize build into the shared emptyDir. Only the ksops
+        # binary is used: ArgoCD's built-in kustomize (5.8.1 in argocd 3.5)
+        # runs it as an exec plugin via the buildOptions above and handles the
+        # helmCharts. Do NOT mount the ksops-bundled kustomize over
+        # /usr/local/bin/kustomize: it is 5.3, whose helm probe runs
+        # 'helm version -c --short' - a shorthand helm 4 (shipped with
+        # argocd >= 3.5) rejects, breaking every render.
         initContainers:
           - name: install-ksops
             image: viaductoss/ksops:v4.5.1
@@ -50,9 +56,6 @@ helmCharts:
             secret:
               secretName: sops-age
         volumeMounts:
-          - name: custom-tools
-            mountPath: /usr/local/bin/kustomize
-            subPath: kustomize
           - name: custom-tools
             mountPath: /usr/local/bin/ksops
             subPath: ksops
