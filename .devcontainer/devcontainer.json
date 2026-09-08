@@ -3,10 +3,13 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "runArgs": ["--userns=keep-id", "--security-opt", "label=disable"],
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind",
-    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind"
+    "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind",
+    "source=${localEnv:HOME}/dotfiles,target=/home/vscode/dotfiles,type=bind"
   ],
   "remoteEnv": {
     "TF_VAR_proxmox_endpoint": "${localEnv:TF_VAR_proxmox_endpoint}",
@@ -20,5 +23,6 @@
     "TF_VAR_cloudflare_account_id": "${localEnv:TF_VAR_cloudflare_account_id}",
     "TF_VAR_cloudflare_zone_id": "${localEnv:TF_VAR_cloudflare_zone_id}"
   },
+  "remoteUser": "vscode",
   "postCreateCommand": "tofu version && ansible --version && opencode --version && make --version | head -1"
 }
