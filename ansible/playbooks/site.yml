@@ -9,9 +9,15 @@
         sleep: 5
         timeout: 300
 
-- name: Bootstrap k3s + ArgoCD
+- name: Bootstrap k3s
   hosts: k3s_server
   become: true
   roles:
     - k3s
+
+- name: Bootstrap ArgoCD
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
     - argocd

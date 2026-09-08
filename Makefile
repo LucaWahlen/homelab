@@ -10,8 +10,9 @@ plan:
 
 apply:
 	cd opentofu/proxmox-vm && tofu apply
-	cd ansible && ansible-playbook playbooks/site.yml
 	cd opentofu/cloudflare-tunnel && tofu apply
+	scripts/seal-cloudflared.sh
+	cd ansible && ansible-playbook playbooks/site.yml
 
 destroy:
 	cd opentofu/cloudflare-tunnel && tofu destroy

@@ -1,3 +1,8 @@
 k3s_version: "v1.30.5+k3s1"
 
-argocd_version: "v2.13.2"
+# SOPS/age private key used to seal k8s secrets in Git (apps/**/secret.enc.yaml).
+# Lives at sops' default location (host ~/.config/sops, mounted read-only into
+# the devcontainer). The Ansible bootstrap pushes it to the cluster
+# (argocd/sops-age Secret) so ArgoCD's repo-server decrypts sealed secrets
+# during kustomize builds via KSOPS - ansible itself never decrypts anything.
+sops_age_key_file: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/sops/age/keys.txt"

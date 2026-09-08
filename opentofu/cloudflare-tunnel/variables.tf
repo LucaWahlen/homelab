@@ -31,15 +31,3 @@ variable "reverse_proxy_service" {
   type        = string
   default     = "http://traefik.kube-system.svc.cluster.local:80"
 }
-
-variable "kubeconfig_path" {
-  description = "Path to the cluster kubeconfig produced by the Ansible bootstrap (run that first)"
-  type        = string
-  default     = "../../ansible/kubeconfig"
-}
-
-variable "cloudflared_namespace" {
-  description = "Namespace the cloudflared connector runs in - must match apps/cloudflared/manifests"
-  type        = string
-  default     = "cloudflared"
-}

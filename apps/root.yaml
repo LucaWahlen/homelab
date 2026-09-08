@@ -1,0 +1,27 @@
+# Root of the app-of-apps tree: the only Application the Ansible bootstrap
+# applies, once. Everything under apps/ (listed in kustomization.yaml) is
+# managed by ArgoCD from here on - adding an app is a Git commit, nothing else.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/LucaWahlen/homelab.git
+    targetRevision: main
+    path: apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 3m

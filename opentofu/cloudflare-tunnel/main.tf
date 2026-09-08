@@ -36,17 +36,3 @@ resource "cloudflare_record" "wildcard" {
   proxied = true
 }
 
-# Secret for the in-cluster cloudflared connector (apps/cloudflared). The
-# namespace itself is owned by ArgoCD (CreateNamespace=true on the cloudflared
-# Application) - managing it here too would collide with every ArgoCD sync,
-# and this apply is documented to run after the Ansible bootstrap anyway.
-resource "kubernetes_secret" "cloudflared_credentials" {
-  metadata {
-    name      = "cloudflared-credentials"
-    namespace = var.cloudflared_namespace
-  }
-
-  data = {
-    TUNNEL_TOKEN = cloudflare_zero_trust_tunnel_cloudflared.homelab.tunnel_token
-  }
-}

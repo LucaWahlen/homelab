@@ -1,5 +1,3 @@
-# Note: the `cloudflared-credentials` Secret (key: TUNNEL_TOKEN) is created
-# out-of-band, not by ArgoCD - see README.md "Expose services" section.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

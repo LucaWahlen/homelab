@@ -1,64 +1,99 @@
 ---
-- name: Create argocd namespace
+# ArgoCD bootstrap. Runs on the controller (localhost play in site.yml) against
+# the kubeconfig the k3s role fetched. Pushes the age key, applies the argocd
+# kustomization once (helm chart + sealed admin password rendered into one
+# manifest, decrypted with the local sops key), applies the root app-of-apps.
+# ArgoCD then syncs everything from Git itself. Re-running is safe.
+
+- name: Point controller tooling at the cluster
+  ansible.builtin.set_fact:
+    argocd_env:
+      KUBECONFIG: "{{ playbook_dir }}/../kubeconfig"
+
+# --- Namespace + one-time migration ---------------------------------------------
+
+- name: Detect the ArgoCD install state
   ansible.builtin.shell: |
-    k3s kubectl create namespace argocd --dry-run=client -o yaml | k3s kubectl apply -f -
+    kubectl --namespace argocd get deployment argocd-server >/dev/null 2>&1 || { echo absent; exit 0; }
+    managed=$(kubectl --namespace argocd get cm argocd-cm -o jsonpath='{.data.kustomize\.buildOptions}' 2>/dev/null || true)
+    if [ -n "$managed" ]; then echo managed; else echo legacy; fi
+  environment: "{{ argocd_env }}"
+  register: argocd_state
   changed_when: false
 
-- name: Install ArgoCD
-  ansible.builtin.command: >
-    k3s kubectl apply -n argocd
-    -f https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd_version }}/manifests/install.yaml
-  register: argocd_install
-  changed_when: "'created' in argocd_install.stdout or 'configured' in argocd_install.stdout"
-
-- name: Wait for ArgoCD server to be available
-  ansible.builtin.command: k3s kubectl -n argocd rollout status deployment/argocd-server --timeout=300s
-  changed_when: false
-
-# Every app carries its own Application manifest (apps/<name>/application.yaml)
-# - git-tracked, plain, not templated from group_vars, each fully individual
-# (namespace, sync policy, Helm vs kustomize - no conventions imposed). Each
-# file is piped to kubectl as-is, nothing staged on the node. Re-running this
-# role is what registers newly added Applications; every change after that is
-# ArgoCD's automated sync, no Ansible involved.
-- name: Find Application manifests
-  ansible.builtin.find:
-    paths: "{{ playbook_dir }}/../../apps"
-    patterns: application.yaml
-    recurse: true
-  delegate_to: localhost
-  register: app_manifests
-  changed_when: false
-
-- name: Apply Application manifests
-  ansible.builtin.command:
-    argv: [k3s, kubectl, apply, -f, -]
-    stdin: "{{ lookup('ansible.builtin.file', item) }}"
-  loop: "{{ app_manifests.files | map(attribute='path') | sort }}"
-  loop_control:
-    label: "{{ item | basename | dirname | basename }}"
-  register: apps_apply
-  changed_when: "'created' in apps_apply.stdout or 'configured' in apps_apply.stdout"
-
-# The argocd Application (git-managed: apps/argocd/manifests/ - the server's Ingress and its server.insecure
-# ConfigMap patch), like any other app. Nothing here applies that config
-# directly - this just waits
-# for ArgoCD to have actually synced it, since that's the one piece that
-# can't be pure GitOps: a ConfigMap change doesn't restart the pod that
-# reads it.
-- name: Wait for the argocd Application to sync
+# One-time migration off the old raw-manifest (install.yaml) install: our
+# kustomize build can't cleanly adopt it, so the namespace gets rebuilt. App
+# namespaces are untouched; the root app re-registers everything.
+- name: Replace the legacy ArgoCD install
+  when: argocd_state.stdout == 'legacy'
   ansible.builtin.shell: |
-    k3s kubectl -n argocd get application argocd -o jsonpath='{.status.sync.status}' 2>/dev/null || true
-  register: argocd_config_sync
-  changed_when: false
-  retries: 18
-  delay: 10
-  until: argocd_config_sync.stdout == "Synced"
-
-- name: Restart ArgoCD server to pick up insecure mode
-  ansible.builtin.command: k3s kubectl -n argocd rollout restart deployment/argocd-server
+    kubectl delete namespace argocd --ignore-not-found --wait=true
+    kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+  environment: "{{ argocd_env }}"
   changed_when: true
 
-- name: Wait for ArgoCD server to be available after restart
-  ansible.builtin.command: k3s kubectl -n argocd rollout status deployment/argocd-server --timeout=300s
+- name: Create argocd namespace
+  ansible.builtin.shell: |
+    kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+  environment: "{{ argocd_env }}"
+  changed_when: false
+
+# The repo-server mounts this (SOPS_AGE_KEY_FILE=/sops-age/keys.txt) to
+# decrypt sealed secrets during kustomize builds. Applied rather than
+# created-once so an age key rotation propagates on the next run.
+- name: Push the age private key to the cluster
+  ansible.builtin.shell: |
+    kubectl --namespace argocd create secret generic sops-age \
+      --from-file=keys.txt={{ sops_age_key_file }} \
+      --dry-run=client -o yaml | kubectl apply -f -
+  environment: "{{ argocd_env }}"
+  no_log: true
+  changed_when: true
+
+# --- Bootstrap + handover ----------------------------------------------------------
+
+# Renders apps/argocd/manifests (helm chart + sealed admin secret) into one
+# manifest and applies it - decrypted with the local sops key during the
+# build. Skipped once ArgoCD manages itself; re-runs then only refresh the
+# age key above.
+- name: Bootstrap-apply ArgoCD via kustomize
+  when: argocd_state.stdout != 'managed'
+  ansible.builtin.shell: |
+    kustomize build --enable-alpha-plugins --enable-exec --enable-helm \
+      {{ playbook_dir }}/../../apps/argocd/manifests | kubectl apply -f -
+  environment:
+    KUBECONFIG: "{{ argocd_env.KUBECONFIG }}"
+    SOPS_AGE_KEY_FILE: "{{ sops_age_key_file }}"
+  changed_when: true
+
+- name: Apply the root Application (app-of-apps entry point)
+  ansible.builtin.command:
+    argv: [kubectl, apply, --filename, "{{ playbook_dir }}/../../apps/root.yaml"]
+  environment: "{{ argocd_env }}"
+  register: root_apply
+  changed_when: "'created' in root_apply.stdout or 'configured' in root_apply.stdout"
+
+- name: Wait for the self-managed argocd Application to sync
+  ansible.builtin.shell: |
+    kubectl --namespace argocd get application argocd -o jsonpath='{.status.sync.status} {.status.health.status}' 2>/dev/null || true
+  environment: "{{ argocd_env }}"
+  register: argocd_app_status
+  changed_when: false
+  retries: 36
+  delay: 10
+  until: "'Synced' in argocd_app_status.stdout and 'Healthy' in argocd_app_status.stdout"
+
+- name: Wait for the cloudflared Application to sync
+  ansible.builtin.shell: |
+    kubectl --namespace argocd get application cloudflared -o jsonpath='{.status.sync.status} {.status.health.status}' 2>/dev/null || true
+  environment: "{{ argocd_env }}"
+  register: cloudflared_app_status
+  changed_when: false
+  retries: 36
+  delay: 10
+  until: "'Synced' in cloudflared_app_status.stdout and 'Healthy' in cloudflared_app_status.stdout"
+
+- name: Wait for the ArgoCD server to be available
+  ansible.builtin.command: kubectl --namespace argocd rollout status deployment/argocd-server --timeout=300s
+  environment: "{{ argocd_env }}"
   changed_when: false

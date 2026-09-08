@@ -1,3 +1,8 @@
+# ArgoCD manages itself: this Application (discovered by the root app-of-apps)
+# points at one kustomization that renders the argo-cd Helm chart and decrypts
+# the sealed admin password via KSOPS. The Ansible bootstrap renders this exact
+# path locally (with the local sops key) and applies it once; from then on
+# ArgoCD syncs it itself.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -16,5 +21,18 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 15s
+        factor: 2
+        maxDuration: 3m
+  # ArgoCD generates server.secretkey on first startup and persists it into
+  # argocd-secret. The rendered secret never contains that key, so without
+  # this ignore every sync would delete it and force a regeneration.
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: argocd-secret
+      jsonPointers:
+        - /data/server.secretkey

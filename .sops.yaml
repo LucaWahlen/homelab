@@ -1,0 +1,4 @@
+creation_rules:
+  - path_regex: apps/.*\.enc\.yaml$
+    unencrypted_regex: "^(apiVersion|kind|metadata|type)$"
+    age: age1fwn0l05325gc4p827dgqw5s0k38an0cuum87pj2359ugyd0rhc6s50yqn9

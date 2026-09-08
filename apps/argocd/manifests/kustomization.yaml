@@ -1,5 +1,64 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-resources:
-  - ingress.yaml
-  - configmap.yaml
+# The whole ArgoCD install in one kustomization: the Helm chart rendered by
+# kustomize + the sealed admin secret decrypted by KSOPS. This same path is
+# rendered for the Ansible bootstrap (kustomize build | kubectl apply) and
+# synced by ArgoCD itself afterwards - single source of truth, single source.
+helmCharts:
+  - name: argo-cd
+    repo: https://argoproj.github.io/argo-helm
+    version: 10.8.2
+    releaseName: argocd
+    namespace: argocd
+    includeCRDs: true
+    valuesInline:
+      configs:
+        params:
+          # Traefik terminates TLS; serve plain HTTP behind the ingress.
+          "server.insecure": true
+        cm:
+          # Required for KSOPS (exec plugin) and remote helmCharts.
+          kustomize.buildOptions: "--enable-alpha-plugins --enable-exec --enable-helm"
+        secret:
+          # argocd-secret comes from the ksops generator below (sealed admin
+          # password). ArgoCD generates + persists server.secretkey itself; the
+          # Application ignores diffs on that key.
+          createSecret: false
+      server:
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          hostname: argocd.lucawahlen.com
+          tls: false
+      repoServer:
+        env:
+          - name: SOPS_AGE_KEY_FILE
+            value: /sops-age/keys.txt
+        # KSOPS v4 ships an installer that drops the ksops plugin and a
+        # matching kustomize build into the shared emptyDir.
+        initContainers:
+          - name: install-ksops
+            image: viaductoss/ksops:v4.5.1
+            command: ["/usr/local/bin/ksops", "install", "--with-kustomize", "/custom-tools"]
+            volumeMounts:
+              - name: custom-tools
+                mountPath: /custom-tools
+        volumes:
+          - name: custom-tools
+            emptyDir: {}
+          - name: sops-age
+            secret:
+              secretName: sops-age
+        volumeMounts:
+          - name: custom-tools
+            mountPath: /usr/local/bin/kustomize
+            subPath: kustomize
+          - name: custom-tools
+            mountPath: /usr/local/bin/ksops
+            subPath: ksops
+          - name: sops-age
+            mountPath: /sops-age
+            readOnly: true
+generators:
+  # Decrypts secret.enc.yaml (bcrypt'd admin password) at build time.
+  - ksops.yaml
