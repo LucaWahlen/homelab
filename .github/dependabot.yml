@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # OpenTofu providers (bpg/proxmox, cloudflare, random) per module
+  - package-ecosystem: terraform
+    directory: /opentofu/proxmox-vm
+    schedule:
+      interval: weekly
+    groups:
+      terraform:
+        patterns:
+          - "*"
+
+  - package-ecosystem: terraform
+    directory: /opentofu/cloudflare-tunnel
+    schedule:
+      interval: weekly
+    groups:
+      terraform:
+        patterns:
+          - "*"
+
+  # Devcontainer base image (registry.fedoraproject.org/fedora)
+  - package-ecosystem: docker
+    directory: /.devcontainer
+    schedule:
+      interval: weekly
+
+  # GitHub Actions workflows (none yet, future-proof)
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
