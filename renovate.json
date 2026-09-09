@@ -1,19 +1,29 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "labels": ["dependencies"],
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
   "terraform": {
     "rangeStrategy": "bump"
   },
   "kubernetes": {
-    "managerFilePatterns": ["(^|/)manifests/[^/]+\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/(^|\\/)manifests\\/deployment\\.ya?ml$/"
+    ]
   },
   "customManagers": [
     {
       "customType": "regex",
       "description": "kubectl pinned in devcontainer, kept in sync with k3s (client skew)",
-      "managerFilePatterns": ["(^|/)Dockerfile$"],
-      "matchStrings": ["dl\\.k8s\\.io/release/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/bin"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/"
+      ],
+      "matchStrings": [
+        "dl\\.k8s\\.io/release/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/bin"
+      ],
       "depNameTemplate": "kubernetes/kubernetes",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$"
@@ -21,8 +31,12 @@
     {
       "customType": "regex",
       "description": "helm CLI pinned in devcontainer",
-      "managerFilePatterns": ["(^|/)Dockerfile$"],
-      "matchStrings": ["helm-v(?<currentValue>\\d+\\.\\d+\\.\\d+)-linux"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/"
+      ],
+      "matchStrings": [
+        "helm-v(?<currentValue>\\d+\\.\\d+\\.\\d+)-linux"
+      ],
       "depNameTemplate": "helm/helm",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$"
@@ -30,8 +44,12 @@
     {
       "customType": "regex",
       "description": "kustomize CLI pinned in devcontainer",
-      "managerFilePatterns": ["(^|/)Dockerfile$"],
-      "matchStrings": ["kustomize%2Fv(?<currentValue>\\d+\\.\\d+\\.\\d+)/kustomize_v"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/"
+      ],
+      "matchStrings": [
+        "kustomize%2Fv(?<currentValue>\\d+\\.\\d+\\.\\d+)/kustomize_v"
+      ],
       "depNameTemplate": "kubernetes-sigs/kustomize",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$"
@@ -39,8 +57,12 @@
     {
       "customType": "regex",
       "description": "ksops CLI pinned in devcontainer",
-      "managerFilePatterns": ["(^|/)Dockerfile$"],
-      "matchStrings": ["kustomize-sops/releases/download/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/ksops"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/"
+      ],
+      "matchStrings": [
+        "kustomize-sops/releases/download/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/ksops"
+      ],
       "depNameTemplate": "viaduct-ai/kustomize-sops",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$"
@@ -48,8 +70,12 @@
     {
       "customType": "regex",
       "description": "sops CLI pinned in devcontainer",
-      "managerFilePatterns": ["(^|/)Dockerfile$"],
-      "matchStrings": ["getsops/sops/releases/download/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/sops"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/"
+      ],
+      "matchStrings": [
+        "getsops/sops/releases/download/v(?<currentValue>\\d+\\.\\d+\\.\\d+)/sops"
+      ],
       "depNameTemplate": "getsops/sops",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$"
@@ -57,8 +83,12 @@
     {
       "customType": "regex",
       "description": "opencode pinned in devcontainer",
-      "managerFilePatterns": ["(^|/)Dockerfile$"],
-      "matchStrings": ["VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+) curl -fsSL https://opencode\\.ai/install"],
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile$/"
+      ],
+      "matchStrings": [
+        "VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+) curl -fsSL https://opencode\\.ai/install"
+      ],
       "depNameTemplate": "sst/opencode",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$"
@@ -66,8 +96,12 @@
     {
       "customType": "regex",
       "description": "k3s version pinned in ansible group vars",
-      "managerFilePatterns": ["/inventory/group_vars/all\\.yml(\\.example)?$"],
-      "matchStrings": ["k3s_version:\\s*\"v(?<currentValue>\\d+\\.\\d+\\.\\d+\\+k3s\\d+)\""],
+      "managerFilePatterns": [
+        "//inventory/group_vars/all\\.yml(\\.example)?$/"
+      ],
+      "matchStrings": [
+        "k3s_version:\\s*\"v(?<currentValue>\\d+\\.\\d+\\.\\d+\\+k3s\\d+)\""
+      ],
       "depNameTemplate": "k3s-io/k3s",
       "datasourceTemplate": "github-releases",
       "extractVersionTemplate": "^v(?<version>.*)$",
@@ -76,16 +110,30 @@
     {
       "customType": "regex",
       "description": "ksops image in argocd kustomization helm values",
-      "managerFilePatterns": ["(^|/)manifests/kustomization\\.yaml$"],
-      "matchStrings": ["image:\\s*viaductoss/ksops:v(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "managerFilePatterns": [
+        "/(^|/)manifests/kustomization\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*viaductoss/ksops:v(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
       "depNameTemplate": "viaductoss/ksops",
       "datasourceTemplate": "docker"
     }
   ],
   "packageRules": [
     {
+      "description": "Do not track kubernetes apiVersion strings (cluster is pinned older than latest k8s)",
+      "matchDatasources": [
+        "kubernetes-api"
+      ],
+      "enabled": false
+    },
+    {
       "description": "kubectl and k3s in one PR so client/cluster skew stays within +/-1 minor",
-      "matchPackageNames": ["kubernetes/kubernetes", "k3s-io/k3s"],
+      "matchPackageNames": [
+        "kubernetes/kubernetes",
+        "k3s-io/k3s"
+      ],
       "groupName": "kubernetes"
     },
     {
