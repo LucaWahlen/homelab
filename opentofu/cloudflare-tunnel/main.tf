@@ -13,11 +13,12 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab" {
   account_id = var.cloudflare_account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.homelab.id
 
-  # v5 turned the config block into an object attribute.
+  # v5 turned the config block into an object attribute and renamed
+  # ingress_rule -> ingress.
   config = {
     # Every hostname under the domain goes to the in-cluster reverse proxy;
     # it does host-based routing per app from there via each app's Ingress.
-    ingress_rule = [
+    ingress = [
       {
         hostname = "*.${var.domain}"
         service  = var.reverse_proxy_service
