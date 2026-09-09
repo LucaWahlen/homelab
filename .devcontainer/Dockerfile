@@ -25,7 +25,7 @@ RUN set -e; \
         x86_64)  k=amd64;  ks=x86_64 ;; \
         aarch64) k=arm64;  ks=arm64  ;; \
     esac; \
-    curl -fsSL "https://dl.k8s.io/release/v1.30.5/bin/linux/${k}/kubectl" -o /usr/local/bin/kubectl; \
+    curl -fsSL "https://dl.k8s.io/release/v1.37.0/bin/linux/${k}/kubectl" -o /usr/local/bin/kubectl; \
     curl -fsSL "https://get.helm.sh/helm-v3.18.4-linux-${k}.tar.gz" | tar -xz -C /tmp; \
     mv "/tmp/linux-${k}/helm" /usr/local/bin/helm; \
     curl -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.5.0/kustomize_v5.5.0_linux_${k}.tar.gz" | tar -xz -C /usr/local/bin kustomize; \
