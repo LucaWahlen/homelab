@@ -14,6 +14,10 @@ ansible/inventory/group_vars/all.yml
 kubeconfig
 *.kubeconfig
 
+# Kustomize caches pulled Helm charts (tgz + unpacked) next to the
+# kustomization when helmCharts has a repo: field. Regenerated on every build.
+apps/argocd/manifests/charts/
+
 # Secrets / keys
 *.pem
 *.key
