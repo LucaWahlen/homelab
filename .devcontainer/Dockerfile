@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:46
+FROM quay.io/fedora/fedora:46
 
 RUN dnf -y install \
         git \
