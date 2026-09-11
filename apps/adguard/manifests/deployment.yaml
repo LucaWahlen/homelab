@@ -23,32 +23,42 @@ spec:
       # own port-53 traffic, killing node DNS whenever AdGuard is not Ready.
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      initContainers:
-        # GitOps: copy the AdGuardHome.yaml into the PVC on every pod start,
-        # so Git is always the source of truth for the config. The password
-        # hash comes from the sealed secret and is merged into the placeholder
-        - name: config-seed
-          image: busybox:1.37.0
+      containers:
+        - name: adguardhome
+          image: adguard/adguardhome:v0.107.79
+          # GitOps: re-seed the config on EVERY container start (rollout or
+          # liveness restart), so Git stays the source of truth and UI changes
+          # cannot outlive a restart. AdGuard rewrites its config file on
+          # boot and on every UI change, so the conf dir must stay writable;
+          # a read-only mount crashes it with "read-only file system".
+          # Replacements use awk+ENVIRON: sed chokes on the multiline
+          # static-leases block, and the placeholder values never contain
+          # awk's special replacement chars (& and \).
           env:
             - name: ADGUARD_PASSWORD_HASH
               valueFrom:
                 secretKeyRef:
                   name: adguard-credentials
                   key: password-hash
+            - name: ADGUARD_STATIC_LEASES
+              valueFrom:
+                secretKeyRef:
+                  name: adguard-credentials
+                  key: static-leases
           command:
             - sh
             - -c
-            - sed "s|__ADGUARD_PASSWORD_HASH__|${ADGUARD_PASSWORD_HASH}|" /config-src/AdGuardHome.yaml > /conf/AdGuardHome.yaml
-          volumeMounts:
-            - name: config
-              mountPath: /config-src
-              readOnly: true
-            - name: data
-              mountPath: /conf
-              subPath: conf
-      containers:
-        - name: adguardhome
-          image: adguard/adguardhome:v0.107.79
+            - |
+              awk '
+                {
+                  gsub(/__ADGUARD_PASSWORD_HASH__/, ENVIRON["ADGUARD_PASSWORD_HASH"])
+                  gsub(/__ADGUARD_STATIC_LEASES__/, ENVIRON["ADGUARD_STATIC_LEASES"])
+                  print
+                }
+              ' /config-src/AdGuardHome.yaml > /opt/adguardhome/conf/AdGuardHome.yaml
+              exec /opt/adguardhome/adguardhome --no-check-update \
+                -c /opt/adguardhome/conf/AdGuardHome.yaml \
+                -w /opt/adguardhome/work
           ports:
             - name: dns-tcp
               containerPort: 53
@@ -61,13 +71,15 @@ spec:
             - name: http
               containerPort: 3000
           volumeMounts:
+            - name: config
+              mountPath: /config-src
+              readOnly: true
             - name: data
               mountPath: /opt/adguardhome/work
               subPath: work
             - name: data
               mountPath: /opt/adguardhome/conf
               subPath: conf
-              readOnly: true
           livenessProbe:
             httpGet:
               path: /
