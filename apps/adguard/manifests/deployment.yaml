@@ -24,14 +24,21 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       initContainers:
-        # GitOps: copy the sealed AdGuardHome.yaml into the PVC on every pod
-        # start, so Git is always the source of truth for the config
+        # GitOps: copy the AdGuardHome.yaml into the PVC on every pod start,
+        # so Git is always the source of truth for the config. The password
+        # hash comes from the sealed secret and is merged into the placeholder
         - name: config-seed
           image: busybox:1.37.0
+          env:
+            - name: ADGUARD_PASSWORD_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: adguard-credentials
+                  key: password-hash
           command:
             - sh
             - -c
-            - cp /config-src/AdGuardHome.yaml /conf/AdGuardHome.yaml
+            - sed "s|__ADGUARD_PASSWORD_HASH__|${ADGUARD_PASSWORD_HASH}|" /config-src/AdGuardHome.yaml > /conf/AdGuardHome.yaml
           volumeMounts:
             - name: config
               mountPath: /config-src
@@ -75,8 +82,8 @@ spec:
               memory: 256Mi
       volumes:
         - name: config
-          secret:
-            secretName: adguard-config
+          configMap:
+            name: adguard-config
         - name: data
           persistentVolumeClaim:
             claimName: adguard

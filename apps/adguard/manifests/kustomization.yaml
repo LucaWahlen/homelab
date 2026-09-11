@@ -3,7 +3,14 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
+  - service-blocked.yaml
   - ingress.yaml
   - pvc.yaml
+# Hash-suffixed name forces a pod rollout (and config re-seed) on every
+# config change
+configMapGenerator:
+  - name: adguard-config
+    files:
+      - AdGuardHome.yaml
 generators:
   - ksops.yaml
