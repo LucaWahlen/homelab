@@ -82,7 +82,7 @@
         "getsops/sops",
         "opentofu/opentofu",
         "FiloSottile/age",
-        "sst/opencode"
+        "anomalyco/opencode"
       ],
       "groupName": "devcontainer tooling"
     }

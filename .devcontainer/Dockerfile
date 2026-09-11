@@ -25,16 +25,16 @@ ARG SOPS_VERSION=3.13.3
 ARG OPENTOFU_VERSION=1.12.6
 # renovate: datasource=github-releases depName=FiloSottile/age extractVersion=^v(?<version>.*)$
 ARG AGE_VERSION=1.3.2
-# renovate: datasource=github-releases depName=sst/opencode extractVersion=^v(?<version>.*)$
+# renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
 ARG OPENCODE_VERSION=1.18.30
 
 RUN set -e; \
     case "$(uname -m)" in \
-        x86_64)  k=amd64;  ks=x86_64 ;; \
-        aarch64) k=arm64;  ks=arm64  ;; \
+        x86_64)  k=amd64;  ks=x86_64; oc=x64   ;; \
+        aarch64) k=arm64;  ks=arm64;  oc=arm64 ;; \
     esac; \
     curl -fsSL "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${k}/kubectl" -o /usr/local/bin/kubectl; \
-    curl -fsSL "https://github.com/helm/helm/releases/download/v${HELM_VERSION}/helm-v${HELM_VERSION}-linux-${k}.tar.gz" | tar -xz -C /tmp; \
+    curl -fsSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${k}.tar.gz" | tar -xz -C /tmp; \
     mv "/tmp/linux-${k}/helm" /usr/local/bin/helm && rm -rf "/tmp/linux-${k}"; \
     curl -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${k}.tar.gz" | tar -xz -C /usr/local/bin kustomize; \
     install -d /home/vscode/.config/kustomize/plugin/viaduct.ai/v1/kustomize-sops; \
@@ -44,5 +44,5 @@ RUN set -e; \
     curl -fsSL "https://github.com/opentofu/opentofu/releases/download/v${OPENTOFU_VERSION}/tofu_${OPENTOFU_VERSION}_linux_${k}.tar.gz" | tar -xz -C /usr/local/bin tofu; \
     curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-${k}.tar.gz" | tar -xz -C /tmp; \
     mv "/tmp/age/age" "/tmp/age/age-keygen" /usr/local/bin/ && rm -rf "/tmp/age"; \
-    curl -fsSL "https://github.com/sst/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${k}.tar.gz" | tar -xz -C /usr/local/bin opencode; \
+    curl -fsSL "https://github.com/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/opencode-linux-${oc}.tar.gz" | tar -xz -C /usr/local/bin opencode; \
     chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode
