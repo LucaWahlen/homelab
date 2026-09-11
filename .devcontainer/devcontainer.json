@@ -7,10 +7,11 @@
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,readonly",
     "source=${localEnv:HOME}/.config/sops,target=/home/vscode/.config/sops,type=bind,readonly",
+    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind",
+    "source=${localEnv:HOME}/dotfiles,target=/home/vscode/dotfiles,type=bind",
     "source=${localEnv:HOME}/.config/opencode,target=/home/vscode/.config/opencode,type=bind",
     "source=${localEnv:HOME}/.local/share/opencode,target=/home/vscode/.local/share/opencode,type=bind",
-    "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind",
-    "source=${localEnv:HOME}/dotfiles,target=/home/vscode/dotfiles,type=bind"
+    "source=${localEnv:HOME}/.agents/skills,target=/home/vscode/.agents/skills,type=bind"
   ],
   "remoteEnv": {
     "TF_VAR_proxmox_endpoint": "${localEnv:TF_VAR_proxmox_endpoint}",
