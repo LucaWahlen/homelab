@@ -17,6 +17,12 @@ spec:
       labels:
         app: adguard
     spec:
+      # hostNetwork: AdGuard binds a real socket on the node IP for DNS.
+      # Neither hostPort on the pod nor a LoadBalancer service can be used:
+      # both create daddr-agnostic DNAT rules that hijack ALL of the node's
+      # own port-53 traffic, killing node DNS whenever AdGuard is not Ready.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       initContainers:
         # GitOps: copy the sealed AdGuardHome.yaml into the PVC on every pod
         # start, so Git is always the source of truth for the config
@@ -43,8 +49,10 @@ spec:
             - name: dns-udp
               containerPort: 53
               protocol: UDP
+            # 3000 instead of 80: with hostNetwork, kubelet's health probes
+            # hit the node IP, where svclb DNATs port 80 into traefik
             - name: http
-              containerPort: 80
+              containerPort: 3000
           volumeMounts:
             - name: data
               mountPath: /opt/adguardhome/work
@@ -55,7 +63,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 3000
             initialDelaySeconds: 30
             periodSeconds: 30
             failureThreshold: 10
