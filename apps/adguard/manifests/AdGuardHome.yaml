@@ -35,7 +35,7 @@ querylog:
 statistics:
   interval: 24h
 dhcp:
-  enabled: false
+  enabled: true
   interface_name: eth0
   local_domain_name: lan
   dhcpv4:
