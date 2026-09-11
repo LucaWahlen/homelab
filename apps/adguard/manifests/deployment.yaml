@@ -67,6 +67,7 @@ spec:
             - name: data
               mountPath: /opt/adguardhome/conf
               subPath: conf
+              readOnly: true
           livenessProbe:
             httpGet:
               path: /

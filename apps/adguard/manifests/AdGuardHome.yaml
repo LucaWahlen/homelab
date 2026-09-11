@@ -3,8 +3,6 @@ http:
   address: 0.0.0.0:3000
   session_ttl: 720h
 users:
-  # bcrypt hash injected at deploy time from the sealed secret
-  # (apps/adguard/manifests/secret.enc.yaml) - do not commit real hashes here
   - name: admin
     password: __ADGUARD_PASSWORD_HASH__
 auth_attempts: 5
