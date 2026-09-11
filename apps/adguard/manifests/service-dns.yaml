@@ -1,0 +1,21 @@
+# LoadBalancer (k3s klipper) so LAN devices can use <node-ip>:53 as their DNS.
+# A hostPort on the pod must NOT be used instead: its DNAT rule would hijack
+# ALL of the node's own outbound port-53 traffic (systemd-resolved etc.) and
+# deadlock the node's DNS while the pod is not running.
+apiVersion: v1
+kind: Service
+metadata:
+  name: adguard-dns
+spec:
+  type: LoadBalancer
+  selector:
+    app: adguard
+  ports:
+    - name: dns-udp
+      port: 53
+      targetPort: 53
+      protocol: UDP
+    - name: dns-tcp
+      port: 53
+      targetPort: 53
+      protocol: TCP

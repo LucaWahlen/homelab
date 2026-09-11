@@ -5,7 +5,7 @@ metadata:
   labels:
     app: adguard
 spec:
-  # Recreate: the RWO PVC and hostPort 53 only allow a single active pod
+  # Recreate: the RWO PVC only allows a single active pod
   strategy:
     type: Recreate
   replicas: 1
@@ -39,11 +39,9 @@ spec:
           ports:
             - name: dns-tcp
               containerPort: 53
-              hostPort: 53
               protocol: TCP
             - name: dns-udp
               containerPort: 53
-              hostPort: 53
               protocol: UDP
             - name: http
               containerPort: 80
