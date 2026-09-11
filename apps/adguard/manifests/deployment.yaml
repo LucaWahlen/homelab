@@ -56,7 +56,7 @@ spec:
                   print
                 }
               ' /config-src/AdGuardHome.yaml > /opt/adguardhome/conf/AdGuardHome.yaml
-              exec /opt/adguardhome/adguardhome --no-check-update \
+              exec /opt/adguardhome/AdGuardHome --no-check-update \
                 -c /opt/adguardhome/conf/AdGuardHome.yaml \
                 -w /opt/adguardhome/work
           ports:
