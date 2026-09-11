@@ -28,7 +28,7 @@ spec:
         # so Git is always the source of truth for the config. The password
         # hash comes from the sealed secret and is merged into the placeholder
         - name: config-seed
-          image: busybox:1.37.0
+          image: busybox:1.38.0
           env:
             - name: ADGUARD_PASSWORD_HASH
               valueFrom:
