@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "customManagers:dockerfileVersions"],
+  "extends": ["config:recommended", "customManagers:dockerfileVersions", "helpers:pinGitHubActionDigests"],
   "labels": ["dependencies"],
   "kubernetes": {
     "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
@@ -17,6 +17,12 @@
     }
   ],
   "packageRules": [
+    {
+      "description": "Merge non-major updates once CI passes",
+      "matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+      "automerge": true,
+      "platformAutomerge": false
+    },
     {
       "description": "Providers come from the OpenTofu registry, matching the lock files",
       "matchDatasources": ["terraform-provider"],
@@ -35,7 +41,8 @@
       "description": "Cluster and kubectl together, one minor at a time",
       "matchPackageNames": ["k3s-io/k3s", "kubernetes/kubernetes"],
       "groupName": "kubernetes",
-      "separateMultipleMinor": true
+      "separateMultipleMinor": true,
+      "automerge": false
     }
   ]
 }
