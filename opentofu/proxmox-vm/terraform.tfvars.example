@@ -1,0 +1,20 @@
+proxmox_endpoint  = "https://192.168.178.XXX:8006/"
+proxmox_api_token = "terraform@pve!terraform=00000000-0000-0000-0000-000000000000"
+
+proxmox_node = "pve"
+storage_pool = "local-lvm"
+
+vm_id   = 100
+vm_name = "k3s"
+
+vm_cores     = 12
+vm_memory    = 30720
+vm_disk_size = 500
+
+network_bridge = "vmbr0"
+vm_ip_address  = "192.168.178.234"
+vm_subnet_mask = 24
+vm_gateway     = "192.168.178.1"
+
+vm_user        = "ubuntu"
+ssh_public_key = "ssh-ed25519 AAAA... you@host"

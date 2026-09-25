@@ -1,0 +1,51 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+helmCharts:
+  - name: argo-cd
+    repo: https://argoproj.github.io/argo-helm
+    version: 10.9.2
+    releaseName: argocd
+    namespace: argocd
+    includeCRDs: true
+    valuesInline:
+      configs:
+        params:
+          "server.insecure": true
+        cm:
+          kustomize.buildOptions: "--enable-alpha-plugins --enable-exec --enable-helm"
+        secret:
+          # argocd-secret comes from the ksops generator below.
+          createSecret: false
+      server:
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          hostname: argocd.lucawahlen.com
+          tls: false
+      repoServer:
+        env:
+          - name: SOPS_AGE_KEY_FILE
+            value: /sops-age/keys.txt
+        # Only mount the ksops binary: its bundled kustomize breaks with ArgoCD's helm 4.
+        initContainers:
+          - name: install-ksops
+            image: viaductoss/ksops:v4.5.1
+            command: ["/usr/local/bin/ksops", "install", "--with-kustomize", "/custom-tools"]
+            volumeMounts:
+              - name: custom-tools
+                mountPath: /custom-tools
+        volumes:
+          - name: custom-tools
+            emptyDir: {}
+          - name: sops-age
+            secret:
+              secretName: sops-age
+        volumeMounts:
+          - name: custom-tools
+            mountPath: /usr/local/bin/ksops
+            subPath: ksops
+          - name: sops-age
+            mountPath: /sops-age
+            readOnly: true
+generators:
+  - ksops.yaml

@@ -1,0 +1,26 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+
+# Ansible
+*.retry
+kubeconfig
+*.kubeconfig
+
+# Helm charts pulled by kustomize --enable-helm
+kubernetes/argocd/charts/
+
+# Secrets / keys
+*.pem
+*.key
+.vault_pass
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
