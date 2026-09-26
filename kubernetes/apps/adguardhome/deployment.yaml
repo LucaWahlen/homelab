@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguardhome
+  labels:
+    app: adguardhome
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: adguardhome
+  template:
+    metadata:
+      labels:
+        app: adguardhome
+    spec:
+      initContainers:
+        - name: seed-config
+          image: busybox:1.38.0
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /data/work /data/conf
+              cp /config/AdGuardHome.yaml /data/conf/AdGuardHome.yaml
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+              readOnly: true
+      containers:
+        - name: adguardhome
+          image: adguard/adguardhome:v0.107.79
+          args:
+            - --no-check-update
+            - --config
+            - /opt/adguardhome/conf/AdGuardHome.yaml
+            - --work-dir
+            - /opt/adguardhome/work
+          ports:
+            - name: dns-udp
+              containerPort: 53
+              protocol: UDP
+            - name: dns-tcp
+              containerPort: 53
+              protocol: TCP
+            - name: http
+              containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/adguardhome/work
+              subPath: work
+            - name: data
+              mountPath: /opt/adguardhome/conf
+              subPath: conf
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: adguardhome
+        - name: config
+          secret:
+            secretName: adguardhome-config

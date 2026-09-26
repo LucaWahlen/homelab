@@ -16,6 +16,10 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "homelab" {
   config = {
     ingress = [
       {
+        hostname = "*.internal.${var.domain}"
+        service  = "http_status:404"
+      },
+      {
         hostname = "*.${var.domain}"
         service  = var.reverse_proxy_service
       },

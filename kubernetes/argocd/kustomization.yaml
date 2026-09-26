@@ -20,8 +20,10 @@ helmCharts:
         ingress:
           enabled: true
           ingressClassName: traefik
-          hostname: argocd.lucawahlen.com
-          tls: false
+          hostname: argocd.internal.lucawahlen.com
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+          tls: true
       repoServer:
         env:
           - name: SOPS_AGE_KEY_FILE

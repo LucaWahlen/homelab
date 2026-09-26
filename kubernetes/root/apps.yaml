@@ -32,3 +32,5 @@ spec:
           selfHeal: true
         syncOptions:
           - CreateNamespace=true
+          # cert-manager's CRDs exceed the 262144-byte last-applied annotation limit.
+          - ServerSideApply=true
