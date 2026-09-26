@@ -1,5 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+resources:
+  - middleware.yaml
 helmCharts:
   - name: argo-cd
     repo: https://argoproj.github.io/argo-helm
@@ -22,7 +24,8 @@ helmCharts:
           ingressClassName: traefik
           hostname: argocd.internal.lucawahlen.com
           annotations:
-            cert-manager.io/cluster-issuer: letsencrypt
+            cert-manager.io/cluster-issuer: letsencrypt-staging
+            traefik.ingress.kubernetes.io/router.middlewares: argocd-redirect-https@kubernetescrd
           tls: true
       repoServer:
         env:

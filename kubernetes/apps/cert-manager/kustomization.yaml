@@ -12,6 +12,10 @@ helmCharts:
       crds:
         enabled: true
         keep: true
+      # Bypass split-horizon rewrites for *.internal when checking DNS-01 propagation.
+      extraArgs:
+        - --dns01-recursive-nameservers-only
+        - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
       resources:
         requests:
           cpu: 10m

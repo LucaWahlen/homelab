@@ -6,6 +6,8 @@ metadata:
     app: adguardhome
 spec:
   type: LoadBalancer
+  # Preserve client source IPs for AdGuard's per-client stats and rules.
+  externalTrafficPolicy: Local
   selector:
     app: adguardhome
   ports:

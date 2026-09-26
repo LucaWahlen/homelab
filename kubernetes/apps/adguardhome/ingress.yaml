@@ -3,7 +3,8 @@ kind: Ingress
 metadata:
   name: adguardhome
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    traefik.ingress.kubernetes.io/router.middlewares: adguardhome-redirect-https@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:

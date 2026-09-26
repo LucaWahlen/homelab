@@ -6,5 +6,6 @@ resources:
   - service-dns.yaml
   - service-web.yaml
   - ingress.yaml
+  - middleware.yaml
 generators:
   - ksops.yaml
