@@ -30,6 +30,17 @@
   no_log: true
   changed_when: true
 
+# k3s ships Traefik as an async HelmChart, so its CRDs may not exist yet right after node Ready.
+- name: Wait for the Traefik Middleware CRD
+  ansible.builtin.command: kubectl wait --for=condition=Established --timeout=120s crd/middlewares.traefik.io
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  register: argocd_traefik_crd
+  changed_when: false
+  retries: 12
+  delay: 10
+  until: argocd_traefik_crd.rc == 0
+
 # Server-side apply: the applicationsets CRD exceeds the client-side last-applied annotation limit.
 - name: Install ArgoCD
   when: argocd_self.rc != 0
