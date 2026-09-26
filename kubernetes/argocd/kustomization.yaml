@@ -24,7 +24,7 @@ helmCharts:
           ingressClassName: traefik
           hostname: argocd.internal.lucawahlen.com
           annotations:
-            cert-manager.io/cluster-issuer: letsencrypt-staging
+            cert-manager.io/cluster-issuer: letsencrypt
             traefik.ingress.kubernetes.io/router.middlewares: argocd-redirect-https@kubernetescrd
           tls: true
       repoServer:
