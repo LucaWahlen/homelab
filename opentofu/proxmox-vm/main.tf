@@ -15,6 +15,10 @@ resource "proxmox_virtual_environment_vm" "k3s_node" {
 
   stop_on_destroy = true
 
+  serial_device {
+    device = "socket"
+  }
+
   agent {
     enabled = true
     trim    = true

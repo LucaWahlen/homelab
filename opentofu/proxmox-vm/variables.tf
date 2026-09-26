@@ -23,13 +23,13 @@ variable "proxmox_node" {
 variable "cloud_image_url" {
   description = "URL of the cloud-init-ready disk image OpenTofu downloads onto the Proxmox node and boots the VM from"
   type        = string
-  default     = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  default     = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
 }
 
 variable "cloud_image_file_name" {
-  description = "File name for the image on Proxmox; must end in .qcow2 for content_type import (Ubuntu's .img is qcow2)"
+  description = "File name for the image on Proxmox; must end in .qcow2 for content_type import (Debian's genericcloud image is qcow2)"
   type        = string
-  default     = "noble-server-cloudimg-amd64.qcow2"
+  default     = "debian-13-genericcloud-amd64.qcow2"
 }
 
 variable "image_datastore_id" {
@@ -104,7 +104,7 @@ variable "dns_servers" {
 variable "vm_user" {
   description = "Default user account created on the VM via cloud-init"
   type        = string
-  default     = "ubuntu"
+  default     = "debian"
 }
 
 variable "ssh_public_key" {
