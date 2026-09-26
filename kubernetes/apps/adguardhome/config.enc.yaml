@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: adguardhome-config
+    namespace: adguardhome
+type: Opaque
+stringData:
+    AdGuardHome.yaml: ENC[AES256_GCM,data:81j3jfRWik+pTICoomVLrPEnDBqLC6Ihq9RS2MZAO8nHZb2g+P0gqtalff1JYIx68QXt3NXmFQWnkxDHiACBENNal/ZCJH2nULwOzkcplBhAtpeG1Bgnso8oREgC1dqgqcnXhpNMceAnJkFbS2pykeO37K+vE1fQAqsaJbxYdtYDYE1wF4DOKElYWWtvhHRYEseAsfSP0bNXpvz/AVmC8oqXKPdNl1MdTRoj/h0Jy3F6FLOGQkhidOC8rlqgRfV4KXNpRdmFTgHOKIzyJn/qLKqS6SlL7BajZw4qTC0edBEYlgmAMD7n8zFYco+DjhcE+BY1vWd+42AsWHM3NsJA8tVihhPZpRh1Oj+/oxUVxke7TCMCl59A95YGDqDAiWxGgmAktgNzDBnTvE0sSKIFD8XGNVSGLte2nndENtlxVgMpl1PPFPBHcouXsODWI0UnMrA11S9JcxA/b5qn+/D9sL4Wp8twth+NOf65r08cB1jgszkiGIc2CvkFFHQYBLzWLd7pFTTBxuv/Lslk4p1uk8bOKJA8NEWbxYri9dBNiix3BteUvRbygVhh/4Phd13jHli0uhK6haLbCr0qfn+dIehrYC7ZenS7rvm+mUHGDHcBA+agHVGs2Px14hq1UhUJgE5Xw/MKUVjNBT0TE5EqCaoFfnHTKGOtdc7dIwF3tnd1pI6P3/g5y9Rw1GSUxg==,iv:t+m4U1XeMKp5F+D6U9hUXfog2nW1iHb00Eekkn4973k=,tag:F8L1Sf5g4E/AnIynH0WTMw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwQ093aFU5eG0rKy9Cakto
+            RW4zQXJLNHhnZWZ1Z3Nob3hZQkdRT2xJWWdRCjVYU3dVREcyTll4T2xTWnUrUGt3
+            VWZKSklwTUE0eXNYTUVRUFV4cXV1TEUKLS0tIFhOTWM5TlkrbGh3OE5uQXpvdmlL
+            VVFIWVhlRDNoVzJIMHF0YU1QK1pTNzAKJVz9z4GUlxkKpY1j2ansi++VF3jLvehj
+            jyYPdQGEQGVMLJWKJaHu16VHT6m+4o2C2ASQzZ/oL9jQQdjHmmGJ5w==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1fwn0l05325gc4p827dgqw5s0k38an0cuum87pj2359ugyd0rhc6s50yqn9
+    lastmodified: "2026-09-26T14:34:02Z"
+    mac: ENC[AES256_GCM,data:PPvSirKzC+QuI0CS3YmP6XaWk7Xg0ZUDZ9GLJXNm+E7+RQ9wCyuhLITqmX7UKknq85ohpP40IfxEDUDKs4eA95aX1ayzEiFh1IioSPQdGPMEmMIBy7cEvOFOGlhkOiTB9bOu5Ws9XQ+XHj8yFBUMLi1/T7s7Fr1hDBw8QiROQWE=,iv:oHiFUy6wxI0FX9wEQzGI2Pyp+utLTZPiyC01SgA6zf0=,tag:BJ9tOgjoD3F4ZsKzi2PrWw==,type:str]
+    unencrypted_regex: ^(apiVersion|kind|metadata|type)$
+    version: 3.13.3
