@@ -38,7 +38,7 @@ spec:
               mountPath: /data
       containers:
         - name: shale
-          image: ghcr.io/lucawahlen/shale:v1.1.0
+          image: ghcr.io/lucawahlen/shale:v1.2.0
           env:
             - name: SHALE_DB_PATH
               value: /data/shale.db
