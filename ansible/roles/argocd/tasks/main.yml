@@ -85,3 +85,4 @@
     - cert-manager
     - cloudflared
     - headlamp
+    - shale
