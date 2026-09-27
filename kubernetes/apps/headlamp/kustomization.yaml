@@ -1,0 +1,56 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - middleware.yaml
+  - auth.yaml
+helmCharts:
+  - name: headlamp
+    repo: https://kubernetes-sigs.github.io/headlamp/
+    version: 0.45.0
+    releaseName: headlamp
+    namespace: headlamp
+    valuesInline:
+      config:
+        # BasicAuth at the ingress is the only gate; skip Headlamp's token login.
+        unsafeUseServiceAccountToken: true
+        # Reload plugins when the plugin manager sidecar installs/updates them.
+        watchPlugins: true
+        oidc:
+          secret:
+            create: false
+      # Installs plugins from Artifact Hub at startup.
+      pluginsManager:
+        enabled: true
+        version: "0.1.1"
+        configContent: |
+          plugins:
+            - name: cert-manager
+              source: https://artifacthub.io/packages/headlamp/headlamp-plugins/headlamp_cert-manager
+              version: "0.1.1"
+            - name: argocd
+              source: https://artifacthub.io/packages/headlamp/headlamp-plugins/headlamp_argocd
+              version: "0.1.0-alpha"
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+          traefik.ingress.kubernetes.io/router.middlewares: headlamp-redirect-https@kubernetescrd,headlamp-auth@kubernetescrd
+        hosts:
+          - host: headlamp.internal.lucawahlen.com
+            paths:
+              - path: /
+                type: Prefix
+        tls:
+          - secretName: headlamp-tls
+            hosts:
+              - headlamp.internal.lucawahlen.com
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+generators:
+  - ksops.yaml

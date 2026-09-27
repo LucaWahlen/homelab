@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: adguardhome-config
+    namespace: adguardhome
+type: Opaque
+stringData:
+    AdGuardHome.yaml: ENC[AES256_GCM,data:pRHegsLi2tfsUTL8L2CI00uNAw+3niTWUaDi6xBn0u0srt3muaRPbZBj7ykojh/Vx8jGhKk4+lCepwnLm8YsxbuGcojVN0XDvYgO15ylcUz+qdql2Ajp1g1th6SaZd18pgGekXaLPli40OeJszdCBJpZdZ113S9xsU6gGaqkPG0TdB4pnILz9aE+wSH8n9HEF7maXIVE+nXQcP02q3O6jSiAZkp4TOAn71H+rVd0s6nKSGSCmHI1AsiUY9HH/ZF2mYJ1WqVC/S3LO4KIo2mghL8jNR/tdLfXI3nAD+MaX4D4uNvhk0MgKptglwwLoTczF4guiAmffCUc8q64pRwLXLITXZ3ZmlRRkYtv1qt3Lq07fQ+IZm0FAiDyt2LkRybKlAWDwsu1XuHL6HIHatqhk3EKQ4k9iWbcd7bQKvpesS6c3B/o/TD3LJzakSoW+pJ4YbixBewWGkYJ0R8CmDnHzEZKJcB97Fn/koJzVQGsbfMEXq7q2mzEvUYx4ITruF57C6wnBW/ZduRIcpXm1mIF2a8TqFLLFixPmQPCRMIPIBbx1vGI7K3fcR+zD2/40is9xdl7yYPLJmTb69GUkSOrq5nnebWgKW3QvwocEqPqrwaDaDuCqIWOSPfN9s7qPjFeQbGrtouCxmi4QC5ANVNh40+Q3OA9MrCmS7rxa4I0ATCCREnbWYYf75vg8EEa88b7vl3chOEPcZ4kIdaSKwZ/kGELSByoezNgcoZRRHfuJkvu8DexM7KdNljrIR/elLsHaGSi+3q9K7LwOXG2LHMu0CC5dSEX3NIIjonNjJ4sIpalxnFz+Pi4hEQ7Bv+jScUIudZwTlBzvN57WOyco41zqnJ63oheFx6Yvjc6n6mgklsffJO6VwirCN/sO6nWM3GAwIivr+ohFL38aEz10kmPkB82lfz5d+Uujm+Wy0mG+eZK2RO1/JSKqwFJi1C5H1GiC6+P4xtAUv0aPyAb8Qz58iaMoojPrtW996HfxNYmG6BIzPvau8bAmo8ZXNqYcUD9uh4LmSRuYosRxuebAtDJMRl+uxiLhn5xneyI861PBjacpAqGLeq8AojDyNiCUBv6zqRExoqL0DlRMEeDSPu0LvE7TbsE7yDbTdb6LeoimD2PKHlFbnprKm2Omu78ff5zpPjQAna3YU+ZCu55EAwbFmTxXGouXQlKU9+GglxnCBX5F0pkEWSkphu+jhX2lOM1q3/L9YNh6JSkYHPb2ywE6zZAr/v7EjflnfWkRzqwiT8AQ34jQDbxYabVY5TB2Bns5mDCFTp+hDAFqP8ukV8rM2slWnDgqrJJ+zBmqaXJl1SVROx4lFA0W1Wcd88ErqMkJoeSasJEEuaOwlHr/SWPuPh5KZkWebl0RSVOJ1FgXnhc5aCLtbZfOC7rtre2FqribBVt7VZNfPw8bNV1gLe5mfUBKWP4k6v4zF+WtfwYc9XyE1r4ph4DM2hRQ8y8boSf/v3RR0iZCCOusalAWtlqJFpn/YcNue2EaPcgdNwg+IO/GZuvmZTmCoGg1rDmI5hLfxi5/tJCEZ1N6JJbJSP6QaNcidgpuJiEgtJ+W/TD9x5baKGdrDIHYg20g4kvDIk4SyI=,iv:HlS0L072ypB2izmUp7ou4CnvFjpWMbdrO3w5Xa6g0Ho=,tag:08oARCXQ6KL5iS9md9feBg==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA5Q3MvOGF1L09PMmlVWTFv
+            dmhXUllsakJJbDJ2dDV1dWFWL2ovYmE4UWtzCkthMk1IK3YzTkpEc0U0SWYrSmdO
+            ZW9FVDhlUUZ6WE9xVU15RjFFeGgrNFkKLS0tIFdtSTBpYXkrY0kxano4ZGlxUlRX
+            dXMzeTRtRGx6R05Gcmd2RkU1RWUvc1kKcmo0WjUwGl06XVRwyRx0oj5//1+QFHjZ
+            GQcT6G8WA4Xn3GvxgkcVRbP86YUd59DJ1X5cwxIMxN/dJV0sTJ5ClQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1fwn0l05325gc4p827dgqw5s0k38an0cuum87pj2359ugyd0rhc6s50yqn9
+    lastmodified: "2026-09-27T16:23:59Z"
+    mac: ENC[AES256_GCM,data:HAMjGWMgwKOyKje2jExdyPEEfM+XmOLNk1wWvZQktRDtL8P7eePFSY0Zq/lUwiBraFlo82OD5dL89L/KwF9JKG8J3GGM18V/h++Lm32HDokW8TCWE1LkZ2bPCJ+s0dijPJR2m1+2iIRiF2SnAHSMCH8x+p6/PwonDL9JsQaRfF8=,iv:y1QSCVp2daQNN3MFKjgGiLWsXUb5DaohxNHesonSlX0=,tag:jUgBjgPFlvGdPG20oS7GSQ==,type:str]
+    unencrypted_regex: ^(apiVersion|kind|metadata|type)$
+    version: 3.13.3
