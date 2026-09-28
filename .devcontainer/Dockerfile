@@ -29,7 +29,7 @@ ARG OPENTOFU_VERSION=1.12.6
 # renovate: datasource=github-releases depName=FiloSottile/age extractVersion=^v(?<version>.*)$
 ARG AGE_VERSION=1.3.2
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
-ARG OPENCODE_VERSION=1.18.32
+ARG OPENCODE_VERSION=1.18.33
 # renovate: datasource=github-releases depName=yannh/kubeconform extractVersion=^v(?<version>.*)$
 ARG KUBECONFORM_VERSION=0.8.0
 # renovate: datasource=github-releases depName=mikefarah/yq extractVersion=^v(?<version>.*)$
