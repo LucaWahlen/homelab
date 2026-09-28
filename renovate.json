@@ -20,8 +20,7 @@
     {
       "description": "Merge non-major updates once CI passes",
       "matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
-      "automerge": true,
-      "platformAutomerge": false
+      "automerge": true
     },
     {
       "description": "Providers come from the OpenTofu registry, matching the lock files",
