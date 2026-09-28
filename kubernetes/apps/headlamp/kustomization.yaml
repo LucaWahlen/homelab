@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - middleware.yaml
-  - auth.yaml
 helmCharts:
   - name: headlamp
     repo: https://kubernetes-sigs.github.io/headlamp/
@@ -12,7 +11,7 @@ helmCharts:
     namespace: headlamp
     valuesInline:
       config:
-        # BasicAuth at the ingress is the only gate; skip Headlamp's token login.
+        # Authenticate every visitor as the pod's cluster-admin service account.
         unsafeUseServiceAccountToken: true
         # Reload plugins when the plugin manager sidecar installs/updates them.
         watchPlugins: true
@@ -36,7 +35,7 @@ helmCharts:
         ingressClassName: traefik
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt
-          traefik.ingress.kubernetes.io/router.middlewares: headlamp-redirect-https@kubernetescrd,headlamp-auth@kubernetescrd
+          traefik.ingress.kubernetes.io/router.middlewares: headlamp-redirect-https@kubernetescrd
         hosts:
           - host: headlamp.internal.lucawahlen.com
             paths:
@@ -52,5 +51,3 @@ helmCharts:
           memory: 64Mi
         limits:
           memory: 256Mi
-generators:
-  - ksops.yaml
