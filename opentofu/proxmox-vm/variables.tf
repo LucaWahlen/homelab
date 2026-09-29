@@ -79,6 +79,13 @@ variable "network_bridge" {
   default     = "vmbr0"
 }
 
+# Pinned so the SLAAC IPv6 derived from this MAC stays stable across
+variable "vm_mac_address" {
+  description = "MAC address for the VM's network interface"
+  type        = string
+  default     = "BC:24:11:4F:27:8E"
+}
+
 variable "vm_ip_address" {
   description = "Static IPv4 address for the VM, e.g. 192.168.1.50"
   type        = string
