@@ -13,11 +13,15 @@ k8s_version=$(yq '.k3s_version' ansible/inventory/group_vars/all.yml)
 k8s_version=${k8s_version#v}
 k8s_version=${k8s_version%%+*}
 
+# No published schema exists for CRDs themselves.
+# VLAgent's catalog schema lags the operator (missing spec.k8sCollector);
+# it is chart-owned rather than authored here, so skip it.
+skip_kinds=CustomResourceDefinition,VLAgent
+
 kubeconform=(
     kubeconform -strict -summary
     -kubernetes-version "$k8s_version"
-    # No published schema exists for CRDs themselves.
-    -skip CustomResourceDefinition
+    -skip "$skip_kinds"
     -schema-location default
     -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
 )
