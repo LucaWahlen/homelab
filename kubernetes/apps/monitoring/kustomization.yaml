@@ -1,0 +1,103 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: monitoring
+
+resources:
+  - namespace.yaml
+  - middleware.yaml
+  - dashboards
+
+# Grafana admin credentials, encrypted with SOPS/age (see ksops.yaml).
+generators:
+  - ksops.yaml
+
+helmCharts:
+  - name: victoria-metrics-k8s-stack
+    repo: https://victoriametrics.github.io/helm-charts/
+    version: 0.95.0
+    releaseName: monitoring
+    namespace: monitoring
+    includeCRDs: true
+    valuesInline:
+      # ArgoCD renders this release through kustomize/Helm, not the Helm source type.
+      argocdReleaseOverride: monitoring
+
+      # --- Metrics -------------------------------------------------------
+      vmsingle:
+        spec:
+          retentionPeriod: 14d
+          storage:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 20Gi
+
+      # --- Logs ----------------------------------------------------------
+      vlsingle:
+        enabled: true
+        spec:
+          retentionPeriod: 14d
+          storage:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 20Gi
+      vlagent:
+        enabled: true
+        spec:
+          k8sCollector:
+            enabled: true
+
+      # --- Alerting disabled for now ------------------------------------
+      alertmanager:
+        enabled: false
+      vmalert:
+        enabled: false
+      defaultRules:
+        enabled: false
+
+      # Dashboards are vendored in this repo (dashboards/), not fetched at deploy time.
+      defaultDashboards:
+        enabled: false
+      syncJob:
+        enabled: false
+
+      # k3s has no separate etcd/controller-manager/scheduler to scrape.
+      kubeEtcd:
+        enabled: false
+      kubeControllerManager:
+        enabled: false
+      kubeScheduler:
+        enabled: false
+
+      # --- Grafana -------------------------------------------------------
+      grafana:
+        admin:
+          existingSecret: grafana-admin
+        # VictoriaLogs datasource plugin (the VictoriaMetrics datasource is built in).
+        plugins:
+          - victoriametrics-logs-datasource
+        grafana.ini:
+          server:
+            root_url: https://grafana.internal.lucawahlen.com
+          users:
+            allow_sign_up: false
+        persistence:
+          enabled: true
+          storageClassName: local-path
+          size: 1Gi
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt
+            traefik.ingress.kubernetes.io/router.middlewares: monitoring-redirect-https@kubernetescrd
+          hosts:
+            - grafana.internal.lucawahlen.com
+          tls:
+            - secretName: grafana-tls
+              hosts:
+                - grafana.internal.lucawahlen.com

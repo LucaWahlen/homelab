@@ -1,0 +1,79 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Each dashboard becomes its own ConfigMap (etcd caps objects at 1MiB).
+# The Grafana sidecar provisions any ConfigMap labeled grafana_dashboard=1
+# from the monitoring namespace and reloads it when the content changes.
+configMapGenerator:
+  - name: grafana-dashboard-victoriametrics-single-node
+    files:
+      - victoriametrics-single-node.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: VictoriaMetrics
+  - name: grafana-dashboard-vmagent
+    files:
+      - vmagent.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: VictoriaMetrics
+  - name: grafana-dashboard-victorialogs
+    files:
+      - victorialogs.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: VictoriaLogs
+  - name: grafana-dashboard-vlagent
+    files:
+      - vlagent.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: VictoriaLogs
+  - name: grafana-dashboard-node-exporter-full
+    files:
+      - node-exporter-full.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Kubernetes
+  - name: grafana-dashboard-k8s-views-global
+    files:
+      - k8s-views-global.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Kubernetes
+  - name: grafana-dashboard-k8s-views-namespaces
+    files:
+      - k8s-views-namespaces.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Kubernetes
+  - name: grafana-dashboard-k8s-views-nodes
+    files:
+      - k8s-views-nodes.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Kubernetes
+  - name: grafana-dashboard-k8s-views-pods
+    files:
+      - k8s-views-pods.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Kubernetes
