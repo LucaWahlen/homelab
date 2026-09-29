@@ -65,10 +65,6 @@ resource "proxmox_virtual_environment_vm" "k3s_node" {
       }
     }
 
-    dns {
-      servers = var.dns_servers
-    }
-
     user_account {
       username = var.vm_user
       keys     = [var.ssh_public_key]

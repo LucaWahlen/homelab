@@ -95,12 +95,6 @@ variable "vm_gateway" {
   type        = string
 }
 
-variable "dns_servers" {
-  description = "DNS servers for the VM"
-  type        = list(string)
-  default     = ["1.1.1.1", "8.8.8.8"]
-}
-
 variable "vm_user" {
   description = "Default user account created on the VM via cloud-init"
   type        = string
