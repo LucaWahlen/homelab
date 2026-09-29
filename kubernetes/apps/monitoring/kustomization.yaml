@@ -40,6 +40,11 @@ helmCharts:
         enabled: true
         spec:
           retentionPeriod: 14d
+          # local-path PVs are unquota'd directories on the node disk, so cap the
+          # log store and drop the oldest partitions before the node fills up.
+          # https://docs.victoriametrics.com/victorialogs/#absolute-disk-space-limit
+          extraArgs:
+            retention.maxDiskSpaceUsageBytes: "16GiB"
           storage:
             accessModes:
               - ReadWriteOnce
