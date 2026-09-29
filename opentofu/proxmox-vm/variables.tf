@@ -79,11 +79,12 @@ variable "network_bridge" {
   default     = "vmbr0"
 }
 
-# Pinned so the SLAAC IPv6 derived from this MAC stays stable across
-variable "vm_mac_address" {
-  description = "MAC address for the VM's network interface"
+# Statically assigned so it never depends on the (random) NIC MAC. This is the
+# address adguardhome binds for IPv6 and that the FritzBox points its DNS at.
+variable "vm_ipv6_address" {
+  description = "Static IPv6 address (with prefix length) for the VM"
   type        = string
-  default     = "BC:24:11:4F:27:8E"
+  default     = "2003:fb:8f33:7500::234/64"
 }
 
 variable "vm_ip_address" {

@@ -48,8 +48,7 @@ resource "proxmox_virtual_environment_vm" "k3s_node" {
   }
 
   network_device {
-    bridge      = var.network_bridge
-    mac_address = var.vm_mac_address
+    bridge = var.network_bridge
   }
 
   operating_system {
@@ -63,6 +62,10 @@ resource "proxmox_virtual_environment_vm" "k3s_node" {
       ipv4 {
         address = "${var.vm_ip_address}/${var.vm_subnet_mask}"
         gateway = var.vm_gateway
+      }
+
+      ipv6 {
+        address = var.vm_ipv6_address
       }
     }
 
