@@ -33,7 +33,7 @@ ARG OPENCODE_VERSION=1.18.33
 # renovate: datasource=github-releases depName=yannh/kubeconform extractVersion=^v(?<version>.*)$
 ARG KUBECONFORM_VERSION=0.8.0
 # renovate: datasource=github-releases depName=mikefarah/yq extractVersion=^v(?<version>.*)$
-ARG YQ_VERSION=4.53.6
+ARG YQ_VERSION=4.54.1
 
 RUN set -e; \
     case "$(uname -m)" in \
