@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmsingle-metrics
+  # Headlamp's bundled Prometheus plugin auto-detects any Service with this
+  # label and queries it through the Kubernetes API service proxy.
+  labels:
+    headlamp-prometheus: "true"
+spec:
+  selector:
+    app.kubernetes.io/name: vmsingle
+    app.kubernetes.io/instance: monitoring-victoria-metrics-k8s-stack
+  ports:
+    - name: http
+      port: 8428
+      targetPort: 8428
