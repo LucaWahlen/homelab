@@ -19,17 +19,17 @@ ARG KUBECTL_VERSION=1.37.1
 # renovate: datasource=github-releases depName=helm/helm extractVersion=^v(?<version>.*)$
 ARG HELM_VERSION=4.3.0
 # renovate: datasource=github-releases depName=kubernetes-sigs/kustomize extractVersion=^kustomize/v(?<version>.*)$
-ARG KUSTOMIZE_VERSION=5.8.1
+ARG KUSTOMIZE_VERSION=5.8.2
 # renovate: datasource=github-releases depName=viaduct-ai/kustomize-sops extractVersion=^v(?<version>.*)$
 ARG KSOPS_VERSION=4.5.1
 # renovate: datasource=github-releases depName=getsops/sops extractVersion=^v(?<version>.*)$
 ARG SOPS_VERSION=3.13.3
 # renovate: datasource=github-releases depName=opentofu/opentofu extractVersion=^v(?<version>.*)$
-ARG OPENTOFU_VERSION=1.12.6
+ARG OPENTOFU_VERSION=1.13.0
 # renovate: datasource=github-releases depName=FiloSottile/age extractVersion=^v(?<version>.*)$
 ARG AGE_VERSION=1.3.2
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
-ARG OPENCODE_VERSION=1.18.33
+ARG OPENCODE_VERSION=1.18.34
 # renovate: datasource=github-releases depName=yannh/kubeconform extractVersion=^v(?<version>.*)$
 ARG KUBECONFORM_VERSION=0.8.0
 # renovate: datasource=github-releases depName=mikefarah/yq extractVersion=^v(?<version>.*)$
