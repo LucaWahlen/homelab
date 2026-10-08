@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: halite
+  labels:
+    app: halite
+spec:
+  type: ClusterIP
+  selector:
+    app: halite
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
