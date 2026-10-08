@@ -19,7 +19,7 @@ ARG KUBECTL_VERSION=1.37.1
 # renovate: datasource=github-releases depName=helm/helm extractVersion=^v(?<version>.*)$
 ARG HELM_VERSION=4.3.0
 # renovate: datasource=github-releases depName=kubernetes-sigs/kustomize extractVersion=^kustomize/v(?<version>.*)$
-ARG KUSTOMIZE_VERSION=5.8.2
+ARG KUSTOMIZE_VERSION=5.8.3
 # renovate: datasource=github-releases depName=viaduct-ai/kustomize-sops extractVersion=^v(?<version>.*)$
 ARG KSOPS_VERSION=4.5.1
 # renovate: datasource=github-releases depName=getsops/sops extractVersion=^v(?<version>.*)$
