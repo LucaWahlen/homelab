@@ -38,7 +38,7 @@ spec:
               mountPath: /data
       containers:
         - name: halite
-          image: ghcr.io/lucawahlen/halite:v1.2.2
+          image: ghcr.io/lucawahlen/halite:v1.2.3
           env:
             - name: HALITE_DB_PATH
               value: /data/halite.db
