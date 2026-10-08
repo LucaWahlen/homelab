@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: halite
+  labels:
+    app: halite
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: halite
+  template:
+    metadata:
+      labels:
+        app: halite
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: init-data
+          image: busybox:1.38.0
+          command:
+            - sh
+            - -c
+            - mkdir -p /data/uploads && chown -R 65532:65532 /data
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+              add: ["CHOWN"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: halite
+          image: ghcr.io/lucawahlen/halite:v1.0.1
+          env:
+            - name: HALITE_DB_PATH
+              value: /data/halite.db
+            - name: HALITE_UPLOADS_DIR
+              value: /data/uploads
+            - name: HALITE_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: halite-admin
+                  key: HALITE_ADMIN_PASSWORD
+          ports:
+            - name: http
+              containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: halite
+        - name: tmp
+          emptyDir: {}
