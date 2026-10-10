@@ -2,6 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "customManagers:dockerfileVersions", "helpers:pinGitHubActionDigests"],
   "labels": ["dependencies"],
+  "binarySource": "install",
   "kubernetes": {
     "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"]
   },
@@ -14,18 +15,20 @@
       "depNameTemplate": "k3s-io/k3s",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\+k3s(?<build>\\d+)$"
-    },
-    {
-      "customType": "regex",
-      "description": "Flux version in ansible group vars",
-      "managerFilePatterns": ["/^ansible/inventory/group_vars/all\\.yml$/"],
-      "matchStrings": ["flux_version: \"(?<currentValue>v\\S+)\""],
-      "depNameTemplate": "fluxcd/flux2",
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
     }
   ],
   "packageRules": [
+    {
+      "description": "Flux system manifests are managed by the native flux manager",
+      "matchManagers": ["kubernetes"],
+      "matchFileNames": ["kubernetes/flux-system/gotk-components.yaml"],
+      "enabled": false
+    },
+    {
+      "description": "Keep the Flux CLI pin and the in-cluster components in sync",
+      "matchPackageNames": ["fluxcd/flux2"],
+      "groupName": "flux"
+    },
     {
       "description": "Merge non-major updates once CI passes",
       "matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],

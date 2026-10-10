@@ -2,6 +2,7 @@ extends: default
 
 ignore: |
   kubernetes/**/charts/
+  kubernetes/flux-system/gotk-components.yaml
   **/.terraform/
   *.enc.yaml
 
