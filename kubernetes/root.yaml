@@ -1,31 +1,14 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
 metadata:
   name: root
-  namespace: argocd
+  namespace: flux-system
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/LucaWahlen/homelab.git
-    path: kubernetes/root
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: argocd
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    retry:
-      limit: 5
-      backoff:
-        duration: 15s
-        factor: 2
-        maxDuration: 3m
-  # The ArgoCD controller injects pre-delete finalizers onto child Applications that
-  # contain PreDelete hooks (e.g. the VictoriaMetrics operator chart). Ignore only those
-  # so drift on the git-managed cascade finalizer is still detected.
-  ignoreDifferences:
-    - group: argoproj.io
-      kind: Application
-      jqPathExpressions:
-        - '.metadata.finalizers[] | select(startswith("pre-delete-finalizer.argocd.argoproj.io"))'
+  interval: 10m
+  path: ./kubernetes/root
+  prune: true
+  wait: true
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system

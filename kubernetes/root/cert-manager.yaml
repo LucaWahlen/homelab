@@ -1,25 +1,18 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
 metadata:
   name: cert-manager
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  namespace: flux-system
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/LucaWahlen/homelab.git
-    path: kubernetes/apps/cert-manager
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: cert-manager
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    retry:
-      limit: 5
-      backoff:
-        duration: 15s
-        factor: 2
-        maxDuration: 3m
+  interval: 10m
+  path: ./kubernetes/apps/cert-manager
+  prune: true
+  wait: true
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

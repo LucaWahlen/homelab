@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Seals the tunnel token from tofu state into Git; ArgoCD syncs from the remote, so it is pushed.
+# Seals the tunnel token from tofu state into Git; Flux syncs from the remote, so it is pushed.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -14,7 +14,7 @@ fi
 
 branch=$(git branch --show-current)
 if [[ "$branch" != main ]]; then
-    echo "ArgoCD syncs from main, but the current branch is '${branch:-detached}'" >&2
+    echo "Flux syncs from main, but the current branch is '${branch:-detached}'" >&2
     exit 1
 fi
 

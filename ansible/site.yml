@@ -21,9 +21,9 @@
     - node
     - k3s
 
-- name: Bootstrap ArgoCD
+- name: Bootstrap Flux
   hosts: localhost
   connection: local
   gather_facts: false
   roles:
-    - argocd
+    - flux

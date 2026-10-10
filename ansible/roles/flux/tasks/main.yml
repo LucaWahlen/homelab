@@ -1,0 +1,91 @@
+---
+# k3s ships Traefik as an async HelmChart, so its CRDs may not exist yet right after node Ready.
+- name: Wait for the Traefik Middleware CRD
+  ansible.builtin.command: kubectl wait --for=condition=Established --timeout=120s crd/middlewares.traefik.io
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  register: flux_traefik_crd
+  changed_when: false
+  retries: 12
+  delay: 10
+  until: flux_traefik_crd.rc == 0
+
+# Server-side apply: the Flux CRDs exceed the client-side last-applied annotation limit.
+- name: Install Flux
+  ansible.builtin.command: >-
+    kubectl apply --server-side --force-conflicts
+    --filename https://github.com/fluxcd/flux2/releases/download/{{ flux_version }}/install.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  changed_when: true
+
+- name: Wait for the Flux source controller
+  ansible.builtin.command: kubectl --namespace flux-system rollout status deployment/source-controller --timeout=300s
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  changed_when: false
+
+# kustomize-controller expects age keys to be stored in a file ending in .agekey.
+- name: Push the age private key to the cluster
+  ansible.builtin.shell: |
+    set -o pipefail
+    kubectl --namespace flux-system create secret generic sops-age \
+      --from-file=age.agekey={{ sops_age_key_file }} \
+      --dry-run=client -o yaml | kubectl apply -f -
+  args:
+    executable: /bin/bash
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  no_log: true
+  changed_when: true
+
+- name: Apply the Flux GitRepository
+  ansible.builtin.shell: |
+    set -o pipefail
+    kustomize build {{ repo_root }}/kubernetes/apps/flux | kubectl apply -f -
+  args:
+    executable: /bin/bash
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  changed_when: true
+
+- name: Apply the root Kustomization
+  ansible.builtin.command: kubectl apply --filename {{ repo_root }}/kubernetes/root.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  register: flux_root_apply
+  changed_when: "'unchanged' not in flux_root_apply.stdout"
+
+- name: Wait for the GitRepository to be Ready
+  ansible.builtin.command: >-
+    kubectl --namespace flux-system get gitrepository flux-system
+    -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  register: flux_gitrepository
+  changed_when: false
+  retries: 30
+  delay: 10
+  until: flux_gitrepository.stdout == 'True'
+
+- name: Wait for Flux Kustomizations to be Ready
+  ansible.builtin.command: >-
+    kubectl --namespace flux-system get kustomization {{ item }}
+    -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  register: flux_kustomization
+  changed_when: false
+  retries: 60
+  delay: 10
+  until: flux_kustomization.stdout == 'True'
+  loop:
+    - root
+    - flux
+    - adguardhome
+    - cert-manager
+    - cloudflared
+    - halite
+    - headlamp
+    - monitoring
+    - shale

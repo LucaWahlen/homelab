@@ -8,5 +8,4 @@ resources:
   - service-web.yaml
   - ingress.yaml
   - middleware.yaml
-generators:
-  - ksops.yaml
+  - config.enc.yaml

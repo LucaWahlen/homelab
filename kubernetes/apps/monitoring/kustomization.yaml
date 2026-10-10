@@ -8,10 +8,8 @@ resources:
   - middleware.yaml
   - headlamp-service.yaml
   - dashboards
-
-# Grafana admin credentials, encrypted with SOPS/age (see ksops.yaml).
-generators:
-  - ksops.yaml
+  # Grafana admin credentials, encrypted with SOPS/age and decrypted by Flux.
+  - grafana-admin.enc.yaml
 
 helmCharts:
   - name: victoria-metrics-k8s-stack
@@ -21,9 +19,6 @@ helmCharts:
     namespace: monitoring
     includeCRDs: true
     valuesInline:
-      # ArgoCD renders this release through kustomize/Helm, not the Helm source type.
-      argocdReleaseOverride: monitoring
-
       # --- Metrics -------------------------------------------------------
       vmsingle:
         spec:

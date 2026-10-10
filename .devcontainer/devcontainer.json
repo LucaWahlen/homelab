@@ -31,5 +31,5 @@
     }
   },
   "remoteUser": "vscode",
-  "postCreateCommand": "tofu version && ansible --version && opencode --version && make --version | head -1"
+  "postCreateCommand": "tofu version && ansible --version && flux --version && opencode --version && make --version | head -1"
 }
