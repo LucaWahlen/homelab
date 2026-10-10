@@ -35,16 +35,19 @@ spec:
                 secretKeyRef:
                   name: cloudflared-credentials
                   key: TUNNEL_TOKEN
+          ports:
+            - name: metrics
+              containerPort: 2000
           livenessProbe:
             httpGet:
               path: /ready
-              port: 2000
+              port: metrics
             failureThreshold: 3
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /ready
-              port: 2000
+              port: metrics
             periodSeconds: 5
           securityContext:
             allowPrivilegeEscalation: false
