@@ -84,6 +84,7 @@
     - flux
     - adguardhome
     - cert-manager
+    - cert-manager-issuers
     - cloudflared
     - halite
     - headlamp
