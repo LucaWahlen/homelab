@@ -28,11 +28,8 @@ kubeconform -strict -summary \
 
 # Advisory scanners: they flag upstream chart defaults (resource requests,
 # hostPath, securityContext) as well as authored mistakes, so they report but do
-# not fail. Promote any of them by dropping `|| true` (trivy: add --exit-code 1,
-# kubescape: add --fail-threshold <n>).
+# not fail. Promote either by dropping `|| true` (trivy: add --exit-code 1).
 echo "--- kube-linter ---"
 kube-linter lint "$rendered" || true
 echo "--- trivy config ---"
 trivy config --quiet --severity HIGH,CRITICAL "$rendered" || true
-echo "--- kubescape ---"
-kubescape scan "$rendered" --submit=false || true
