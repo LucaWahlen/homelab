@@ -1,0 +1,101 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: monitoring
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: victoria-metrics-k8s-stack
+      version: "0.95.2"
+      sourceRef:
+        kind: HelmRepository
+        name: victoriametrics
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    # --- Metrics -------------------------------------------------------
+    vmsingle:
+      spec:
+        retentionPeriod: 14d
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+
+    # --- Logs ----------------------------------------------------------
+    vlsingle:
+      enabled: true
+      spec:
+        retentionPeriod: 14d
+        # local-path PVs are unquota'd directories on the node disk, so cap the
+        # log store and drop the oldest partitions before the node fills up.
+        # https://docs.victoriametrics.com/victorialogs/#absolute-disk-space-limit
+        extraArgs:
+          retention.maxDiskSpaceUsageBytes: "16GiB"
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+    vlagent:
+      enabled: true
+      spec:
+        k8sCollector:
+          enabled: true
+
+    # --- Alerting disabled for now ------------------------------------
+    alertmanager:
+      enabled: false
+    vmalert:
+      enabled: false
+    defaultRules:
+      enabled: false
+
+    # Dashboards are vendored in this repo (dashboards/), not fetched at deploy time.
+    defaultDashboards:
+      enabled: false
+    syncJob:
+      enabled: false
+
+    # k3s has no separate etcd/controller-manager/scheduler to scrape.
+    kubeEtcd:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+
+    # --- Grafana -------------------------------------------------------
+    grafana:
+      admin:
+        existingSecret: grafana-admin
+      # VictoriaLogs datasource plugin (the VictoriaMetrics datasource is built in).
+      plugins:
+        - victoriametrics-logs-datasource
+      grafana.ini:
+        server:
+          root_url: https://grafana.internal.lucawahlen.com
+        users:
+          allow_sign_up: false
+      persistence:
+        enabled: true
+        storageClassName: local-path
+        size: 1Gi
+      ingress:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+          traefik.ingress.kubernetes.io/router.middlewares: monitoring-redirect-https@kubernetescrd
+        hosts:
+          - grafana.internal.lucawahlen.com
+        tls:
+          - secretName: grafana-tls
+            hosts:
+              - grafana.internal.lucawahlen.com
