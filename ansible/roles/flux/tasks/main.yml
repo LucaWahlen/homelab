@@ -1,5 +1,4 @@
 ---
-# k3s ships Traefik as an async HelmChart, so its CRDs may not exist yet right after node Ready.
 - name: Wait for the Traefik Middleware CRD
   ansible.builtin.command: kubectl wait --for=condition=Established --timeout=120s crd/middlewares.traefik.io
   environment:
@@ -10,7 +9,6 @@
   delay: 10
   until: flux_traefik_crd.rc == 0
 
-# Server-side apply: the Flux CRDs exceed the client-side last-applied annotation limit.
 - name: Install Flux
   ansible.builtin.command: >-
     kubectl apply --server-side --force-conflicts
@@ -24,8 +22,7 @@
   environment:
     KUBECONFIG: "{{ kubeconfig }}"
   changed_when: false
-
-# kustomize-controller expects age keys to be stored in a file ending in .agekey.
+  
 - name: Push the age private key to the cluster
   ansible.builtin.shell: |
     set -o pipefail

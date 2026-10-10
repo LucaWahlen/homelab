@@ -16,8 +16,7 @@ k8s_version=${k8s_version%%+*}
 # No published schema exists for CRDs themselves.
 # VLAgent's catalog schema lags the operator (missing spec.k8sCollector);
 # it is chart-owned rather than authored here, so skip it.
-# Flux CRDs are validated by the flux CLI, not kubeconform.
-skip_kinds=CustomResourceDefinition,VLAgent,Kustomization,GitRepository,HelmRelease,HelmRepository
+skip_kinds=CustomResourceDefinition,VLAgent
 
 kubeconform=(
     kubeconform -strict -summary
