@@ -34,6 +34,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Root because the checkout belongs to the runner user, not the image's vscode user.
+      # Root because the checkout belongs to the runner user, not the image's
+      # vscode user; mark the repo safe so git (lefthook, gitleaks) accepts it.
       - name: Lint
-        run: docker run --rm --user root --volume "$PWD":/work --workdir /work devcontainer make lint
+        run: |
+          docker run --rm --user root --volume "$PWD":/work --workdir /work devcontainer \
+            sh -c "git config --global --add safe.directory /work && make lint"
