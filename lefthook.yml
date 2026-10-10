@@ -1,0 +1,40 @@
+# Single source of truth for linting. Git hooks run these locally; CI enforces
+# the same config with `lefthook run <hook> --all-files --force`.
+min_version: 2.0.0
+
+pre-commit:
+  parallel: true
+  commands:
+    yamllint:
+      run: yamllint --strict .
+    shellcheck:
+      run: shellcheck {staged_files}
+      glob: "*.sh"
+    tofu:
+      run: |
+        set -e
+        tofu fmt -check -recursive opentofu
+        for s in opentofu/*/; do
+          tofu -chdir="$s" init -backend=false -input=false -lockfile=readonly >/dev/null
+          tofu -chdir="$s" validate
+        done
+      glob: "opentofu/**"
+    sops:
+      # Fails if a secret under kubernetes/ could reach Git unencrypted.
+      run: scripts/check-sops.sh
+      glob: "kubernetes/**"
+
+pre-push:
+  parallel: true
+  commands:
+    gitleaks:
+      run: gitleaks git --redact --no-banner
+    ansible-lint:
+      root: ansible
+      run: ansible-lint
+      glob: "ansible/**"
+    kubernetes:
+      # Renders the Flux graph offline (flate), schema-checks with kubeconform,
+      # then reports kube-linter/trivy/kubescape findings.
+      run: scripts/kubernetes-lint.sh
+      glob: "kubernetes/**"
