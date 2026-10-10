@@ -4,11 +4,12 @@ metadata:
   name: root
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 60m
+  retryInterval: 5m
   path: ./kubernetes/root
   prune: false
   wait: true
-  timeout: 5m
+  timeout: 15m
   sourceRef:
     kind: GitRepository
     name: flux-system

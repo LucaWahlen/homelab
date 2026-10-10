@@ -4,11 +4,11 @@ metadata:
   name: monitoring
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 60m
+  retryInterval: 5m
   path: ./kubernetes/apps/monitoring
   prune: true
-  wait: true
-  timeout: 10m
+  wait: false
   sourceRef:
     kind: GitRepository
     name: flux-system

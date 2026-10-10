@@ -4,11 +4,11 @@ metadata:
   name: halite
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 60m
+  retryInterval: 5m
   path: ./kubernetes/apps/halite
   prune: true
-  wait: true
-  timeout: 5m
+  wait: false
   sourceRef:
     kind: GitRepository
     name: flux-system

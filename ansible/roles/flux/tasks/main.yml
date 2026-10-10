@@ -68,25 +68,28 @@
   delay: 10
   until: flux_gitrepository.stdout == 'True'
 
-- name: Wait for Flux Kustomizations to be Ready
+- name: Wait for the root Kustomization to be Ready
   ansible.builtin.command: >-
-    kubectl --namespace flux-system get kustomization {{ item }}
+    kubectl --namespace flux-system get kustomization root
     -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
   environment:
     KUBECONFIG: "{{ kubeconfig }}"
-  register: flux_kustomization
+  register: flux_root_ready
   changed_when: false
-  retries: 60
+  retries: 100
   delay: 10
-  until: flux_kustomization.stdout == 'True'
-  loop:
-    - root
-    - flux
-    - adguardhome
-    - cert-manager
-    - cert-manager-issuers
-    - cloudflared
-    - halite
-    - headlamp
-    - monitoring
-    - shale
+  until: flux_root_ready.stdout == 'True'
+  ignore_errors: true
+
+- name: Show Flux Kustomization status
+  ansible.builtin.command: kubectl --namespace flux-system get kustomizations
+  environment:
+    KUBECONFIG: "{{ kubeconfig }}"
+  register: flux_status
+  changed_when: false
+  when: flux_root_ready is failed
+
+- name: Fail if the root Kustomization did not become Ready
+  ansible.builtin.fail:
+    msg: "{{ flux_status.stdout_lines }}"
+  when: flux_root_ready is failed
