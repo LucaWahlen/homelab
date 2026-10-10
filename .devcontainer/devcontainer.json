@@ -14,6 +14,7 @@
     "source=${localEnv:HOME}/.agents/skills,target=/home/vscode/.agents/skills,type=bind"
   ],
   "remoteEnv": {
+    "KUBECONFIG": "${containerWorkspaceFolder}/kubeconfig",
     "TF_VAR_proxmox_endpoint": "${localEnv:TF_VAR_proxmox_endpoint}",
     "TF_VAR_proxmox_api_token": "${localEnv:TF_VAR_proxmox_api_token}",
     "TF_VAR_proxmox_node": "${localEnv:TF_VAR_proxmox_node}",
