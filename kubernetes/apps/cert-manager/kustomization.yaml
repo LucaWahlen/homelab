@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - clusterissuer.yaml
+  - secret.enc.yaml
 helmCharts:
   - name: cert-manager
     repo: https://charts.jetstack.io
@@ -21,5 +22,3 @@ helmCharts:
         requests:
           cpu: 10m
           memory: 32Mi
-generators:
-  - ksops.yaml

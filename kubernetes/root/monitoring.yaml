@@ -1,30 +1,20 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
 metadata:
   name: monitoring
-  namespace: argocd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
+  namespace: flux-system
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/LucaWahlen/homelab.git
-    path: kubernetes/apps/monitoring
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: monitoring
-  syncPolicy:
-    syncOptions:
-      # The VictoriaMetrics operator CRDs are large; client-side apply overflows the annotation limit.
-      - ServerSideApply=true
-      # Custom resources are rendered before their CRDs exist on the first sync.
-      - SkipDryRunOnMissingResource=true
-    automated:
-      prune: true
-      selfHeal: true
-    retry:
-      limit: 5
-      backoff:
-        duration: 15s
-        factor: 2
-        maxDuration: 3m
+  interval: 10m
+  path: ./kubernetes/apps/monitoring
+  prune: true
+  wait: true
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: cert-manager
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

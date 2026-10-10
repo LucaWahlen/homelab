@@ -16,7 +16,8 @@ k8s_version=${k8s_version%%+*}
 # No published schema exists for CRDs themselves.
 # VLAgent's catalog schema lags the operator (missing spec.k8sCollector);
 # it is chart-owned rather than authored here, so skip it.
-skip_kinds=CustomResourceDefinition,VLAgent
+# Flux CRDs are validated by the flux CLI, not kubeconform.
+skip_kinds=CustomResourceDefinition,VLAgent,Kustomization,GitRepository
 
 kubeconform=(
     kubeconform -strict -summary
@@ -30,7 +31,7 @@ kubeconform=(
 
 for dir in "$work"/kubernetes/apps/*; do
     echo "--- ${dir#"$work"/}"
-    # ksops generators need the age key, which CI does not have.
-    yq -i 'del(.generators)' "$dir/kustomization.yaml"
-    kustomize build --enable-helm "$dir" | "${kubeconform[@]}" -
+    # Flux decrypts the *.enc.yaml secrets at reconcile time; strip the SOPS
+    # metadata so the rendered Secret validates as a plain Kubernetes object.
+    kustomize build --enable-helm "$dir" | yq 'del(.sops)' | "${kubeconform[@]}" -
 done
