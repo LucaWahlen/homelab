@@ -4,7 +4,8 @@ metadata:
   name: cloudflared
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 60m
+  retryInterval: 5m
   path: ./kubernetes/apps/cloudflared
   prune: true
   wait: true

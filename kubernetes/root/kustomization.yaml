@@ -4,7 +4,6 @@ resources:
   - flux.yaml
   - adguardhome.yaml
   - cert-manager.yaml
-  - cert-manager-issuers.yaml
   - cloudflared.yaml
   - halite.yaml
   - headlamp.yaml
