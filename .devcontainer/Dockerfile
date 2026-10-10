@@ -42,8 +42,6 @@ ARG LEFTHOOK_VERSION=2.2.1
 ARG KUBE_LINTER_VERSION=0.8.3
 # renovate: datasource=github-releases depName=aquasecurity/trivy extractVersion=^v(?<version>.*)$
 ARG TRIVY_VERSION=0.75.0
-# renovate: datasource=github-releases depName=kubescape/kubescape extractVersion=^v(?<version>.*)$
-ARG KUBESCAPE_VERSION=4.0.15
 # renovate: datasource=github-releases depName=gitleaks/gitleaks extractVersion=^v(?<version>.*)$
 ARG GITLEAKS_VERSION=8.30.1
 
@@ -69,6 +67,5 @@ RUN set -e; \
     curl -fsSL "https://github.com/evilmartians/lefthook/releases/download/v${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION}_Linux_${lh}.gz" | gunzip > /usr/local/bin/lefthook; \
     curl -fsSL "https://github.com/stackrox/kube-linter/releases/download/v${KUBE_LINTER_VERSION}/kube-linter-linux${kl}.tar.gz" | tar -xz -C /usr/local/bin kube-linter; \
     curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${tv}.tar.gz" | tar -xz -C /usr/local/bin trivy; \
-    curl -fsSL "https://github.com/kubescape/kubescape/releases/download/v${KUBESCAPE_VERSION}/kubescape_${KUBESCAPE_VERSION}_linux_${k}" -o /usr/local/bin/kubescape; \
     curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_${oc}.tar.gz" | tar -xz -C /usr/local/bin gitleaks; \
-    chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/kubescape /usr/local/bin/gitleaks
+    chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks

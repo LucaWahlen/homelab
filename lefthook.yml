@@ -35,6 +35,6 @@ pre-push:
       glob: "ansible/**"
     kubernetes:
       # Renders the Flux graph offline (flate), schema-checks with kubeconform,
-      # then reports kube-linter/trivy/kubescape findings.
+      # then reports kube-linter/trivy findings.
       run: scripts/kubernetes-lint.sh
       glob: "kubernetes/**"

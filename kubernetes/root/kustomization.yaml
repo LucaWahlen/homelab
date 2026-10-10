@@ -8,3 +8,4 @@ resources:
   - headlamp.yaml
   - monitoring.yaml
   - shale.yaml
+  - trivy-operator.yaml

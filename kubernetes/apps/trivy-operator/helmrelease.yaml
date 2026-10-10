@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trivy-operator
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: trivy-operator
+      version: "0.37.0"
+      sourceRef:
+        kind: HelmRepository
+        name: aquasecurity
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    operator:
+      scanJobsConcurrentLimit: 2
+      builtInTrivyServer: true
+    trivy:
+      storageClassEnabled: true
+      storageClassName: local-path
+      storageSize: 5Gi
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
