@@ -1,53 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: headlamp
 resources:
   - namespace.yaml
   - middleware.yaml
-helmCharts:
-  - name: headlamp
-    repo: https://kubernetes-sigs.github.io/headlamp/
-    version: 0.45.0
-    releaseName: headlamp
-    namespace: headlamp
-    valuesInline:
-      config:
-        # Authenticate every visitor as the pod's cluster-admin service account.
-        unsafeUseServiceAccountToken: true
-        # Reload plugins when the plugin manager sidecar installs/updates them.
-        watchPlugins: true
-        oidc:
-          secret:
-            create: false
-      # Installs plugins from Artifact Hub at startup.
-      pluginsManager:
-        enabled: true
-        version: "0.1.1"
-        configContent: |
-          plugins:
-            - name: cert-manager
-              source: https://artifacthub.io/packages/headlamp/headlamp-plugins/headlamp_cert-manager
-              version: "0.1.1"
-            - name: flux
-              source: https://artifacthub.io/packages/headlamp/headlamp-plugins/headlamp_flux
-              version: "0.7.0"
-      ingress:
-        enabled: true
-        ingressClassName: traefik
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt
-          traefik.ingress.kubernetes.io/router.middlewares: headlamp-redirect-https@kubernetescrd
-        hosts:
-          - host: headlamp.internal.lucawahlen.com
-            paths:
-              - path: /
-                type: Prefix
-        tls:
-          - secretName: headlamp-tls
-            hosts:
-              - headlamp.internal.lucawahlen.com
-      resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
-        limits:
-          memory: 256Mi
+  - helmrepository.yaml
+  - helmrelease.yaml
