@@ -29,9 +29,10 @@ kubeconform=(
 
 "${kubeconform[@]}" kubernetes/root.yaml kubernetes/root
 
-for dir in "$work"/kubernetes/apps/*; do
+# Every directory with a kustomization, including nested ones (e.g. cert-manager/issuers).
+while IFS= read -r dir; do
     echo "--- ${dir#"$work"/}"
     # Flux decrypts the *.enc.yaml secrets at reconcile time; strip the SOPS
     # metadata so the rendered Secret validates as a plain Kubernetes object.
     kustomize build --enable-helm "$dir" | yq 'del(.sops)' | "${kubeconform[@]}" -
-done
+done < <(find "$work/kubernetes/apps" -name kustomization.yaml -printf '%h\n' | sort)
