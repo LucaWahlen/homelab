@@ -36,6 +36,12 @@ spec:
           - name: flux
             source: https://artifacthub.io/packages/headlamp/headlamp-plugins/headlamp_flux
             version: "0.7.0"
+          - name: kubescape
+            source: https://artifacthub.io/packages/headlamp/kubescape-headlamp-plugin/headlamp_kubescape
+            version: "0.11.2"
+          - name: trivy
+            source: https://artifacthub.io/packages/headlamp/headlamp-trivy/headlamp_trivy
+            version: "0.3.2"
     ingress:
       enabled: true
       ingressClassName: traefik
