@@ -7,7 +7,7 @@ spec:
   interval: 60m
   retryInterval: 5m
   path: ./kubernetes/apps/shale
-  prune: false
+  prune: true
   wait: false
   sourceRef:
     kind: GitRepository
