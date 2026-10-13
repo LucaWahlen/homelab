@@ -87,6 +87,8 @@ spec:
         enabled: true
         storageClassName: local-path
         size: 1Gi
+        annotations:
+          helm.sh/resource-policy: keep
       ingress:
         enabled: true
         ingressClassName: traefik
