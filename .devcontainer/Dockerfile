@@ -41,7 +41,7 @@ ARG LEFTHOOK_VERSION=2.2.2
 # renovate: datasource=github-releases depName=stackrox/kube-linter extractVersion=^v(?<version>.*)$
 ARG KUBE_LINTER_VERSION=0.8.3
 # renovate: datasource=github-releases depName=aquasecurity/trivy extractVersion=^v(?<version>.*)$
-ARG TRIVY_VERSION=0.75.0
+ARG TRIVY_VERSION=0.76.0
 # renovate: datasource=github-releases depName=gitleaks/gitleaks extractVersion=^v(?<version>.*)$
 ARG GITLEAKS_VERSION=8.30.1
 
