@@ -112,6 +112,8 @@ spec:
                 metricNamePrefix: kube
                 labelsFromPath:
                   backup: [metadata, labels, "velero.io/backup-name"]
+                  app_namespace: [spec, pod, namespace]
+                  pod: [spec, pod, name]
                   volume: [spec, volume]
                 metrics:
                   - name: velero_podvolumebackup_total_bytes
