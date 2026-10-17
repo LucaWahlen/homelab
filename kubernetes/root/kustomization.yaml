@@ -4,6 +4,7 @@ resources:
   - adguardhome.yaml
   - cert-manager.yaml
   - cloudflared.yaml
+  - cloudflare-exporter.yaml
   - halite.yaml
   - headlamp.yaml
   - monitoring.yaml
