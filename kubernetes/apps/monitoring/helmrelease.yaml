@@ -96,7 +96,7 @@ spec:
                 labelsFromPath:
                   backup: [metadata, name]
                   namespace: [metadata, namespace]
-                  schedule: [spec, scheduleName]
+                  schedule: [metadata, labels, "velero.io/schedule-name"]
                   storage_location: [spec, storageLocation]
                   phase: [status, phase]
                 metrics:
