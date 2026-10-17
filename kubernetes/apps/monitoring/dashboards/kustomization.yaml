@@ -4,11 +4,17 @@ kind: Kustomization
 # Each dashboard becomes its own ConfigMap (etcd caps objects at 1MiB).
 # The Grafana sidecar provisions any ConfigMap labeled grafana_dashboard=1
 # from the monitoring namespace and reloads it when the content changes.
+#
+# disableNameSuffixHash keeps the ConfigMap name stable so editing a dashboard
+# updates it in place. Without it, kustomize renames the ConfigMap on every
+# change, and the sidecar briefly deletes then rewrites the provisioned file
+# (the dashboard disappears for a few seconds).
 configMapGenerator:
   - name: grafana-dashboard-victoriametrics-single-node
     files:
       - victoriametrics-single-node.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -17,6 +23,7 @@ configMapGenerator:
     files:
       - vmagent.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -25,6 +32,7 @@ configMapGenerator:
     files:
       - victorialogs.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -33,6 +41,7 @@ configMapGenerator:
     files:
       - vlagent.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -41,6 +50,7 @@ configMapGenerator:
     files:
       - node-exporter-full.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -49,6 +59,7 @@ configMapGenerator:
     files:
       - k8s-views-global.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -57,6 +68,7 @@ configMapGenerator:
     files:
       - k8s-views-namespaces.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -65,6 +77,7 @@ configMapGenerator:
     files:
       - k8s-views-nodes.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -73,6 +86,7 @@ configMapGenerator:
     files:
       - k8s-views-pods.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -81,6 +95,7 @@ configMapGenerator:
     files:
       - velero.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
@@ -89,6 +104,7 @@ configMapGenerator:
     files:
       - cloudflare-r2.json
     options:
+      disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
       annotations:
