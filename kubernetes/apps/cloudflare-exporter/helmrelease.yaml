@@ -13,6 +13,10 @@ spec:
         kind: HelmRepository
         name: cloudflare-exporter
   values:
+    image:
+      # Chart 0.2.3 pins appVersion 0.0.16, which predates R2 support. 0.2.3 is
+      # the first image exposing the cloudflare_r2_* metrics.
+      tag: "0.2.3"
     # CF_API_TOKEN (Account Analytics:Read) and CF_ACCOUNTS are injected from
     # the SOPS-managed secret; edit it with sops to set the real values.
     secretRef: cloudflare-exporter
