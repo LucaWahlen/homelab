@@ -395,7 +395,7 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Actual R2 storage reported by Cloudflare. Thresholds mark the 10 GiB free tier.",
+      "description": "Total retained volume-backup bytes per backup storage location (backend-agnostic).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -408,14 +408,6 @@
               {
                 "color": "blue",
                 "value": null
-              },
-              {
-                "color": "orange",
-                "value": 8589934592
-              },
-              {
-                "color": "red",
-                "value": 10737418240
               }
             ]
           },
@@ -451,14 +443,14 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "cloudflare_r2_storage_total_bytes",
+          "expr": "sum by (storage_location) (kube_velero_podvolumebackup_total_bytes)",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "{{storage_location}}",
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "R2 storage (Cloudflare, 10 GiB free)",
+      "title": "Storage per location",
       "type": "stat"
     },
     {
