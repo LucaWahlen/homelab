@@ -14,11 +14,11 @@ spec:
         name: cloudflare-exporter
   values:
     image:
-      # The chart's appVersion (0.0.16) predates R2 support. 0.2.3 added R2 but
-      # its legacy client calls VerifyAPIToken() at startup, which 401s for
-      # account-scoped API tokens. `latest` (master) uses cloudflare-go/v4,
-      # supports account-scoped tokens and exposes the cloudflare_r2_* metrics.
-      tag: latest
+      # Chart's appVersion (0.0.16) has no R2 support; 0.2.3 is the R2-capable
+      # release. NOTE: it calls VerifyAPIToken() at startup, which 401s for
+      # *account-owned* tokens - CF_API_TOKEN must therefore be a user-owned
+      # token (My Profile -> API Tokens), not an Account API token.
+      tag: "0.2.3"
     # CF_API_TOKEN (Account Analytics:Read) and CF_ACCOUNTS are injected from
     # the SOPS-managed secret; edit it with sops to set the real values.
     secretRef: cloudflare-exporter
