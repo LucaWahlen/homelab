@@ -636,7 +636,7 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "kube_velero_backup_items_backed_up",
+          "expr": "sum by (backup) (kube_velero_backup_items_backed_up)",
           "format": "table",
           "instant": true,
           "range": false,
@@ -839,7 +839,7 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "kube_velero_podvolumebackup_total_bytes",
+          "expr": "sum by (backup, volume) (kube_velero_podvolumebackup_total_bytes)",
           "format": "table",
           "instant": true,
           "range": false,
@@ -975,7 +975,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
