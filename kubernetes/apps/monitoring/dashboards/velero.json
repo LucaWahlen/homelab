@@ -37,6 +37,12 @@
     },
     {
       "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "timeseries",
       "name": "Time series",
       "version": ""
@@ -64,7 +70,7 @@
       }
     ]
   },
-  "description": "Velero backups to Cloudflare R2: run health, outcomes and storage.",
+  "description": "Velero operations to R2: protection, retained-backup outcomes, per-app and per-storage-location detail.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -89,7 +95,7 @@
       },
       "id": 100,
       "panels": [],
-      "title": "Backups",
+      "title": "Protection",
       "type": "row"
     },
     {
@@ -97,20 +103,39 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Current number of backups stored in R2.",
+      "description": "All selected backup storage locations must be Available.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [],
-          "min": 0,
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "red",
+                  "index": 0,
+                  "text": "Unavailable"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "Available"
+                }
+              },
+              "type": "value"
+            }
+          ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "red",
                 "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
               }
             ]
           }
@@ -125,7 +150,7 @@
       },
       "id": 1,
       "options": {
-        "colorMode": "value",
+        "colorMode": "background",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
@@ -145,14 +170,14 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "velero_backup_total",
+          "expr": "min(velero_backup_location_status_gauge{backup_location_name=~\"$location\"})",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "Backups stored",
+      "title": "Storage location health",
       "type": "stat"
     },
     {
@@ -160,7 +185,7 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Seconds since the last successful scheduled backup. The schedule runs daily.",
+      "description": "Seconds since each selected app last backed up successfully.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -216,9 +241,9 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "time() - max(velero_backup_last_successful_timestamp)",
+          "expr": "time() - max by (schedule) (velero_backup_last_successful_timestamp{schedule=~\"$app\"})",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "{{schedule}}",
           "range": false,
           "refId": "A"
         }
@@ -231,7 +256,7 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Status of the most recent scheduled backup.",
+      "description": "Status of the most recent run per schedule.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -298,9 +323,9 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "max(velero_backup_last_status)",
+          "expr": "max by (schedule) (velero_backup_last_status{schedule=~\"$app\"})",
           "instant": true,
-          "legendFormat": "__auto",
+          "legendFormat": "{{schedule}}",
           "range": false,
           "refId": "A"
         }
@@ -313,39 +338,20 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Whether Velero can read and write the R2 backup storage location.",
+      "description": "Number of backups currently retained (upstream).",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "color": "red",
-                  "index": 0,
-                  "text": "Unavailable"
-                },
-                "1": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "Available"
-                }
-              },
-              "type": "value"
-            }
-          ],
+          "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
+                "color": "blue",
                 "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
               }
             ]
           }
@@ -360,7 +366,7 @@
       },
       "id": 4,
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
@@ -380,51 +386,46 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "max(velero_backup_location_status_gauge)",
+          "expr": "sum(kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\"})",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "Backup location",
+      "title": "Retained backups",
       "type": "stat"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 6
-      },
-      "id": 101,
-      "panels": [],
-      "title": "Backup outcomes",
-      "type": "row"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Total number of successful backups since Velero was installed.",
+      "description": "R2 logical usage against the 10 GiB free tier. Only the default R2 location is budgeted here.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
           "mappings": [],
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
+              },
+              {
+                "color": "orange",
+                "value": 8589934592
+              },
+              {
+                "color": "red",
+                "value": 10737418240
               }
             ]
-          }
+          },
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -432,7 +433,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 7
+        "y": 6
       },
       "id": 5,
       "options": {
@@ -456,14 +457,14 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "sum(velero_backup_success_total)",
+          "expr": "sum(kube_velero_podvolumebackup_total_bytes{storage_location=\"default\"})",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "Successful",
+      "title": "R2 usage (10 GiB free)",
       "type": "stat"
     },
     {
@@ -471,27 +472,23 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Total number of failed backups since Velero was installed.",
+      "description": "Logical size of all retained backups for the selected apps across the selected locations.",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
           "mappings": [],
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
-          }
+          },
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -499,7 +496,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 7
+        "y": 6
       },
       "id": 6,
       "options": {
@@ -523,14 +520,14 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "sum(velero_backup_failure_total)",
+          "expr": "sum(kube_velero_podvolumebackup_total_bytes{app_namespace=~\"$app\", storage_location=~\"$location\"})",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "Failed",
+      "title": "Storage used (filtered)",
       "type": "stat"
     },
     {
@@ -538,7 +535,162 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Total number of partially failed backups since Velero was installed.",
+      "description": "Successful backups taken per day, per schedule.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum by (schedule) (increase(velero_backup_success_total{schedule=~\"$app\"}[1d]))",
+          "legendFormat": "{{schedule}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Backups per day by app",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 101,
+      "panels": [],
+      "title": "Outcomes (retained upstream only)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$DS_PROMETHEUS"
+      },
+      "description": "Retained backups that completed successfully.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 12
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\", phase=\"Completed\"})",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Completed",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$DS_PROMETHEUS"
+      },
+      "description": "Retained backups that partially failed.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -565,10 +717,10 @@
       "gridPos": {
         "h": 5,
         "w": 6,
-        "x": 12,
-        "y": 7
+        "x": 6,
+        "y": 12
       },
-      "id": 7,
+      "id": 9,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -590,7 +742,7 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "sum(velero_backup_partial_failure_total)",
+          "expr": "sum(kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\", phase=\"PartiallyFailed\"})",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
@@ -605,7 +757,74 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Failed backups as a percentage of all backup attempts (since Velero was installed).",
+      "description": "Retained backups that failed.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 12
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum(kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\", phase=\"Failed\"})",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Failed",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$DS_PROMETHEUS"
+      },
+      "description": "Failed or partially failed backups as a percentage of retained backups.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -639,9 +858,9 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 7
+        "y": 12
       },
-      "id": 8,
+      "id": 11,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -663,7 +882,7 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "100 * sum(velero_backup_failure_total) / clamp_min(sum(velero_backup_attempt_total), 1)",
+          "expr": "100 * sum(kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\", phase=~\"Failed|PartiallyFailed\"}) / clamp_min(sum(kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\"}), 1)",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
@@ -679,11 +898,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 17
       },
       "id": 102,
       "panels": [],
-      "title": "Storage",
+      "title": "Storage locations",
       "type": "row"
     },
     {
@@ -691,54 +910,84 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Logical size of all retained backups (every restore point, all app volumes).",
+      "description": "Health and usage per backup storage location.",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "text",
                 "value": null
-              },
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last validated"
+            },
+            "properties": [
               {
-                "color": "orange",
-                "value": 8589934592
-              },
-              {
-                "color": "red",
-                "value": 10737418240
+                "id": "unit",
+                "value": "dtdurations"
               }
             ]
           },
-          "unit": "bytes"
-        },
-        "overrides": []
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Last backup"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Storage used"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
+        "h": 6,
+        "w": 24,
         "x": 0,
-        "y": 13
+        "y": 18
       },
-      "id": 9,
+      "id": 12,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
           "fields": "",
-          "values": false
+          "reducer": [
+            "sum"
+          ],
+          "show": false
         },
-        "textMode": "auto"
+        "showHeader": true
       },
       "targets": [
         {
@@ -747,96 +996,114 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "sum(kube_velero_podvolumebackup_total_bytes{app_namespace!=\"\"})",
+          "expr": "kube_velero_backupstoragelocation_info{storage_location=~\"$location\"}",
+          "format": "table",
           "instant": true,
-          "legendFormat": "__auto",
           "range": false,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "time() - kube_velero_backupstoragelocation_last_validation_timestamp{storage_location=~\"$location\"}",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum by (storage_location) (kube_velero_backup_info{storage_location=~\"$location\"})",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "time() - max by (storage_location) (kube_velero_backup_start_timestamp{storage_location=~\"$location\"})",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum by (storage_location) (kube_velero_podvolumebackup_total_bytes{storage_location=~\"$location\"})",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "E"
         }
       ],
-      "title": "Total size of all backups",
-      "type": "stat"
+      "title": "Storage locations",
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "storage_location",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "Value #A": true,
+              "customresource_group": true,
+              "customresource_kind": true,
+              "customresource_version": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "Value #B": "Last validated",
+              "Value #C": "Backups",
+              "Value #D": "Last backup",
+              "Value #E": "Storage used",
+              "phase": "Phase",
+              "storage_location": "Location"
+            }
+          }
+        }
+      ],
+      "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "$DS_PROMETHEUS"
-      },
-      "description": "Logical size per application, across all retained restore points.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
+      "collapsed": false,
       "gridPos": {
-        "h": 5,
-        "w": 18,
-        "x": 6,
-        "y": 13
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
       },
-      "id": 10,
-      "options": {
-        "displayMode": "gradient",
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "maxVizHeight": 300,
-        "minVizHeight": 16,
-        "minVizWidth": 8,
-        "namePlacement": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "sizing": "auto",
-        "valueMode": "color"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$DS_PROMETHEUS"
-          },
-          "editorMode": "code",
-          "expr": "sum by (app_namespace) (kube_velero_podvolumebackup_total_bytes{app_namespace!=\"\"})",
-          "instant": true,
-          "legendFormat": "{{app_namespace}}",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "Size by app",
-      "type": "bargauge"
+      "id": 103,
+      "panels": [],
+      "title": "Per app over time",
+      "type": "row"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Total logical size of all retained backups over time.",
+      "description": "Number of backups currently retained per app (bounded by TTL).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -849,8 +1116,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 15,
-            "lineInterpolation": "linear",
+            "fillOpacity": 10,
+            "lineInterpolation": "stepAfter",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
@@ -859,6 +1126,7 @@
             "showPoints": "auto",
             "spanNulls": true
           },
+          "decimals": 0,
           "mappings": [],
           "min": 0,
           "thresholds": {
@@ -869,8 +1137,7 @@
                 "value": null
               }
             ]
-          },
-          "unit": "bytes"
+          }
         },
         "overrides": []
       },
@@ -878,9 +1145,9 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 25
       },
-      "id": 11,
+      "id": 13,
       "options": {
         "legend": {
           "calcs": [],
@@ -900,13 +1167,13 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "sum(kube_velero_podvolumebackup_total_bytes{app_namespace!=\"\"})",
-          "legendFormat": "all backups",
+          "expr": "sum by (schedule) (kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\"})",
+          "legendFormat": "{{schedule}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Total backup size over time",
+      "title": "Restore points retained by app",
       "type": "timeseries"
     },
     {
@@ -956,9 +1223,9 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 25
       },
-      "id": 12,
+      "id": 14,
       "options": {
         "legend": {
           "calcs": [],
@@ -978,14 +1245,186 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "sum by (app_namespace) (kube_velero_podvolumebackup_total_bytes{app_namespace!=\"\"})",
+          "expr": "sum by (app_namespace) (kube_velero_podvolumebackup_total_bytes{app_namespace=~\"$app\", storage_location=~\"$location\"})",
           "legendFormat": "{{app_namespace}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Backup size by app over time",
+      "title": "Size by app over time",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 33
+      },
+      "id": 104,
+      "panels": [],
+      "title": "Restore points",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "$DS_PROMETHEUS"
+      },
+      "description": "Every retained backup with phase, items, size and age.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Size"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Age"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dtdurations"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 15,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "kube_velero_backup_info{schedule=~\"$app\", storage_location=~\"$location\"}",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum by (backup) (kube_velero_backup_items_backed_up{schedule=~\"$app\", storage_location=~\"$location\"})",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum by (backup) (kube_velero_podvolumebackup_total_bytes{app_namespace=~\"$app\", storage_location=~\"$location\"})",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$DS_PROMETHEUS"
+          },
+          "editorMode": "code",
+          "expr": "sum by (backup) (time() - kube_velero_backup_start_timestamp{schedule=~\"$app\", storage_location=~\"$location\"})",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "refId": "D"
+        }
+      ],
+      "title": "Restore points",
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "backup",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "Value #A": true,
+              "customresource_group": true,
+              "customresource_kind": true,
+              "customresource_version": true,
+              "namespace": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "Value #B": "Items",
+              "Value #C": "Size",
+              "Value #D": "Age",
+              "backup": "Backup",
+              "name": "Backup",
+              "phase": "Phase",
+              "schedule": "Schedule",
+              "storage_location": "Location"
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "refresh": "30s",
@@ -1013,6 +1452,60 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$DS_PROMETHEUS"
+        },
+        "definition": "label_values(kube_velero_backup_info, schedule)",
+        "includeAll": true,
+        "label": "App",
+        "multi": true,
+        "name": "app",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_velero_backup_info, schedule)",
+          "refId": "VictoriaMetrics-app-Variable-Query"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$DS_PROMETHEUS"
+        },
+        "definition": "label_values(kube_velero_backupstoragelocation_info, storage_location)",
+        "includeAll": true,
+        "label": "Location",
+        "multi": true,
+        "name": "location",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_velero_backupstoragelocation_info, storage_location)",
+          "refId": "VictoriaMetrics-location-Variable-Query"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
       }
     ]
   },
@@ -1024,7 +1517,7 @@
   "timezone": "",
   "title": "Velero",
   "uid": "velero",
-  "version": 4,
+  "version": 5,
   "weekStart": "",
   "id": null
 }
