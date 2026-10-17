@@ -72,14 +72,15 @@ spec:
       enabled: false
 
     # --- Velero custom resource metrics -------------------------------
-    # kube-state-metrics turns Velero Backup objects into metrics so the
-    # dashboard can show individual backup sizes. The Velero server itself
-    # only exposes backup size aggregated per schedule.
+    # kube-state-metrics turns Velero objects into metrics so the dashboard
+    # can show per-backup and per-volume sizes. The Velero server itself only
+    # exposes the metadata tarball size, aggregated per schedule, while the
+    # actual PV data size lives on each PodVolumeBackup.
     kube-state-metrics:
       rbac:
         extraRules:
           - apiGroups: ["velero.io"]
-            resources: ["backups"]
+            resources: ["backups", "podvolumebackups"]
             verbs: ["list", "watch"]
       customResourceState:
         enabled: true
@@ -98,18 +99,27 @@ spec:
                   schedule: [spec, scheduleName]
                   phase: [status, phase]
                 metrics:
-                  - name: velero_backup_size_bytes
-                    help: "Total size of a Velero backup in bytes"
-                    each:
-                      type: Gauge
-                      gauge:
-                        path: [status, progress, totalBytes]
                   - name: velero_backup_items_backed_up
                     help: "Number of items backed up by Velero"
                     each:
                       type: Gauge
                       gauge:
                         path: [status, progress, itemsBackedUp]
+              - groupVersionKind:
+                  group: velero.io
+                  version: v1
+                  kind: PodVolumeBackup
+                metricNamePrefix: kube
+                labelsFromPath:
+                  backup: [metadata, labels, "velero.io/backup-name"]
+                  volume: [spec, volume]
+                metrics:
+                  - name: velero_podvolumebackup_total_bytes
+                    help: "Total bytes of a Velero pod volume backup"
+                    each:
+                      type: Gauge
+                      gauge:
+                        path: [status, progress, totalBytes]
 
     # --- Grafana -------------------------------------------------------
     grafana:
