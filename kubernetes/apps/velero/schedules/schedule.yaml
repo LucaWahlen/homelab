@@ -11,7 +11,7 @@ spec:
     ttl: 72h
     snapshotVolumes: false
     defaultVolumesToFsBackup: true
-    storageLocation: default
+    storageLocation: r2
     includedNamespaces:
       - halite
 ---
@@ -26,6 +26,6 @@ spec:
     ttl: 72h
     snapshotVolumes: false
     defaultVolumesToFsBackup: true
-    storageLocation: default
+    storageLocation: r2
     includedNamespaces:
       - shale

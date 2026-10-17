@@ -34,8 +34,9 @@ spec:
     configuration:
       uploaderType: kopia
       defaultVolumesToFsBackup: true
+      defaultBackupStorageLocation: r2
       backupStorageLocation:
-        - name: default
+        - name: r2
           provider: aws
           bucket: k3s-backups
           default: true
