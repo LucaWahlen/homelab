@@ -71,6 +71,46 @@ spec:
     kubeScheduler:
       enabled: false
 
+    # --- Velero custom resource metrics -------------------------------
+    # kube-state-metrics turns Velero Backup objects into metrics so the
+    # dashboard can show individual backup sizes. The Velero server itself
+    # only exposes backup size aggregated per schedule.
+    kube-state-metrics:
+      rbac:
+        extraRules:
+          - apiGroups: ["velero.io"]
+            resources: ["backups"]
+            verbs: ["list", "watch"]
+      customResourceState:
+        enabled: true
+        config:
+          kind: CustomResourceStateMetrics
+          spec:
+            resources:
+              - groupVersionKind:
+                  group: velero.io
+                  version: v1
+                  kind: Backup
+                metricNamePrefix: kube
+                labelsFromPath:
+                  backup: [metadata, name]
+                  namespace: [metadata, namespace]
+                  schedule: [spec, scheduleName]
+                  phase: [status, phase]
+                metrics:
+                  - name: velero_backup_size_bytes
+                    help: "Total size of a Velero backup in bytes"
+                    each:
+                      type: Gauge
+                      gauge:
+                        path: [status, progress, totalBytes]
+                  - name: velero_backup_items_backed_up
+                    help: "Number of items backed up by Velero"
+                    each:
+                      type: Gauge
+                      gauge:
+                        path: [status, progress, itemsBackedUp]
+
     # --- Grafana -------------------------------------------------------
     grafana:
       admin:
