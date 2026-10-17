@@ -471,7 +471,7 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "kube_velero_backup_size_bytes",
+          "expr": "sum by (backup) (kube_velero_podvolumebackup_total_bytes)",
           "format": "table",
           "instant": true,
           "range": false,
@@ -573,7 +573,7 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "kube_velero_backup_size_bytes",
+          "expr": "sum by (backup) (kube_velero_podvolumebackup_total_bytes)",
           "legendFormat": "{{backup}}",
           "range": true,
           "refId": "A"
@@ -781,7 +781,7 @@
       },
       "id": 102,
       "panels": [],
-      "title": "Schedules",
+      "title": "Volumes & schedules",
       "type": "row"
     },
     {
@@ -789,7 +789,7 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Size of the most recent backup for each schedule, as reported by the Velero server.",
+      "description": "Storage used by each backed-up volume (PV data captured by Kopia).",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -839,14 +839,14 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "velero_backup_tarball_size_bytes",
+          "expr": "kube_velero_podvolumebackup_total_bytes",
           "format": "table",
           "instant": true,
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "Latest size per schedule",
+      "title": "Backup size by volume",
       "transformations": [
         {
           "id": "organize",
@@ -858,7 +858,8 @@
             "indexByName": {},
             "renameByName": {
               "Value": "Size",
-              "schedule": "Schedule"
+              "backup": "Backup",
+              "volume": "Volume"
             }
           }
         }
