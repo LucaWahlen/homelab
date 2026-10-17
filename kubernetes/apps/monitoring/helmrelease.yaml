@@ -73,14 +73,14 @@ spec:
 
     # --- Velero custom resource metrics -------------------------------
     # kube-state-metrics turns Velero objects into metrics so the dashboard
-    # can show per-backup and per-volume sizes. The Velero server itself only
-    # exposes the metadata tarball size, aggregated per schedule, while the
-    # actual PV data size lives on each PodVolumeBackup.
+    # can show per-backup, per-app and per-storage-location detail. The Velero
+    # server only exposes the metadata tarball size and availability gauges,
+    # while volume bytes and object phases live on the objects themselves.
     kube-state-metrics:
       rbac:
         extraRules:
           - apiGroups: ["velero.io"]
-            resources: ["backups", "podvolumebackups"]
+            resources: ["backups", "podvolumebackups", "backupstoragelocations"]
             verbs: ["list", "watch"]
       customResourceState:
         enabled: true
@@ -97,14 +97,26 @@ spec:
                   backup: [metadata, name]
                   namespace: [metadata, namespace]
                   schedule: [spec, scheduleName]
+                  storage_location: [spec, storageLocation]
                   phase: [status, phase]
                 metrics:
+                  - name: velero_backup_info
+                    help: "Velero backup metadata"
+                    each:
+                      type: Info
+                      info: {}
                   - name: velero_backup_items_backed_up
                     help: "Number of items backed up by Velero"
                     each:
                       type: Gauge
                       gauge:
                         path: [status, progress, itemsBackedUp]
+                  - name: velero_backup_start_timestamp
+                    help: "Velero backup start time, Unix timestamp in seconds"
+                    each:
+                      type: Gauge
+                      gauge:
+                        path: [status, startTimestamp]
               - groupVersionKind:
                   group: velero.io
                   version: v1
@@ -115,6 +127,7 @@ spec:
                   app_namespace: [spec, pod, namespace]
                   pod: [spec, pod, name]
                   volume: [spec, volume]
+                  storage_location: [spec, backupStorageLocation]
                 metrics:
                   - name: velero_podvolumebackup_total_bytes
                     help: "Total bytes of a Velero pod volume backup"
@@ -122,6 +135,26 @@ spec:
                       type: Gauge
                       gauge:
                         path: [status, progress, totalBytes]
+              - groupVersionKind:
+                  group: velero.io
+                  version: v1
+                  kind: BackupStorageLocation
+                metricNamePrefix: kube
+                labelsFromPath:
+                  storage_location: [metadata, name]
+                  phase: [status, phase]
+                metrics:
+                  - name: velero_backupstoragelocation_info
+                    help: "Velero backup storage location metadata"
+                    each:
+                      type: Info
+                      info: {}
+                  - name: velero_backupstoragelocation_last_validation_timestamp
+                    help: "Last time the backup storage location was validated, Unix timestamp in seconds"
+                    each:
+                      type: Gauge
+                      gauge:
+                        path: [status, lastValidationTime]
 
     # --- Grafana -------------------------------------------------------
     grafana:
