@@ -395,7 +395,7 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "R2 logical usage against the 10 GiB free tier. Only the default R2 location is budgeted here.",
+      "description": "Actual R2 storage reported by Cloudflare. Thresholds mark the 10 GiB free tier.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -451,14 +451,14 @@
             "uid": "$DS_PROMETHEUS"
           },
           "editorMode": "code",
-          "expr": "sum(kube_velero_podvolumebackup_total_bytes{storage_location=~\"$location\"})",
+          "expr": "cloudflare_r2_storage_total_bytes",
           "instant": true,
           "legendFormat": "__auto",
           "range": false,
           "refId": "A"
         }
       ],
-      "title": "R2 usage (10 GiB free)",
+      "title": "R2 storage (Cloudflare, 10 GiB free)",
       "type": "stat"
     },
     {
