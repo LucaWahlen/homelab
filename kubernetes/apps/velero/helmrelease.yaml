@@ -37,11 +37,11 @@ spec:
       backupStorageLocation:
         - name: default
           provider: aws
-          bucket: homelab-velero
+          bucket: k3s-backups
           default: true
           config:
             region: auto
-            s3Url: https://918313ddac1a5febb3798b7630b4b7d4.r2.cloudflarestorage.com/k3s-backups
+            s3Url: https://918313ddac1a5febb3798b7630b4b7d4.r2.cloudflarestorage.com
             s3ForcePathStyle: "true"
     metrics:
       # Scraped by the VMServiceScrape in this directory: this stack uses
