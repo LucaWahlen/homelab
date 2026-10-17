@@ -1,0 +1,59 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: velero
+  namespace: velero
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: velero
+      version: "12.2.1"
+      sourceRef:
+        kind: HelmRepository
+        name: velero
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.14.4
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+    # R2 is object storage only and local-path has no CSI snapshots, so PV data
+    # is captured by the node-agent with Kopia file-system backups instead.
+    snapshotsEnabled: false
+    deployNodeAgent: true
+    credentials:
+      useSecret: true
+      existingSecret: velero-credentials
+    configuration:
+      uploaderType: kopia
+      defaultVolumesToFsBackup: true
+      backupStorageLocation:
+        - name: default
+          provider: aws
+          bucket: homelab-velero
+          default: true
+          config:
+            region: auto
+            s3Url: https://918313ddac1a5febb3798b7630b4b7d4.r2.cloudflarestorage.com/k3s-backups
+            s3ForcePathStyle: "true"
+    metrics:
+      # Scraped by the VMServiceScrape in this directory: this stack uses
+      # VictoriaMetrics CRs, not Prometheus-operator ServiceMonitors.
+      serviceMonitor:
+        enabled: false
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+    nodeAgent:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 128Mi
