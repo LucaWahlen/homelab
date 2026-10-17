@@ -1,0 +1,16 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: apps
+  namespace: velero
+spec:
+  schedule: "0 2 * * *"
+  template:
+    # Keep the retained restore-point count low: R2's free tier is 10 GB-month
+    # and the two source PVCs request 6Gi in total.
+    ttl: 72h
+    snapshotVolumes: false
+    defaultVolumesToFsBackup: true
+    includedNamespaces:
+      - shale
+      - halite
