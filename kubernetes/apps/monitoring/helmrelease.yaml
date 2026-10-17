@@ -100,11 +100,6 @@ spec:
                   storage_location: [spec, storageLocation]
                   phase: [status, phase]
                 metrics:
-                  - name: velero_backup_info
-                    help: "Velero backup metadata"
-                    each:
-                      type: Info
-                      info: {}
                   - name: velero_backup_items_backed_up
                     help: "Number of items backed up by Velero"
                     each:
@@ -144,11 +139,6 @@ spec:
                   storage_location: [metadata, name]
                   phase: [status, phase]
                 metrics:
-                  - name: velero_backupstoragelocation_info
-                    help: "Velero backup storage location metadata"
-                    each:
-                      type: Info
-                      info: {}
                   - name: velero_backupstoragelocation_last_validation_timestamp
                     help: "Last time the backup storage location was validated, Unix timestamp in seconds"
                     each:
