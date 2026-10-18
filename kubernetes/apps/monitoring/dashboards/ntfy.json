@@ -71,7 +71,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -117,11 +117,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "ntfy_messages_published_success{job=\"$job\"}",
-          "legendFormat": "Messages cached",
+          "expr": "sum(ntfy_messages_published_success{job=\"ntfy\"})",
+          "legendFormat": "Published",
           "range": true,
           "refId": "A"
         }
@@ -132,7 +132,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -178,10 +178,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_messages_cached_total{job=\"$job\"}",
+          "expr": "sum(ntfy_messages_cached_total{job=\"ntfy\"})",
           "legendFormat": "Messages cached",
           "range": true,
           "refId": "A"
@@ -193,7 +193,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -239,10 +239,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_visitors_total{job=\"$job\"}",
+          "expr": "sum(ntfy_visitors_total{job=\"ntfy\"})",
           "legendFormat": "Visitors",
           "range": true,
           "refId": "A"
@@ -254,7 +254,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "description": "",
       "fieldConfig": {
@@ -305,11 +305,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_users_total{job=\"$job\"}",
-          "legendFormat": "Visitors",
+          "expr": "sum(ntfy_users_total{job=\"ntfy\"})",
+          "legendFormat": "Users",
           "range": true,
           "refId": "A"
         }
@@ -320,7 +320,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "description": "",
       "fieldConfig": {
@@ -367,10 +367,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_topics_total{job=\"$job\"}",
+          "expr": "sum(ntfy_topics_total{job=\"ntfy\"})",
           "legendFormat": "Topics",
           "range": true,
           "refId": "A"
@@ -382,7 +382,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "description": "",
       "fieldConfig": {
@@ -429,10 +429,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_subscribers_total",
+          "expr": "sum(ntfy_subscribers_total{job=\"ntfy\"})",
           "legendFormat": "Subscribers",
           "range": true,
           "refId": "A"
@@ -455,7 +455,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "description": "Number of successfully published messages, and messages that could not be published (due to rate limiting, bad formatting, etc.)",
       "fieldConfig": {
@@ -549,10 +549,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "rate(ntfy_messages_published_success{job=\"$job\"}[$rate])",
+          "expr": "sum(rate(ntfy_messages_published_success{job=\"ntfy\"}[$__rate_interval]))",
           "legendFormat": "Success",
           "range": true,
           "refId": "A"
@@ -560,10 +560,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "rate(ntfy_messages_published_failure{job=\"$job\"}[$rate])",
+          "expr": "sum(rate(ntfy_messages_published_failure{job=\"ntfy\"}[$__rate_interval]))",
           "hide": false,
           "legendFormat": "Failed",
           "range": true,
@@ -576,7 +576,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "description": "Number of messages published since last ntfy server restart",
       "fieldConfig": {
@@ -670,10 +670,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_messages_published_success{job=\"$job\"}",
+          "expr": "sum(ntfy_messages_published_success{job=\"ntfy\"})",
           "legendFormat": "Successful",
           "range": true,
           "refId": "A"
@@ -681,10 +681,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_messages_published_failure{job=\"$job\"}",
+          "expr": "sum(ntfy_messages_published_failure{job=\"ntfy\"})",
           "hide": false,
           "legendFormat": "Failed",
           "range": true,
@@ -697,7 +697,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "description": "Number of messages currently stored in message cache",
       "fieldConfig": {
@@ -775,10 +775,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_messages_cached_total{job=\"$job\"}",
+          "expr": "sum(ntfy_messages_cached_total{job=\"ntfy\"})",
           "legendFormat": "Messages in database",
           "range": true,
           "refId": "A"
@@ -790,7 +790,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -867,10 +867,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_visitors_total{job=\"$job\"}",
+          "expr": "sum(ntfy_visitors_total{job=\"ntfy\"})",
           "legendFormat": "Visitors",
           "range": true,
           "refId": "A"
@@ -878,10 +878,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_topics_total{job=\"$job\"}",
+          "expr": "sum(ntfy_topics_total{job=\"ntfy\"})",
           "hide": false,
           "legendFormat": "Topics",
           "range": true,
@@ -890,10 +890,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_subscribers_total{job=\"$job\"}",
+          "expr": "sum(ntfy_subscribers_total{job=\"ntfy\"})",
           "hide": false,
           "legendFormat": "Subscribers",
           "range": true,
@@ -902,10 +902,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_users_total{job=\"$job\"}",
+          "expr": "sum(ntfy_users_total{job=\"ntfy\"})",
           "hide": false,
           "legendFormat": "Users",
           "range": true,
@@ -918,7 +918,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -995,10 +995,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(job) (rate(ntfy_http_requests_total{job=\"$job\"}[$rate]))",
+          "expr": "sum by(job) (rate(ntfy_http_requests_total{job=\"ntfy\"}[$__rate_interval]))",
           "legendFormat": "Requests per second",
           "range": true,
           "refId": "A"
@@ -1010,7 +1010,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -1091,10 +1091,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(http_code) (rate(ntfy_http_requests_total{job=\"$job\", http_code!=\"200\", http_code!=\"429\", http_code!=\"507\"}[$rate]))",
+          "expr": "sum by(http_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\", http_code!=\"429\", http_code!=\"507\"}[$__rate_interval]))",
           "legendFormat": "{{http_code}}",
           "range": true,
           "refId": "A"
@@ -1106,7 +1106,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -1187,10 +1187,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(ntfy_code) (rate(ntfy_http_requests_total{http_code!=\"200\", job=\"$job\"}[$rate]))",
+          "expr": "sum by(ntfy_code) (rate(ntfy_http_requests_total{http_code!=\"200\", job=\"ntfy\"}[$__rate_interval]))",
           "legendFormat": "{{http_method}} {{http_code}} {{ntfy_code}}",
           "range": true,
           "refId": "A"
@@ -1202,7 +1202,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -1280,10 +1280,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_attachments_total_size{job=\"$job\"}",
+          "expr": "sum(ntfy_attachments_total_size{job=\"ntfy\"})",
           "legendFormat": "Total size in MB",
           "range": true,
           "refId": "A"
@@ -1296,7 +1296,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -1374,10 +1374,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "ntfy_message_publish_duration_ms{job=\"$job\"}",
+          "expr": "sum(ntfy_message_publish_duration_ms{job=\"ntfy\"})",
           "legendFormat": "Duration",
           "range": true,
           "refId": "A"
@@ -1402,7 +1402,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -1479,10 +1479,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "go_goroutines{job=\"$job\"}",
+          "expr": "sum(go_goroutines{job=\"ntfy\"})",
           "legendFormat": "Go routines",
           "range": true,
           "refId": "A"
@@ -1494,7 +1494,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -1573,10 +1573,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "process_open_fds{job=\"$job\"}",
+          "expr": "sum(process_open_fds{job=\"ntfy\"})",
           "legendFormat": "Open",
           "range": true,
           "refId": "A"
@@ -1584,10 +1584,10 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "process_max_fds{job=\"$job\"}",
+          "expr": "sum(process_max_fds{job=\"ntfy\"})",
           "hide": false,
           "legendFormat": "Max",
           "range": true,
@@ -1600,7 +1600,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "uid": "VictoriaMetrics"
       },
       "fieldConfig": {
         "defaults": {
@@ -1678,29 +1678,30 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "process_resident_memory_bytes{job=\"$job\"}",
-          "legendFormat": "Resident memory used by ntfy (RSS)",
+          "expr": "sum(process_resident_memory_bytes{job=\"ntfy\"})",
+          "legendFormat": "Resident (RSS)",
           "range": true,
           "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "VictoriaMetrics"
           },
           "editorMode": "builder",
-          "expr": "process_virtual_memory_bytes{job=\"$job\"}",
+          "expr": "sum(process_virtual_memory_bytes{job=\"ntfy\"})",
           "hide": false,
-          "legendFormat": "Virtual memory used by ntfy (VSS)",
+          "legendFormat": "Virtual (VSS)",
           "range": true,
           "refId": "B"
         }
       ],
       "title": "Resident/virtual memory",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "RSS is physical memory actually used. VSS is Go\u2019s reserved virtual address space and is naturally large (GBs); it is not RAM usage."
     }
   ],
   "refresh": "10s",
@@ -1709,95 +1710,7 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": [
-      {
-        "current": {
-          "selected": true,
-          "text": "VictoriaMetrics",
-          "value": "VictoriaMetrics"
-        },
-        "hide": 0,
-        "includeAll": false,
-        "label": "Datasource",
-        "multi": false,
-        "name": "DS_PROMETHEUS",
-        "options": [],
-        "query": "prometheus",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "type": "datasource"
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "definition": "label_values(ntfy_visitors_total, job)",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Job",
-        "multi": false,
-        "name": "job",
-        "options": [],
-        "query": {
-          "query": "label_values(ntfy_visitors_total, job)",
-          "refId": "StandardVariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
-      },
-      {
-        "auto": false,
-        "auto_count": 30,
-        "auto_min": "10s",
-        "current": {
-          "selected": false,
-          "text": "30m",
-          "value": "30m"
-        },
-        "description": "Average per-second rates over values from this time span",
-        "hide": 0,
-        "label": "Rate",
-        "name": "rate",
-        "options": [
-          {
-            "selected": false,
-            "text": "1m",
-            "value": "1m"
-          },
-          {
-            "selected": false,
-            "text": "5m",
-            "value": "5m"
-          },
-          {
-            "selected": false,
-            "text": "10m",
-            "value": "10m"
-          },
-          {
-            "selected": true,
-            "text": "30m",
-            "value": "30m"
-          },
-          {
-            "selected": false,
-            "text": "1h",
-            "value": "1h"
-          }
-        ],
-        "query": "1m,5m,10m,30m,1h",
-        "queryValue": "",
-        "refresh": 2,
-        "skipUrlSync": false,
-        "type": "interval"
-      }
-    ]
+    "list": []
   },
   "time": {
     "from": "now-24h",
