@@ -40,7 +40,7 @@ spec:
       # timezone so schedules run at local midnight year-round.
       extraEnvVars:
         - name: TZ
-          value: Europe/Zurich
+          value: Europe/Berlin
       backupStorageLocation:
         - name: r2
           provider: aws
