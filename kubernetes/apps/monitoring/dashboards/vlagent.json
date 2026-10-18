@@ -5144,7 +5144,8 @@
         "query": "prometheus",
         "refresh": 1,
         "regex": "",
-        "type": "datasource"
+        "type": "datasource",
+        "hide": 2
       },
       {
         "current": {},
@@ -5163,7 +5164,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "type": "query"
+        "type": "query",
+        "hide": 2
       },
       {
         "allValue": ".*",
@@ -5183,7 +5185,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "type": "query"
+        "type": "query",
+        "hide": 2
       },
       {
         "allValue": ".*",
@@ -5204,7 +5207,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "type": "query"
+        "type": "query",
+        "hide": 2
       },
       {
         "current": {},
@@ -5224,16 +5228,6 @@
         "refresh": 1,
         "regex": "",
         "type": "query"
-      },
-      {
-        "baseFilters": [],
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$DS_PROMETHEUS"
-        },
-        "filters": [],
-        "name": "adhoc",
-        "type": "adhoc"
       }
     ]
   },

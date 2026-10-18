@@ -145,7 +145,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "avg(sum by (instance, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])))",
+          "expr": "avg(sum by (instance, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", job=\"$job\"}[$__rate_interval])))",
           "interval": "",
           "legendFormat": "Real",
           "range": true,
@@ -157,7 +157,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1)) / sum(machine_cpu_cores{cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1)) / sum(machine_cpu_cores{})",
           "hide": false,
           "legendFormat": "Requests",
           "range": true,
@@ -169,7 +169,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1)) / sum(machine_cpu_cores{cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1)) / sum(machine_cpu_cores{})",
           "hide": false,
           "legendFormat": "Limits",
           "range": true,
@@ -245,7 +245,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job=\"$job\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job=\"$job\"}) / sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job=\"$job\"})",
+          "expr": "sum(node_memory_MemTotal_bytes{ job=\"$job\"} - node_memory_MemAvailable_bytes{ job=\"$job\"}) / sum(node_memory_MemTotal_bytes{ job=\"$job\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Real",
@@ -258,7 +258,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1)) / sum(machine_memory_bytes{cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1)) / sum(machine_memory_bytes{})",
           "hide": false,
           "legendFormat": "Requests",
           "range": true,
@@ -270,7 +270,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1)) / sum(machine_memory_bytes{cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1)) / sum(machine_memory_bytes{})",
           "hide": false,
           "legendFormat": "Limits",
           "range": true,
@@ -335,7 +335,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "count(count by (node) (kube_node_info{cluster=\"$cluster\"}))",
+          "expr": "count(count by (node) (kube_node_info{}))",
           "interval": "",
           "legendFormat": "",
           "range": true,
@@ -439,7 +439,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "sum(kube_namespace_labels{cluster=\"$cluster\"})",
+          "expr": "sum(kube_namespace_labels{})",
           "interval": "",
           "legendFormat": "Namespaces",
           "refId": "A"
@@ -449,7 +449,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_pod_container_status_running{cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_container_status_running{})",
           "interval": "",
           "legendFormat": "Running Containers",
           "refId": "B"
@@ -459,7 +459,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\"})",
           "interval": "",
           "legendFormat": "Running Pods",
           "refId": "O"
@@ -469,7 +469,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_service_info{cluster=\"$cluster\"})",
+          "expr": "sum(kube_service_info{})",
           "interval": "",
           "legendFormat": "Services",
           "refId": "C"
@@ -479,7 +479,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_endpoint_info{cluster=\"$cluster\"})",
+          "expr": "sum(kube_endpoint_info{})",
           "interval": "",
           "legendFormat": "Endpoints",
           "refId": "D"
@@ -489,7 +489,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_ingress_info{cluster=\"$cluster\"})",
+          "expr": "sum(kube_ingress_info{})",
           "interval": "",
           "legendFormat": "Ingresses",
           "refId": "E"
@@ -499,7 +499,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_deployment_labels{cluster=\"$cluster\"})",
+          "expr": "sum(kube_deployment_labels{})",
           "interval": "",
           "legendFormat": "Deployments",
           "refId": "F"
@@ -509,7 +509,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_statefulset_labels{cluster=\"$cluster\"})",
+          "expr": "sum(kube_statefulset_labels{})",
           "interval": "",
           "legendFormat": "Statefulsets",
           "refId": "G"
@@ -519,7 +519,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_daemonset_labels{cluster=\"$cluster\"})",
+          "expr": "sum(kube_daemonset_labels{})",
           "interval": "",
           "legendFormat": "Daemonsets",
           "refId": "H"
@@ -529,7 +529,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_persistentvolumeclaim_info{cluster=\"$cluster\"})",
+          "expr": "sum(kube_persistentvolumeclaim_info{})",
           "interval": "",
           "legendFormat": "Persistent Volume Claims",
           "refId": "I"
@@ -539,7 +539,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_hpa_labels{cluster=\"$cluster\"})",
+          "expr": "sum(kube_hpa_labels{})",
           "interval": "",
           "legendFormat": "Horizontal Pod Autoscalers",
           "refId": "J"
@@ -549,7 +549,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_configmap_info{cluster=\"$cluster\"})",
+          "expr": "sum(kube_configmap_info{})",
           "interval": "",
           "legendFormat": "Configmaps",
           "refId": "K"
@@ -559,7 +559,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_secret_info{cluster=\"$cluster\"})",
+          "expr": "sum(kube_secret_info{})",
           "interval": "",
           "legendFormat": "Secrets",
           "refId": "L"
@@ -569,7 +569,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_networkpolicy_labels{cluster=\"$cluster\"})",
+          "expr": "sum(kube_networkpolicy_labels{})",
           "interval": "",
           "legendFormat": "Network Policies",
           "refId": "M"
@@ -580,7 +580,7 @@
             "uid": "${datasource}"
           },
           "exemplar": true,
-          "expr": "count(count by (node) (kube_node_info{cluster=\"$cluster\"}))",
+          "expr": "count(count by (node) (kube_node_info{}))",
           "hide": false,
           "interval": "",
           "legendFormat": "Nodes",
@@ -643,7 +643,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "count(kube_namespace_created{cluster=\"$cluster\"})",
+          "expr": "count(kube_namespace_created{})",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -708,7 +708,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", job=\"$job\"}[$__rate_interval]))",
           "interval": "",
           "legendFormat": "Real",
           "range": true,
@@ -720,7 +720,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1))",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1))",
           "hide": false,
           "legendFormat": "Requests",
           "range": true,
@@ -732,7 +732,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1))",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1))",
           "hide": false,
           "legendFormat": "Limits",
           "range": true,
@@ -744,7 +744,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(machine_cpu_cores{cluster=\"$cluster\"})",
+          "expr": "sum(machine_cpu_cores{})",
           "hide": false,
           "legendFormat": "Total",
           "range": true,
@@ -810,7 +810,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job=\"$job\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job=\"$job\"})",
+          "expr": "sum(node_memory_MemTotal_bytes{ job=\"$job\"} - node_memory_MemAvailable_bytes{ job=\"$job\"})",
           "interval": "",
           "legendFormat": "Real",
           "range": true,
@@ -822,7 +822,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1))",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1))",
           "hide": false,
           "legendFormat": "Requests",
           "range": true,
@@ -834,7 +834,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\", cluster=\"$cluster\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"} == 1))",
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\"} and on(namespace, pod) max by (namespace, pod) (kube_pod_status_phase{phase=\"Running\"} == 1))",
           "hide": false,
           "legendFormat": "Limits",
           "range": true,
@@ -846,7 +846,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(machine_memory_bytes{cluster=\"$cluster\"})",
+          "expr": "sum(machine_memory_bytes{})",
           "hide": false,
           "legendFormat": "Total",
           "range": true,
@@ -909,7 +909,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(kube_pod_status_phase{phase=\"Running\", cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\"})",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -1033,7 +1033,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "avg(sum by (instance, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])))",
+          "expr": "avg(sum by (instance, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", job=\"$job\"}[$__rate_interval])))",
           "interval": "$resolution",
           "legendFormat": "CPU usage in %",
           "range": true,
@@ -1154,7 +1154,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job=\"$job\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job=\"$job\"}) / sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job=\"$job\"})",
+          "expr": "sum(node_memory_MemTotal_bytes{ job=\"$job\"} - node_memory_MemAvailable_bytes{ job=\"$job\"}) / sum(node_memory_MemTotal_bytes{ job=\"$job\"})",
           "interval": "$resolution",
           "legendFormat": "Memory usage in %",
           "range": true,
@@ -1276,7 +1276,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(container_cpu_usage_seconds_total{image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{image!=\"\"}[$__rate_interval])) by (namespace)",
           "format": "time_series",
           "hide": false,
           "interval": "$resolution",
@@ -1383,7 +1383,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(container_memory_working_set_bytes{image!=\"\", cluster=\"$cluster\"}) by (namespace)",
+          "expr": "sum(container_memory_working_set_bytes{image!=\"\"}) by (namespace)",
           "interval": "$resolution",
           "legendFormat": "{{ namespace }}",
           "range": true,
@@ -1489,7 +1489,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "avg(sum by (instance, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval]))) by (instance)",
+          "expr": "avg(sum by (instance, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\", job=\"$job\"}[$__rate_interval]))) by (instance)",
           "interval": "$resolution",
           "legendFormat": "{{ node }}",
           "range": true,
@@ -1594,7 +1594,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(node_memory_MemTotal_bytes{cluster=\"$cluster\", job=\"$job\"} - node_memory_MemAvailable_bytes{cluster=\"$cluster\", job=\"$job\"}) by (instance)",
+          "expr": "sum(node_memory_MemTotal_bytes{ job=\"$job\"} - node_memory_MemAvailable_bytes{ job=\"$job\"}) by (instance)",
           "hide": false,
           "interval": "$resolution",
           "legendFormat": "{{ instance }}",
@@ -1705,7 +1705,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{image!=\"\", cluster=\"$cluster\"}[$__rate_interval])) by (namespace) > 0",
+          "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{image!=\"\"}[$__rate_interval])) by (namespace) > 0",
           "interval": "$resolution",
           "legendFormat": "{{ namespace }}",
           "range": true,
@@ -1815,7 +1815,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(node_cpu_core_throttles_total{cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (instance)",
+          "expr": "sum(rate(node_cpu_core_throttles_total{ job=\"$job\"}[$__rate_interval])) by (instance)",
           "interval": "$resolution",
           "legendFormat": "{{ instance }}",
           "range": true,
@@ -1933,7 +1933,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(kube_pod_status_qos_class{cluster=\"$cluster\"}) by (qos_class)",
+          "expr": "sum(kube_pod_status_qos_class{}) by (qos_class)",
           "interval": "",
           "legendFormat": "{{ qos_class }} pods",
           "range": true,
@@ -1945,7 +1945,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(kube_pod_info{cluster=\"$cluster\"})",
+          "expr": "sum(kube_pod_info{})",
           "hide": false,
           "legendFormat": "Total pods",
           "range": true,
@@ -2050,7 +2050,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(kube_pod_status_reason{cluster=\"$cluster\"}) by (reason)",
+          "expr": "sum(kube_pod_status_reason{}) by (reason)",
           "interval": "",
           "legendFormat": "{{ reason }}",
           "range": true,
@@ -2156,7 +2156,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(increase(container_oom_events_total{cluster=\"$cluster\"}[$__rate_interval])) by (namespace) > 0",
+          "expr": "sum(increase(container_oom_events_total{}[$__rate_interval])) by (namespace) > 0",
           "interval": "",
           "legendFormat": "{{ namespace }}",
           "range": true,
@@ -2262,7 +2262,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(increase(kube_pod_container_status_restarts_total{cluster=\"$cluster\"}[$__rate_interval])) by (namespace) > 0",
+          "expr": "sum(increase(kube_pod_container_status_restarts_total{}[$__rate_interval])) by (namespace) > 0",
           "interval": "",
           "legendFormat": "{{ namespace }}",
           "range": true,
@@ -2379,7 +2379,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"(veth|azv|lxc).*\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (device)",
+          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"(veth|azv|lxc).*\", job=\"$job\"}[$__rate_interval])) by (device)",
           "interval": "$resolution",
           "legendFormat": "Received : {{ device }}",
           "range": true,
@@ -2392,7 +2392,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "- sum(rate(node_network_transmit_bytes_total{device!~\"(veth|azv|lxc).*\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (device)",
+          "expr": "- sum(rate(node_network_transmit_bytes_total{device!~\"(veth|azv|lxc).*\", job=\"$job\"}[$__rate_interval])) by (device)",
           "interval": "$resolution",
           "legendFormat": "Transmitted : {{ device }}",
           "range": true,
@@ -2491,7 +2491,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(node_network_receive_drop_total{cluster=\"$cluster\", job=\"$job\"}[$__rate_interval]))",
+          "expr": "sum(rate(node_network_receive_drop_total{ job=\"$job\"}[$__rate_interval]))",
           "interval": "$resolution",
           "legendFormat": "Packets dropped (receive)",
           "range": true,
@@ -2504,7 +2504,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "- sum(rate(node_network_transmit_drop_total{cluster=\"$cluster\", job=\"$job\"}[$__rate_interval]))",
+          "expr": "- sum(rate(node_network_transmit_drop_total{ job=\"$job\"}[$__rate_interval]))",
           "interval": "$resolution",
           "legendFormat": "Packets dropped (transmit)",
           "range": true,
@@ -2604,7 +2604,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(container_network_receive_bytes_total{cluster=\"$cluster\"}[$__rate_interval])) by (namespace)",
+          "expr": "sum(rate(container_network_receive_bytes_total{}[$__rate_interval])) by (namespace)",
           "interval": "$resolution",
           "legendFormat": "Received : {{ namespace }}",
           "range": true,
@@ -2616,7 +2616,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "- sum(rate(container_network_transmit_bytes_total{cluster=\"$cluster\"}[$__rate_interval])) by (namespace)",
+          "expr": "- sum(rate(container_network_transmit_bytes_total{}[$__rate_interval])) by (namespace)",
           "hide": false,
           "interval": "$resolution",
           "legendFormat": "Transmitted : {{ namespace }}",
@@ -2716,7 +2716,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(node_network_receive_bytes_total{cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (instance)",
+          "expr": "sum(rate(node_network_receive_bytes_total{ job=\"$job\"}[$__rate_interval])) by (instance)",
           "interval": "$resolution",
           "legendFormat": "Received bytes in {{ instance }}",
           "range": true,
@@ -2728,7 +2728,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "- sum(rate(node_network_transmit_bytes_total{cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (instance)",
+          "expr": "- sum(rate(node_network_transmit_bytes_total{ job=\"$job\"}[$__rate_interval])) by (instance)",
           "hide": false,
           "interval": "$resolution",
           "legendFormat": "Transmitted bytes in {{ instance }}",
@@ -2829,7 +2829,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"(veth|azv|lxc|lo).*\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (instance)",
+          "expr": "sum(rate(node_network_receive_bytes_total{device!~\"(veth|azv|lxc|lo).*\", job=\"$job\"}[$__rate_interval])) by (instance)",
           "interval": "$resolution",
           "legendFormat": "Received bytes in {{ instance }}",
           "range": true,
@@ -2841,7 +2841,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "- sum(rate(node_network_transmit_bytes_total{device!~\"(veth|azv|lxc|lo).*\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (instance)",
+          "expr": "- sum(rate(node_network_transmit_bytes_total{device!~\"(veth|azv|lxc|lo).*\", job=\"$job\"}[$__rate_interval])) by (instance)",
           "hide": false,
           "interval": "$resolution",
           "legendFormat": "Transmitted bytes in {{ instance }}",
@@ -2942,7 +2942,7 @@
           },
           "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(rate(node_network_receive_bytes_total{device=\"lo\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (instance)",
+          "expr": "sum(rate(node_network_receive_bytes_total{device=\"lo\", job=\"$job\"}[$__rate_interval])) by (instance)",
           "interval": "$resolution",
           "legendFormat": "Received bytes in {{ instance }}",
           "range": true,
@@ -2954,7 +2954,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "- sum(rate(node_network_transmit_bytes_total{device=\"lo\", cluster=\"$cluster\", job=\"$job\"}[$__rate_interval])) by (instance)",
+          "expr": "- sum(rate(node_network_transmit_bytes_total{device=\"lo\", job=\"$job\"}[$__rate_interval])) by (instance)",
           "hide": false,
           "interval": "$resolution",
           "legendFormat": "Transmitted bytes in {{ instance }}",
@@ -2976,7 +2976,7 @@
           "text": "VictoriaMetrics",
           "value": "VictoriaMetrics"
         },
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "multi": false,
         "name": "datasource",
@@ -2987,29 +2987,6 @@
         "regex": "",
         "skipUrlSync": false,
         "type": "datasource"
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${datasource}"
-        },
-        "definition": "label_values(kube_node_info,cluster)",
-        "hide": 0,
-        "includeAll": false,
-        "multi": false,
-        "name": "cluster",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(kube_node_info,cluster)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
       },
       {
         "current": {
@@ -3068,15 +3045,15 @@
           "type": "prometheus",
           "uid": "${datasource}"
         },
-        "definition": "label_values(node_cpu_seconds_total{cluster=\"$cluster\"},job)",
-        "hide": 0,
+        "definition": "label_values(node_cpu_seconds_total{},job)",
+        "hide": 2,
         "includeAll": false,
         "multi": true,
         "name": "job",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(node_cpu_seconds_total{cluster=\"$cluster\"},job)",
+          "query": "label_values(node_cpu_seconds_total{},job)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
