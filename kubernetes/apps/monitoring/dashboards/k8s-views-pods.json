@@ -2986,7 +2986,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Berlin",
   "title": "Kubernetes / Views / Pods",
   "uid": "k8s_views_pods",
   "version": 41,

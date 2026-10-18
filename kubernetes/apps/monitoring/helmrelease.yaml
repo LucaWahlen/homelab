@@ -348,11 +348,16 @@ spec:
           folderAnnotation: grafana_folder
           provider:
             foldersFromFilesStructure: true
+      # Whole instance in Berlin local time.
+      env:
+        TZ: Europe/Berlin
       grafana.ini:
         server:
           root_url: https://grafana.internal.lucawahlen.com
         users:
           allow_sign_up: false
+        date_formats:
+          default_timezone: Europe/Berlin
       # Alerting provisioning is mounted from a SOPS-encrypted Secret so the
       # ntfy access token stays out of this HelmRelease.
       extraSecretMounts:

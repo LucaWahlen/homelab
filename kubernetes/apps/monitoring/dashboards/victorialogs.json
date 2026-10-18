@@ -7961,7 +7961,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Berlin",
   "title": "VictoriaLogs - single-node",
   "uid": "OqPIZTX4z",
   "version": 9,

@@ -3031,7 +3031,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Berlin",
   "title": "Kubernetes / Views / Namespaces",
   "uid": "k8s_views_ns",
   "version": 46,
