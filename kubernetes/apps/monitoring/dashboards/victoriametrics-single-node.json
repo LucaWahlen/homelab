@@ -8810,7 +8810,8 @@
         "query": "prometheus",
         "refresh": 1,
         "regex": "",
-        "type": "datasource"
+        "type": "datasource",
+        "hide": 2
       },
       {
         "current": {},
@@ -8828,7 +8829,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "type": "query"
+        "type": "query",
+        "hide": 2
       },
       {
         "current": {},
@@ -8868,17 +8870,8 @@
         },
         "refresh": 1,
         "regex": "",
-        "type": "query"
-      },
-      {
-        "baseFilters": [],
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$ds"
-        },
-        "filters": [],
-        "name": "adhoc",
-        "type": "adhoc"
+        "type": "query",
+        "hide": 2
       }
     ]
   },
