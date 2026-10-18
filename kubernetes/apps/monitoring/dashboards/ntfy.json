@@ -552,7 +552,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(ntfy_messages_published_success{job=\"ntfy\"}[$__rate_interval]))",
+          "expr": "sum(rate(ntfy_messages_published_success{job=\"ntfy\"}[5m]))",
           "legendFormat": "Success",
           "range": true,
           "refId": "A"
@@ -563,7 +563,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(rate(ntfy_messages_published_failure{job=\"ntfy\"}[$__rate_interval]))",
+          "expr": "sum(rate(ntfy_messages_published_failure{job=\"ntfy\"}[5m]))",
           "hide": false,
           "legendFormat": "Failed",
           "range": true,
@@ -998,7 +998,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(job) (rate(ntfy_http_requests_total{job=\"ntfy\"}[$__rate_interval]))",
+          "expr": "sum by(job) (rate(ntfy_http_requests_total{job=\"ntfy\"}[5m]))",
           "legendFormat": "Requests per second",
           "range": true,
           "refId": "A"
@@ -1094,7 +1094,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(http_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\", http_code!=\"429\", http_code!=\"507\"}[$__rate_interval])) > 0",
+          "expr": "sum by(http_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\", http_code!=\"429\", http_code!=\"507\"}[10m])) > 0",
           "legendFormat": "{{http_code}}",
           "range": true,
           "refId": "A"
@@ -1190,7 +1190,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(http_code, ntfy_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\"}[$__rate_interval])) > 0",
+          "expr": "sum by(http_code, ntfy_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\"}[10m])) > 0",
           "legendFormat": "{{http_code}} {{ntfy_code}}",
           "range": true,
           "refId": "A"
@@ -1702,6 +1702,56 @@
       "title": "Resident/virtual memory",
       "type": "timeseries",
       "description": "RSS is physical memory actually used. VSS is Go\u2019s reserved virtual address space and is naturally large (GBs); it is not RAM usage."
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 50,
+      "panels": [],
+      "title": "Logs",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "victoriametrics-logs-datasource",
+        "uid": "VictoriaLogs"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 35
+      },
+      "id": 51,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "VictoriaLogs"
+          },
+          "editorMode": "code",
+          "expr": "kubernetes.pod_namespace:ntfy",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "ntfy logs",
+      "type": "logs"
     }
   ],
   "refresh": "10s",
