@@ -390,7 +390,7 @@ spec:
               interval: 1h
               rules:
                 - uid: r2-class-a-usage
-                  title: R2 Class A operations above 80% of monthly free tier
+                  title: R2 Class A above daily share of the monthly free tier
                   condition: B
                   data:
                     - refId: A
@@ -404,8 +404,8 @@ spec:
                           uid: VictoriaMetrics
                         editorMode: code
                         expr: >-
-                          sum(sum_over_time((max_over_time((sum(cloudflare_r2_operation_count) -
-                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"}))[1d]))[30d:1d]))
+                          (sum(cloudflare_r2_operation_count) -
+                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"})) / (1000000 / days_in_month())
                         instant: true
                         refId: A
                     - refId: B
@@ -420,7 +420,7 @@ spec:
                         conditions:
                           - evaluator:
                               params:
-                                - 800000
+                                - 1
                               type: gt
                             operator:
                               type: and
@@ -434,11 +434,11 @@ spec:
                   execErrState: OK
                   for: 1h
                   annotations:
-                    summary: R2 Class A operations over the last 30 days are above 80% of the 1M free tier.
+                    summary: R2 Class A operations today exceed the daily share (1M / days this month) of the monthly free tier.
                   labels:
                     severity: warning
                 - uid: r2-class-b-usage
-                  title: R2 Class B operations above 80% of monthly free tier
+                  title: R2 Class B above daily share of the monthly free tier
                   condition: B
                   data:
                     - refId: A
@@ -452,8 +452,7 @@ spec:
                           uid: VictoriaMetrics
                         editorMode: code
                         expr: >-
-                          sum(sum_over_time((max_over_time((
-                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"}))[1d]))[30d:1d]))
+                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"}) / (10000000 / days_in_month())
                         instant: true
                         refId: A
                     - refId: B
@@ -468,7 +467,7 @@ spec:
                         conditions:
                           - evaluator:
                               params:
-                                - 8000000
+                                - 1
                               type: gt
                             operator:
                               type: and
@@ -482,7 +481,7 @@ spec:
                   execErrState: OK
                   for: 1h
                   annotations:
-                    summary: R2 Class B operations over the last 30 days are above 80% of the 10M free tier.
+                    summary: R2 Class B operations today exceed the daily share (10M / days this month) of the monthly free tier.
                   labels:
                     severity: warning
                 - uid: r2-class-a-projection
