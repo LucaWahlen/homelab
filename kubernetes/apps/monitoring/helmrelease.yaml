@@ -358,6 +358,10 @@ spec:
           allow_sign_up: false
         date_formats:
           default_timezone: Europe/Berlin
+        # No Tempo/Pyroscope/Loki here, and dashboards+alerts cover the rest,
+        # so drop the queryless Drilldown apps and the Advisor.
+        plugins:
+          disable_plugins: grafana-exploretraces-app,grafana-pyroscope-app,grafana-lokiexplore-app,grafana-metricsdrilldown-app,grafana-advisor-app
       # Alerting provisioning is mounted from a SOPS-encrypted Secret so the
       # ntfy access token stays out of this HelmRelease.
       extraSecretMounts:
