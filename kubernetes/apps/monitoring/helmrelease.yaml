@@ -336,6 +336,11 @@ spec:
       # VictoriaLogs datasource plugin (the VictoriaMetrics datasource is built in).
       plugins:
         - victoriametrics-logs-datasource
+      # Honor the grafana_folder annotation on dashboard ConfigMaps so the
+      # sidecar files dashboards into folders instead of all landing in General.
+      sidecar:
+        dashboards:
+          folderAnnotation: grafana_folder
       grafana.ini:
         server:
           root_url: https://grafana.internal.lucawahlen.com
