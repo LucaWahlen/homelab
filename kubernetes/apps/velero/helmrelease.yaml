@@ -35,6 +35,12 @@ spec:
       uploaderType: kopia
       defaultVolumesToFsBackup: true
       defaultBackupStorageLocation: r2
+      # Schedules are evaluated in the server's local time. Without TZ the
+      # container is UTC, so "0 0 * * *" would fire at 02:00 CEST. Pin the
+      # timezone so schedules run at local midnight year-round.
+      extraEnvVars:
+        - name: TZ
+          value: Europe/Zurich
       backupStorageLocation:
         - name: r2
           provider: aws
