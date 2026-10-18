@@ -10,5 +10,7 @@ resources:
   - dashboards
   # Grafana admin credentials, encrypted with SOPS/age and decrypted by Flux.
   - grafana-admin.enc.yaml
+  # Grafana alerting provisioning pointing at ntfy (token stays encrypted).
+  - grafana-ntfy-alerting.enc.yaml
   - helmrepository.yaml
   - helmrelease.yaml
