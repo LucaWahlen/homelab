@@ -371,6 +371,213 @@ spec:
           mountPath: /etc/grafana/provisioning/alerting/templates.yaml
           subPath: templates.yaml
           readOnly: true
+      # R2 free-tier alerts. "usage" fires on actual rolling-30d consumption;
+      # "projection" fires when the 7-day average daily rate extrapolates to a
+      # full-month total over the tier. Both route to the ntfy contact point via
+      # the default notification policy.
+      alerting:
+        rules.yaml:
+          apiVersion: 1
+          groups:
+            - orgId: 1
+              name: cloudflare-r2
+              folder: Cloudflare
+              interval: 1h
+              rules:
+                - uid: r2-class-a-usage
+                  title: R2 Class A operations above 80% of monthly free tier
+                  condition: B
+                  data:
+                    - refId: A
+                      datasourceUid: VictoriaMetrics
+                      relativeTimeRange:
+                        from: 21600
+                        to: 0
+                      model:
+                        datasource:
+                          type: prometheus
+                          uid: VictoriaMetrics
+                        editorMode: code
+                        expr: >-
+                          sum(sum_over_time((max_over_time((sum(cloudflare_r2_operation_count) -
+                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"}))[1d]))[30d:1d]))
+                        instant: true
+                        refId: A
+                    - refId: B
+                      datasourceUid: __expr__
+                      model:
+                        datasource:
+                          type: __expr__
+                          uid: __expr__
+                        expression: A
+                        refId: B
+                        type: threshold
+                        conditions:
+                          - evaluator:
+                              params:
+                                - 800000
+                              type: gt
+                            operator:
+                              type: and
+                            query:
+                              params:
+                                - B
+                            reducer:
+                              type: last
+                            type: query
+                  noDataState: OK
+                  execErrState: OK
+                  for: 1h
+                  annotations:
+                    summary: R2 Class A operations over the last 30 days are above 80% of the 1M free tier.
+                  labels:
+                    severity: warning
+                - uid: r2-class-b-usage
+                  title: R2 Class B operations above 80% of monthly free tier
+                  condition: B
+                  data:
+                    - refId: A
+                      datasourceUid: VictoriaMetrics
+                      relativeTimeRange:
+                        from: 21600
+                        to: 0
+                      model:
+                        datasource:
+                          type: prometheus
+                          uid: VictoriaMetrics
+                        editorMode: code
+                        expr: >-
+                          sum(sum_over_time((max_over_time((
+                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"}))[1d]))[30d:1d]))
+                        instant: true
+                        refId: A
+                    - refId: B
+                      datasourceUid: __expr__
+                      model:
+                        datasource:
+                          type: __expr__
+                          uid: __expr__
+                        expression: A
+                        refId: B
+                        type: threshold
+                        conditions:
+                          - evaluator:
+                              params:
+                                - 8000000
+                              type: gt
+                            operator:
+                              type: and
+                            query:
+                              params:
+                                - B
+                            reducer:
+                              type: last
+                            type: query
+                  noDataState: OK
+                  execErrState: OK
+                  for: 1h
+                  annotations:
+                    summary: R2 Class B operations over the last 30 days are above 80% of the 10M free tier.
+                  labels:
+                    severity: warning
+                - uid: r2-class-a-projection
+                  title: R2 Class A projected to exceed monthly free tier
+                  condition: B
+                  data:
+                    - refId: A
+                      datasourceUid: VictoriaMetrics
+                      relativeTimeRange:
+                        from: 21600
+                        to: 0
+                      model:
+                        datasource:
+                          type: prometheus
+                          uid: VictoriaMetrics
+                        editorMode: code
+                        expr: >-
+                          sum(avg_over_time((max_over_time((sum(cloudflare_r2_operation_count) -
+                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"}))[1d]))[7d:1d])) *
+                          days_in_month()
+                        instant: true
+                        refId: A
+                    - refId: B
+                      datasourceUid: __expr__
+                      model:
+                        datasource:
+                          type: __expr__
+                          uid: __expr__
+                        expression: A
+                        refId: B
+                        type: threshold
+                        conditions:
+                          - evaluator:
+                              params:
+                                - 1000000
+                              type: gt
+                            operator:
+                              type: and
+                            query:
+                              params:
+                                - B
+                            reducer:
+                              type: last
+                            type: query
+                  noDataState: OK
+                  execErrState: OK
+                  for: 1h
+                  annotations:
+                    summary: R2 Class A is projected to exceed the 1M monthly free tier at the current daily rate.
+                  labels:
+                    severity: warning
+                - uid: r2-class-b-projection
+                  title: R2 Class B projected to exceed monthly free tier
+                  condition: B
+                  data:
+                    - refId: A
+                      datasourceUid: VictoriaMetrics
+                      relativeTimeRange:
+                        from: 21600
+                        to: 0
+                      model:
+                        datasource:
+                          type: prometheus
+                          uid: VictoriaMetrics
+                        editorMode: code
+                        expr: >-
+                          sum(avg_over_time((max_over_time((
+                          sum(cloudflare_r2_operation_count{operation=~"Get.*|Head.*"}))[1d]))[7d:1d])) *
+                          days_in_month()
+                        instant: true
+                        refId: A
+                    - refId: B
+                      datasourceUid: __expr__
+                      model:
+                        datasource:
+                          type: __expr__
+                          uid: __expr__
+                        expression: A
+                        refId: B
+                        type: threshold
+                        conditions:
+                          - evaluator:
+                              params:
+                                - 10000000
+                              type: gt
+                            operator:
+                              type: and
+                            query:
+                              params:
+                                - B
+                            reducer:
+                              type: last
+                            type: query
+                  noDataState: OK
+                  execErrState: OK
+                  for: 1h
+                  annotations:
+                    summary: R2 Class B is projected to exceed the 10M monthly free tier at the current daily rate.
+                  labels:
+                    severity: warning
       persistence:
         enabled: true
         storageClassName: local-path
