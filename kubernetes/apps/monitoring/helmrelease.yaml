@@ -437,6 +437,7 @@ spec:
                     summary: R2 Class A operations today exceed the daily share (1M / days this month) of the monthly free tier.
                   labels:
                     severity: warning
+                    ntfy_topic: cloudflare
                 - uid: r2-class-b-usage
                   title: R2 Class B above daily share of the monthly free tier
                   condition: B
@@ -484,6 +485,7 @@ spec:
                     summary: R2 Class B operations today exceed the daily share (10M / days this month) of the monthly free tier.
                   labels:
                     severity: warning
+                    ntfy_topic: cloudflare
                 - uid: r2-class-a-projection
                   title: R2 Class A projected to exceed monthly free tier
                   condition: B
@@ -533,6 +535,7 @@ spec:
                     summary: R2 Class A is projected to exceed the 1M monthly free tier at the current daily rate.
                   labels:
                     severity: warning
+                    ntfy_topic: cloudflare
                 - uid: r2-class-b-projection
                   title: R2 Class B projected to exceed monthly free tier
                   condition: B
@@ -582,6 +585,7 @@ spec:
                     summary: R2 Class B is projected to exceed the 10M monthly free tier at the current daily rate.
                   labels:
                     severity: warning
+                    ntfy_topic: cloudflare
       persistence:
         enabled: true
         storageClassName: local-path
