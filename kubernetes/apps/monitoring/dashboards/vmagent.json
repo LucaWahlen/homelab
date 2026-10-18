@@ -9080,9 +9080,6 @@
   "preload": false,
   "refresh": "",
   "schemaVersion": 42,
-  "tags": [
-    "victoriametrics"
-  ],
   "templating": {
     "list": [
       {
