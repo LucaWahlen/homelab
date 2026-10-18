@@ -15525,7 +15525,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "browser",
+  "timezone": "Europe/Berlin",
   "title": "Node Exporter Full",
   "uid": "rYdddlPWk",
   "version": 102,

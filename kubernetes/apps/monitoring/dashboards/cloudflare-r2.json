@@ -40,7 +40,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Actual R2 object payload size reported by Cloudflare. Thresholds mark the 10 GiB free tier.",
+      "description": "Current R2 object payload size (10 GiB free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -103,7 +103,7 @@
           "refId": "A"
         }
       ],
-      "title": "R2 storage (10 GiB free)",
+      "title": "R2 storage",
       "type": "stat"
     },
     {
@@ -111,7 +111,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Linear projection of total R2 storage 30 days out from the 7-day trend, vs the 10 GiB free tier.",
+      "description": "Storage trend projected 30 days ahead (10 GiB free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -231,7 +231,8 @@
         }
       ],
       "title": "Storage by bucket",
-      "type": "timeseries"
+      "type": "timeseries",
+      "description": "Object payload size per bucket."
     },
     {
       "collapsed": false,
@@ -251,7 +252,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Class A (writes and lists) so far today (UTC). Daily budget is the 1M monthly free tier divided across the month (~32k/day). Resets at 00:00 UTC.",
+      "description": "Class A (writes/lists) today. Daily budget ~32k (1M/month free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -314,7 +315,7 @@
           "refId": "A"
         }
       ],
-      "title": "Class A today (daily budget ~32k)",
+      "title": "Class A today",
       "type": "stat"
     },
     {
@@ -322,7 +323,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Class B (reads) so far today (UTC). Daily budget is the 10M monthly free tier divided across the month (~323k/day). Resets at 00:00 UTC.",
+      "description": "Class B (reads) today. Daily budget ~323k (10M/month free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -385,7 +386,7 @@
           "refId": "A"
         }
       ],
-      "title": "Class B today (daily budget ~323k)",
+      "title": "Class B today",
       "type": "stat"
     },
     {
@@ -393,7 +394,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Calendar month-to-date: sum of the daily Class A/B peaks so far this month, matching Cloudflare billing. Resets on the 1st (UTC).",
+      "description": "Daily Class A peaks summed for the current calendar month (1M/month free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -457,16 +458,15 @@
           "interval": "1d"
         }
       ],
-      "title": "Class A (this month, 1M free)",
-      "type": "stat",
-      "timeFrom": "now/M"
+      "title": "Class A month-to-date",
+      "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Calendar month-to-date: sum of the daily Class A/B peaks so far this month, matching Cloudflare billing. Resets on the 1st (UTC).",
+      "description": "Daily Class B peaks summed for the current calendar month (10M/month free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -530,16 +530,15 @@
           "interval": "1d"
         }
       ],
-      "title": "Class B (this month, 10M free)",
-      "type": "stat",
-      "timeFrom": "now/M"
+      "title": "Class B month-to-date",
+      "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Projected month-end Class A at the current 7-day average daily rate (avg/day x days this month), vs the 1M free tier.",
+      "description": "7-day average daily rate extended to a full month (1M/month free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -602,7 +601,7 @@
           "refId": "A"
         }
       ],
-      "title": "Projected Class A (this month)",
+      "title": "Projected Class A",
       "type": "stat"
     },
     {
@@ -610,7 +609,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Projected month-end Class B at the current 7-day average daily rate (avg/day x days this month), vs the 10M free tier.",
+      "description": "7-day average daily rate extended to a full month (10M/month free).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -673,7 +672,7 @@
           "refId": "A"
         }
       ],
-      "title": "Projected Class B (this month)",
+      "title": "Projected Class B",
       "type": "stat"
     },
     {
@@ -729,7 +728,7 @@
           "refId": "A"
         }
       ],
-      "title": "Operations by action type (today)",
+      "title": "Operations by action type",
       "type": "timeseries"
     },
     {
@@ -737,7 +736,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Trailing 24h Class A / Class B operation totals (the exporter's per-day counter). Steps at 00:00 UTC.",
+      "description": "Trailing 24h Class A / Class B operation totals.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -797,7 +796,7 @@
           "refId": "B"
         }
       ],
-      "title": "Daily operations (trailing 24h)",
+      "title": "Daily operations",
       "type": "timeseries"
     }
   ],
@@ -812,11 +811,11 @@
     "list": []
   },
   "time": {
-    "from": "now-7d",
+    "from": "now/M",
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "utc",
+  "timezone": "Europe/Berlin",
   "title": "Cloudflare R2",
   "uid": "cloudflare-r2",
   "version": 1,

@@ -1409,7 +1409,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Berlin",
   "title": "Velero",
   "uid": "velero",
   "version": 6,

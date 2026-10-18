@@ -2400,7 +2400,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Berlin",
   "title": "ntfy App",
   "uid": "TO6HgexVz",
   "version": 24,
