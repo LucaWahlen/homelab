@@ -1094,7 +1094,7 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(http_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\", http_code!=\"429\", http_code!=\"507\"}[$__rate_interval]))",
+          "expr": "sum by(http_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\", http_code!=\"429\", http_code!=\"507\"}[$__rate_interval])) > 0",
           "legendFormat": "{{http_code}}",
           "range": true,
           "refId": "A"
@@ -1190,8 +1190,8 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum by(ntfy_code) (rate(ntfy_http_requests_total{http_code!=\"200\", job=\"ntfy\"}[$__rate_interval]))",
-          "legendFormat": "{{http_method}} {{http_code}} {{ntfy_code}}",
+          "expr": "sum by(http_code, ntfy_code) (rate(ntfy_http_requests_total{job=\"ntfy\", http_code!=\"200\"}[$__rate_interval])) > 0",
+          "legendFormat": "{{http_code}} {{ntfy_code}}",
           "range": true,
           "refId": "A"
         }
