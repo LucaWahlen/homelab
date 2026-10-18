@@ -15,7 +15,7 @@
       }
     ]
   },
-  "description": "Cloudflare R2 usage from the GraphQL Analytics API via cloudflare-exporter. Storage is the current object payload size. The exporter samples R2 operations per UTC day, so 'today' is the current day and monthly figures are rolling 30-day sums of the daily peaks; 'projected' extrapolates the 7-day average daily rate to a full month. Monthly free tiers: 1M Class A, 10M Class B.",
+  "description": "Cloudflare R2 usage from the GraphQL Analytics API via cloudflare-exporter. Storage is the current object payload size. Operations: the exporter samples per UTC day, so 'today' is the current day and the monthly figures are the calendar month-to-date sum of daily peaks (panel time range 'this month'), matching Cloudflare billing; 'projected' extrapolates the 7-day average daily rate to a full month. Monthly free tiers: 1M Class A, 10M Class B.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -234,87 +234,12 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "VictoriaMetrics"
-      },
-      "description": "Linear projection of each bucket's storage 30 days out from the 7-day trend.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 8589934592
-              },
-              {
-                "color": "red",
-                "value": 10737418240
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 24,
-        "x": 0,
-        "y": 6
-      },
-      "id": 12,
-      "options": {
-        "displayMode": "lcd",
-        "maxVizHeight": 300,
-        "minVizHeight": 16,
-        "minVizWidth": 8,
-        "namePlacement": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "sizing": "auto",
-        "valueMode": "color"
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "VictoriaMetrics"
-          },
-          "editorMode": "code",
-          "expr": "predict_linear(cloudflare_r2_storage_bytes[7d], 2592000)",
-          "instant": true,
-          "legendFormat": "{{bucket}}",
-          "range": false,
-          "refId": "A"
-        }
-      ],
-      "title": "Projected storage by bucket (30d)",
-      "type": "bargauge"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 6
       },
       "id": 101,
       "panels": [],
@@ -358,7 +283,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 12
+        "y": 7
       },
       "id": 3,
       "options": {
@@ -429,7 +354,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 12
+        "y": 7
       },
       "id": 4,
       "options": {
@@ -468,7 +393,7 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Rolling 30-day sum of daily Class A peaks, compared to the 1M/month free tier.",
+      "description": "Calendar month-to-date: sum of the daily Class A/B peaks so far this month, matching Cloudflare billing. Resets on the 1st (UTC).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -500,7 +425,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 12
+        "y": 7
       },
       "id": 6,
       "options": {
@@ -510,7 +435,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -524,22 +449,24 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(sum_over_time((max_over_time((sum(cloudflare_r2_operation_count) - sum(cloudflare_r2_operation_count{operation=~\"Get.*|Head.*\"}))[1d]))[30d:1d]))",
-          "instant": true,
+          "expr": "max_over_time((sum(cloudflare_r2_operation_count) - sum(cloudflare_r2_operation_count{operation=~\"Get.*|Head.*\"}))[1d])",
+          "instant": false,
           "legendFormat": "Class A",
-          "range": false,
-          "refId": "A"
+          "range": true,
+          "refId": "A",
+          "interval": "1d"
         }
       ],
-      "title": "Class A last 30d (1M/mo free)",
-      "type": "stat"
+      "title": "Class A (this month, 1M free)",
+      "type": "stat",
+      "timeFrom": "now/M"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
-      "description": "Rolling 30-day sum of daily Class B peaks, compared to the 10M/month free tier.",
+      "description": "Calendar month-to-date: sum of the daily Class A/B peaks so far this month, matching Cloudflare billing. Resets on the 1st (UTC).",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -571,7 +498,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 12
+        "y": 7
       },
       "id": 7,
       "options": {
@@ -581,7 +508,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "sum"
           ],
           "fields": "",
           "values": false
@@ -595,15 +522,17 @@
             "uid": "VictoriaMetrics"
           },
           "editorMode": "code",
-          "expr": "sum(sum_over_time((max_over_time((sum(cloudflare_r2_operation_count{operation=~\"Get.*|Head.*\"}))[1d]))[30d:1d]))",
-          "instant": true,
+          "expr": "max_over_time((sum(cloudflare_r2_operation_count{operation=~\"Get.*|Head.*\"}))[1d])",
+          "instant": false,
           "legendFormat": "Class B",
-          "range": false,
-          "refId": "A"
+          "range": true,
+          "refId": "A",
+          "interval": "1d"
         }
       ],
-      "title": "Class B last 30d (10M/mo free)",
-      "type": "stat"
+      "title": "Class B (this month, 10M free)",
+      "type": "stat",
+      "timeFrom": "now/M"
     },
     {
       "datasource": {
@@ -642,7 +571,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 17
+        "y": 12
       },
       "id": 8,
       "options": {
@@ -673,7 +602,7 @@
           "refId": "A"
         }
       ],
-      "title": "Projected Class A (month)",
+      "title": "Projected Class A (this month)",
       "type": "stat"
     },
     {
@@ -713,7 +642,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 17
+        "y": 12
       },
       "id": 9,
       "options": {
@@ -744,7 +673,7 @@
           "refId": "A"
         }
       ],
-      "title": "Projected Class B (month)",
+      "title": "Projected Class B (this month)",
       "type": "stat"
     },
     {
@@ -772,7 +701,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 12
       },
       "id": 5,
       "options": {
@@ -829,7 +758,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 18
       },
       "id": 10,
       "options": {
