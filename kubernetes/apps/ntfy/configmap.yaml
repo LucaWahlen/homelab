@@ -13,6 +13,14 @@ data:
     behind-proxy: true
     cache-file: "/var/cache/ntfy/cache.db"
     auth-file: "/var/cache/ntfy/auth.db"
+    # Attachments share the same PVC as the cache/auth DB and expire quickly;
+    # the caps keep the (nominal 1Gi) volume bounded. ntfy owns this directory.
+    attachment-cache-dir: "/var/cache/ntfy/attachments"
+    attachment-total-size-limit: "1G"
+    attachment-file-size-limit: "15M"
+    attachment-expiry-duration: "3h"
+    visitor-attachment-total-size-limit: "100M"
+    visitor-attachment-daily-bandwidth-limit: "500M"
     # Dedicated, cluster-internal port: /metrics is then not served on the
     # public :80 listener (and never exposed through the ingress).
     metrics-listen-http: ":9090"
