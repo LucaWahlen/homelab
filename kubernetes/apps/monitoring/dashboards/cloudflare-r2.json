@@ -70,7 +70,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 8,
+        "w": 6,
         "x": 0,
         "y": 1
       },
@@ -111,6 +111,77 @@
         "type": "prometheus",
         "uid": "VictoriaMetrics"
       },
+      "description": "Linear projection of total R2 storage 30 days out from the 7-day trend, vs the 10 GiB free tier.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 8589934592
+              },
+              {
+                "color": "red",
+                "value": 10737418240
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "predict_linear(cloudflare_r2_storage_total_bytes[7d], 2592000)",
+          "instant": true,
+          "legendFormat": "total",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Projected storage (30d)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -129,8 +200,8 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 16,
-        "x": 8,
+        "w": 12,
+        "x": 12,
         "y": 1
       },
       "id": 2,
@@ -163,12 +234,87 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "VictoriaMetrics"
+      },
+      "description": "Linear projection of each bucket's storage 30 days out from the 7-day trend.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 8589934592
+              },
+              {
+                "color": "red",
+                "value": 10737418240
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 12,
+      "options": {
+        "displayMode": "lcd",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "VictoriaMetrics"
+          },
+          "editorMode": "code",
+          "expr": "predict_linear(cloudflare_r2_storage_bytes[7d], 2592000)",
+          "instant": true,
+          "legendFormat": "{{bucket}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "Projected storage by bucket (30d)",
+      "type": "bargauge"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 11
       },
       "id": 101,
       "panels": [],
@@ -212,7 +358,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 7
+        "y": 12
       },
       "id": 3,
       "options": {
@@ -283,7 +429,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 7
+        "y": 12
       },
       "id": 4,
       "options": {
@@ -354,7 +500,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 7
+        "y": 12
       },
       "id": 6,
       "options": {
@@ -425,7 +571,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 7
+        "y": 12
       },
       "id": 7,
       "options": {
@@ -496,7 +642,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 12
+        "y": 17
       },
       "id": 8,
       "options": {
@@ -567,7 +713,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 12
+        "y": 17
       },
       "id": 9,
       "options": {
@@ -626,7 +772,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 12
+        "y": 17
       },
       "id": 5,
       "options": {
@@ -683,7 +829,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 23
       },
       "id": 10,
       "options": {
