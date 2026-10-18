@@ -13,6 +13,9 @@ data:
     behind-proxy: true
     cache-file: "/var/cache/ntfy/cache.db"
     auth-file: "/var/cache/ntfy/auth.db"
+    # Dedicated, cluster-internal port: /metrics is then not served on the
+    # public :80 listener (and never exposed through the ingress).
+    metrics-listen-http: ":9090"
     # iOS instant notifications require forwarding through ntfy.sh (Apple push
     # only accepts the official ntfy.sh bundle).
     upstream-base-url: "https://ntfy.sh"
