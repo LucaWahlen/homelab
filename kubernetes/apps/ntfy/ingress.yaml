@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ntfy
+spec:
+  ingressClassName: traefik
+  rules:
+    # Public through the Cloudflare tunnel wildcard (*.lucawahlen.com -> traefik);
+    # Cloudflare terminates TLS, so no cert-manager annotation here.
+    - host: ntfy.lucawahlen.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ntfy
+                port:
+                  number: 80

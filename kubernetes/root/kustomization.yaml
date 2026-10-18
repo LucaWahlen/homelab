@@ -8,5 +8,6 @@ resources:
   - halite.yaml
   - headlamp.yaml
   - monitoring.yaml
+  - ntfy.yaml
   - shale.yaml
   - velero.yaml
