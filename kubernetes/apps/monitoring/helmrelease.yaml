@@ -376,19 +376,23 @@ spec:
                   condition: C
                   data:
                     - refId: A
-                      datasourceUid: __expr__
+                      datasourceUid: VictoriaMetrics
                       relativeTimeRange:
                         from: 600
                         to: 0
                       model:
                         datasource:
-                          type: __expr__
-                          uid: __expr__
-                        expression: "1"
+                          type: prometheus
+                          uid: VictoriaMetrics
+                        editorMode: code
+                        # vector(1) is an instant vector, so the reduce node
+                        # below has a series to work with (a bare math scalar
+                        # fails with "can only reduce type series").
+                        expr: vector(1)
+                        instant: true
                         intervalMs: 1000
                         maxDataPoints: 43200
                         refId: A
-                        type: math
                     - refId: B
                       datasourceUid: __expr__
                       model:
