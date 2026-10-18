@@ -359,6 +359,15 @@ spec:
           mountPath: /etc/grafana/provisioning/alerting/templates.yaml
           subPath: templates.yaml
           readOnly: true
+      # One-shot cleanup for the dummy test rule. Removing a rule from the
+      # provisioning file does not delete what Grafana already created, so it
+      # must be deleted explicitly here; this block can be dropped afterwards.
+      alerting:
+        rules.yaml:
+          apiVersion: 1
+          deleteRules:
+            - orgId: 1
+              uid: dummy-always-firing
       persistence:
         enabled: true
         storageClassName: local-path
