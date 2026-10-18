@@ -8796,9 +8796,6 @@
   ],
   "refresh": "",
   "schemaVersion": 42,
-  "tags": [
-    "victoriametrics"
-  ],
   "templating": {
     "list": [
       {

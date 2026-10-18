@@ -804,11 +804,6 @@
   ],
   "refresh": "5m",
   "schemaVersion": 39,
-  "tags": [
-    "cloudflare",
-    "r2",
-    "velero"
-  ],
   "templating": {
     "list": []
   },
