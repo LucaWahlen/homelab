@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ntfy-config
+data:
+  server.yml: |
+    # Public URL is needed both for generated links and for the iOS push
+    # handshake, where ntfy forwards to upstream-base-url and the phone fetches
+    # the message back from this origin.
+    base-url: "https://ntfy.lucawahlen.com"
+    listen-http: ":80"
+    # Cloudflare terminates TLS in front of traefik, so trust X-Forwarded-*.
+    behind-proxy: true
+    cache-file: "/var/cache/ntfy/cache.db"
+    auth-file: "/var/cache/ntfy/auth.db"
+    # iOS instant notifications require forwarding through ntfy.sh (Apple push
+    # only accepts the official ntfy.sh bundle).
+    upstream-base-url: "https://ntfy.sh"
+    auth-default-access: "deny-all"
+    enable-login: true
+    enable-signup: false
