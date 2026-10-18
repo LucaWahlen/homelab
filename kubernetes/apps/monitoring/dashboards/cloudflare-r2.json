@@ -459,7 +459,8 @@
         }
       ],
       "title": "Class A month-to-date",
-      "type": "stat"
+      "type": "stat",
+      "timeFrom": "now/M"
     },
     {
       "datasource": {
@@ -531,7 +532,8 @@
         }
       ],
       "title": "Class B month-to-date",
-      "type": "stat"
+      "type": "stat",
+      "timeFrom": "now/M"
     },
     {
       "datasource": {
@@ -811,7 +813,7 @@
     "list": []
   },
   "time": {
-    "from": "now/M",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
