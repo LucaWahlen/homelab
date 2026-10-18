@@ -341,6 +341,98 @@ spec:
           root_url: https://grafana.internal.lucawahlen.com
         users:
           allow_sign_up: false
+      # Alerting provisioning is mounted from a SOPS-encrypted Secret so the
+      # ntfy access token stays out of this HelmRelease.
+      extraSecretMounts:
+        - name: ntfy-contactpoints
+          secretName: grafana-ntfy-alerting
+          mountPath: /etc/grafana/provisioning/alerting/contactpoints.yaml
+          subPath: contactpoints.yaml
+          readOnly: true
+        - name: ntfy-policies
+          secretName: grafana-ntfy-alerting
+          mountPath: /etc/grafana/provisioning/alerting/policies.yaml
+          subPath: policies.yaml
+          readOnly: true
+        - name: ntfy-templates
+          secretName: grafana-ntfy-alerting
+          mountPath: /etc/grafana/provisioning/alerting/templates.yaml
+          subPath: templates.yaml
+          readOnly: true
+      # Dummy alert rule to exercise the ntfy contact point. It evaluates the
+      # built-in expression datasource (always 1 > 0) and so fires continuously;
+      # delete this group once you've confirmed push delivery.
+      alerting:
+        rules.yaml:
+          apiVersion: 1
+          groups:
+            - orgId: 1
+              name: dummy
+              folder: Alerts
+              interval: 1m
+              rules:
+                - uid: dummy-always-firing
+                  title: Dummy alert (always firing)
+                  condition: C
+                  data:
+                    - refId: A
+                      datasourceUid: __expr__
+                      relativeTimeRange:
+                        from: 600
+                        to: 0
+                      model:
+                        datasource:
+                          type: __expr__
+                          uid: __expr__
+                        expression: "1"
+                        intervalMs: 1000
+                        maxDataPoints: 43200
+                        refId: A
+                        type: math
+                    - refId: B
+                      datasourceUid: __expr__
+                      model:
+                        datasource:
+                          type: __expr__
+                          uid: __expr__
+                        expression: A
+                        intervalMs: 1000
+                        maxDataPoints: 43200
+                        reducer: last
+                        refId: B
+                        type: reduce
+                    - refId: C
+                      datasourceUid: __expr__
+                      model:
+                        datasource:
+                          type: __expr__
+                          uid: __expr__
+                        expression: B
+                        intervalMs: 1000
+                        maxDataPoints: 43200
+                        refId: C
+                        type: threshold
+                        conditions:
+                          - evaluator:
+                              params:
+                                - 0
+                              type: gt
+                            operator:
+                              type: and
+                            query:
+                              params:
+                                - C
+                            reducer:
+                              params: []
+                              type: last
+                            type: query
+                  noDataState: OK
+                  execErrState: OK
+                  for: 0s
+                  annotations:
+                    summary: Test notification from Grafana to ntfy
+                  labels:
+                    severity: test
       persistence:
         enabled: true
         storageClassName: local-path
