@@ -25,7 +25,7 @@ ARG FLUX_VERSION=2.9.6
 # renovate: datasource=github-releases depName=getsops/sops extractVersion=^v(?<version>.*)$
 ARG SOPS_VERSION=3.13.3
 # renovate: datasource=github-releases depName=opentofu/opentofu extractVersion=^v(?<version>.*)$
-ARG OPENTOFU_VERSION=1.13.1
+ARG OPENTOFU_VERSION=1.13.2
 # renovate: datasource=github-releases depName=FiloSottile/age extractVersion=^v(?<version>.*)$
 ARG AGE_VERSION=1.3.2
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
@@ -41,7 +41,7 @@ ARG LEFTHOOK_VERSION=2.2.2
 # renovate: datasource=github-releases depName=stackrox/kube-linter extractVersion=^v(?<version>.*)$
 ARG KUBE_LINTER_VERSION=0.8.3
 # renovate: datasource=github-releases depName=aquasecurity/trivy extractVersion=^v(?<version>.*)$
-ARG TRIVY_VERSION=0.76.0
+ARG TRIVY_VERSION=0.76.1
 # renovate: datasource=github-releases depName=gitleaks/gitleaks extractVersion=^v(?<version>.*)$
 ARG GITLEAKS_VERSION=8.30.1
 
