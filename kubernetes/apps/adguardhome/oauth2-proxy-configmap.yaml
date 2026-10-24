@@ -14,6 +14,9 @@ data:
   # per application (adguard-*), and a Bedrock group bundles a set of them.
   OAUTH2_PROXY_SCOPE: openid profile email roles
   OAUTH2_PROXY_OIDC_GROUPS_CLAIM: urn:bedrock:roles
+  # Bedrock requires PKCE; without this oauth2-proxy's authorize request is
+  # refused with invalid_request.
+  OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
   # The gate is binary: this role only means "may reach AdGuard at all", so it
   # has no tiers. Which group grants it is what decides who gets in.
   OAUTH2_PROXY_ALLOWED_GROUPS: adguard-access
