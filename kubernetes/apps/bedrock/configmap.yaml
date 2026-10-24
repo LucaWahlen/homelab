@@ -23,6 +23,13 @@ data:
   SMTP_PORT: "587"
   SMTP_SECURE: "false"
 
+  # OpenTelemetry. Metrics go to VictoriaMetrics, request spans to
+  # VictoriaTraces; the base endpoint is what the health page checks.
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://vmsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/opentelemetry
+  OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: http://vmsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/opentelemetry/v1/metrics
+  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://vtsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+  OTEL_SERVICE_NAME: bedrock
+
   PWNED_PASSWORD_CHECK: "true"
   AUDIT_RETENTION_DAYS: "90"
   ORGANIZATION_RETENTION_DAYS: "30"
