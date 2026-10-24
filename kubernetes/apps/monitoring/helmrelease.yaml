@@ -25,6 +25,9 @@ spec:
         # before the shared node disk fills up.
         extraArgs:
           storage.minFreeDiskSpaceBytes: "5GiB"
+          # OTLP metrics otherwise keep their dotted names and labels, which
+          # Grafana and PromQL handle awkwardly. Convert to Prometheus naming.
+          opentelemetry.usePrometheusNaming: "true"
         storage:
           accessModes:
             - ReadWriteOnce

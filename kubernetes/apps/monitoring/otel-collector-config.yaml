@@ -21,10 +21,10 @@ data:
     exporters:
       # VictoriaMetrics accepts OTLP metrics only as protobuf; the collector
       # converts Bedrock's JSON exports. The exporter appends /v1/metrics.
-      otlphttp/metrics:
+      otlp_http/metrics:
         endpoint: http://vmsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/opentelemetry
       # VictoriaTraces appends /v1/traces to this prefix.
-      otlphttp/traces:
+      otlp_http/traces:
         endpoint: http://vtsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:10428/insert/opentelemetry
 
     extensions:
@@ -47,8 +47,8 @@ data:
         metrics:
           receivers: [otlp]
           processors: [memory_limiter, batch]
-          exporters: [otlphttp/metrics]
+          exporters: [otlp_http/metrics]
         traces:
           receivers: [otlp]
           processors: [memory_limiter, batch]
-          exporters: [otlphttp/traces]
+          exporters: [otlp_http/traces]
