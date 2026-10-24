@@ -13,7 +13,7 @@ data:
   S3_REGION: auto
   S3_BUCKET: bedrock-media
   S3_ENDPOINT: https://918313ddac1a5febb3798b7630b4b7d4.r2.cloudflarestorage.com
-  S3_FORCE_PATH_STYLE: "false"
+  S3_FORCE_PATH_STYLE: "true"
   S3_PUBLIC_URL: https://bedrock-media.lucawahlen.com
 
   # Resend speaks SMTP: port 587 negotiates STARTTLS.
