@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:4318
+          grpc:
+            endpoint: 0.0.0.0:4317
+
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 192
+      batch: {}
+
+    exporters:
+      # VictoriaMetrics accepts OTLP metrics only as protobuf; the collector
+      # converts Bedrock's JSON exports. The exporter appends /v1/metrics.
+      otlphttp/metrics:
+        endpoint: http://vmsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/opentelemetry
+      # VictoriaTraces appends /v1/traces to this prefix.
+      otlphttp/traces:
+        endpoint: http://vtsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:10428/insert/opentelemetry
+
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+
+    service:
+      extensions: [health_check]
+      telemetry:
+        logs:
+          level: info
+        metrics:
+          address: 0.0.0.0:8888
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: [memory_limiter, batch]
+          exporters: [otlphttp/metrics]
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, batch]
+          exporters: [otlphttp/traces]

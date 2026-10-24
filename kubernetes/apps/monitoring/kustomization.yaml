@@ -14,3 +14,5 @@ resources:
   - grafana-ntfy-alerting.enc.yaml
   - helmrepository.yaml
   - helmrelease.yaml
+  - otel-collector-config.yaml
+  - otel-collector.yaml
