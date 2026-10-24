@@ -6,8 +6,8 @@ data:
   # Public https URL: the OIDC issuer and passkey relying party. Pick it once.
   BETTER_AUTH_URL: https://bedrock.lucawahlen.com
 
-  SEED_ADMIN_EMAIL: admin@lucawahlen.com
-  SEED_ADMIN_NAME: Admin
+  SEED_ADMIN_EMAIL: mail@lucawahlen.com
+  SEED_ADMIN_NAME: Luca Wahlen
 
   # Cloudflare R2. Public reads use the bucket's custom domain.
   S3_REGION: auto
@@ -23,11 +23,10 @@ data:
   SMTP_PORT: "587"
   SMTP_SECURE: "false"
 
-  # OpenTelemetry. Metrics go to VictoriaMetrics, request spans to
-  # VictoriaTraces; the base endpoint is what the health page checks.
-  OTEL_EXPORTER_OTLP_ENDPOINT: http://vmsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/opentelemetry
-  OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: http://vmsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:8428/opentelemetry/v1/metrics
-  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://vtsingle-monitoring-victoria-metrics-k8s-stack.monitoring.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+  # OpenTelemetry. The collector converts Bedrock's JSON exports to the
+  # protobuf encoding VictoriaMetrics requires and routes traces to
+  # VictoriaTraces. The base endpoint is what the health page checks.
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.monitoring.svc.cluster.local:4318
   OTEL_SERVICE_NAME: bedrock
 
   PWNED_PASSWORD_CHECK: "true"
