@@ -23,12 +23,6 @@ data:
   SMTP_PORT: "587"
   SMTP_SECURE: "false"
 
-  # OpenTelemetry. The collector converts Bedrock's JSON exports to the
-  # protobuf encoding VictoriaMetrics requires and routes traces to
-  # VictoriaTraces. The base endpoint is what the health page checks.
-  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.monitoring.svc.cluster.local:4318
-  OTEL_SERVICE_NAME: bedrock
-
   PWNED_PASSWORD_CHECK: "true"
   AUDIT_RETENTION_DAYS: "90"
   ORGANIZATION_RETENTION_DAYS: "30"
