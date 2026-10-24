@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth2-proxy-config
+data:
+  # Gate the Headlamp UI with Bedrock. oauth2-proxy terminates every request,
+  # signs the user in through Bedrock's OIDC provider, then proxies the rest to
+  # the Headlamp service. The client id and secret live in secret.enc.yaml.
+  OAUTH2_PROXY_PROVIDER: oidc
+  OAUTH2_PROXY_PROVIDER_DISPLAY_NAME: Bedrock
+  OAUTH2_PROXY_OIDC_ISSUER_URL: https://bedrock.lucawahlen.com/api/auth
+  # Gate on the roles claim, not the groups claim: Bedrock roles are individual
+  # per application (headlamp-*), and a Bedrock group bundles a set of them.
+  OAUTH2_PROXY_SCOPE: openid profile email roles
+  OAUTH2_PROXY_OIDC_GROUPS_CLAIM: urn:bedrock:roles
+  # The gate is binary: this role only means "may reach Headlamp at all", so it
+  # has no tiers. Which group grants it is what decides who gets in.
+  OAUTH2_PROXY_ALLOWED_GROUPS: headlamp-access
+  OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+  OAUTH2_PROXY_REDIRECT_URL: https://headlamp.internal.lucawahlen.com/oauth2/callback
+  OAUTH2_PROXY_UPSTREAMS: http://headlamp:80
+  OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+  OAUTH2_PROXY_COOKIE_SECURE: "true"
+  OAUTH2_PROXY_COOKIE_SAMESITE: lax
+  OAUTH2_PROXY_REVERSE_PROXY: "true"
+  OAUTH2_PROXY_TRUSTED_PROXY_IPS: 10.42.0.0/16,10.43.0.0/16
+  OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
+  OAUTH2_PROXY_PASS_USER_HEADERS: "true"
+  OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+  OAUTH2_PROXY_WHITELIST_DOMAINS: .internal.lucawahlen.com

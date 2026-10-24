@@ -9,4 +9,9 @@ resources:
   - service-web.yaml
   - ingress.yaml
   - middleware.yaml
+  # Bedrock OIDC gate: oauth2-proxy fronts the AdGuard Home UI.
+  - oauth2-proxy-configmap.yaml
+  - oauth2-proxy-deployment.yaml
+  - oauth2-proxy-service.yaml
+  - oauth2-proxy-secret.enc.yaml
   - config.enc.yaml

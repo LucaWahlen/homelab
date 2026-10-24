@@ -355,6 +355,29 @@ spec:
       # Whole instance in Berlin local time.
       env:
         TZ: Europe/Berlin
+        # --- Bedrock OIDC (generic OAuth) ------------------------------
+        # Sign-in is delegated to Bedrock; Grafana maps the namespaced roles
+        # claim to its own roles. The client secret is not here: it lives in
+        # the SOPS-encrypted Secret loaded through envFromSecret below.
+        GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+        GF_AUTH_GENERIC_OAUTH_NAME: Bedrock
+        GF_AUTH_GENERIC_OAUTH_CLIENT_ID: PwlcvpdcoGZNAQQONkaCKgPrMAcMidtt
+        GF_AUTH_GENERIC_OAUTH_SCOPES: openid profile email roles
+        GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/authorize
+        GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/token
+        GF_AUTH_GENERIC_OAUTH_API_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/userinfo
+        GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
+        GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+        GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN: "true"
+        # Deny a token that carries no recognised Grafana role, and map the
+        # Grafana-scoped role keys (Granted through a group) to Grafana roles.
+        GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT: "true"
+        GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: >-
+          contains("urn:bedrock:roles", 'grafana-admin') && 'GrafanaAdmin' ||
+          contains("urn:bedrock:roles", 'grafana-developer') && 'Editor' ||
+          contains("urn:bedrock:roles", 'grafana-viewer') && 'Viewer' || 'None'
+      # Grafana OIDC client secret, encrypted with SOPS/age.
+      envFromSecret: grafana-oidc
       grafana.ini:
         server:
           root_url: https://grafana.internal.lucawahlen.com

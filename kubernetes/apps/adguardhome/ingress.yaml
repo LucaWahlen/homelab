@@ -19,6 +19,8 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: adguardhome-web
+                # All traffic enters oauth2-proxy, which signs the user in with
+                # Bedrock before proxying on to the AdGuard web service.
+                name: oauth2-proxy
                 port:
-                  number: 3000
+                  number: 4180
