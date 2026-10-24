@@ -25,9 +25,6 @@ spec:
         # before the shared node disk fills up.
         extraArgs:
           storage.minFreeDiskSpaceBytes: "5GiB"
-          # OTLP metrics otherwise keep their dotted names and labels, which
-          # Grafana and PromQL handle awkwardly. Convert to Prometheus naming.
-          opentelemetry.usePrometheusNaming: "true"
         storage:
           accessModes:
             - ReadWriteOnce
@@ -56,20 +53,6 @@ spec:
       spec:
         k8sCollector:
           enabled: true
-
-    # --- Traces --------------------------------------------------------
-    # Bedrock exports Next.js request spans over OTLP/HTTP. VictoriaTraces
-    # stores them and exposes the Jaeger-compatible API Grafana reads.
-    vtsingle:
-      enabled: true
-      spec:
-        retentionPeriod: 7d
-        storage:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 5Gi
 
     # --- Alerting disabled for now ------------------------------------
     alertmanager:
@@ -375,12 +358,12 @@ spec:
           allow_sign_up: false
         date_formats:
           default_timezone: Europe/Berlin
-        # Keep only what this stack uses: Prometheus (VictoriaMetrics),
-        # VictoriaLogs and the Jaeger-compatible VictoriaTraces datasource,
-        # plus the Metrics/Logs Drilldown apps. Profiles have no backend here,
-        # and the bundled datasources below are all unused.
+        # Keep only what this stack uses: the Prometheus (VictoriaMetrics) and
+        # VictoriaLogs datasources plus the Metrics/Logs Drilldown apps. Traces
+        # and Profiles have no backend here, and the bundled datasources below
+        # are all unused.
         plugins:
-          disable_plugins: grafana-exploretraces-app,grafana-pyroscope-app,grafana-advisor-app,alertmanager,cloudwatch,elasticsearch,grafana-azure-monitor-datasource,grafana-postgresql-datasource,grafana-pyroscope-datasource,grafana-testdata-datasource,graphite,influxdb,loki,mssql,mysql,opentsdb,stackdriver,tempo,zipkin  # yamllint disable-line rule:line-length
+          disable_plugins: grafana-exploretraces-app,grafana-pyroscope-app,grafana-advisor-app,alertmanager,cloudwatch,elasticsearch,grafana-azure-monitor-datasource,grafana-postgresql-datasource,grafana-pyroscope-datasource,grafana-testdata-datasource,graphite,influxdb,jaeger,loki,mssql,mysql,opentsdb,stackdriver,tempo,zipkin  # yamllint disable-line rule:line-length
       # Alerting provisioning is mounted from a SOPS-encrypted Secret so the
       # ntfy access token stays out of this HelmRelease.
       extraSecretMounts:
