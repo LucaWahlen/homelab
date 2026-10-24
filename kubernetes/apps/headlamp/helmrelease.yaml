@@ -47,6 +47,13 @@ spec:
           paths:
             - path: /
               type: Prefix
+              # All traffic enters oauth2-proxy, which signs the user in with
+              # Bedrock and proxies the rest to the Headlamp service.
+              backend:
+                service:
+                  name: oauth2-proxy
+                  port:
+                    number: 4180
       tls:
         - secretName: headlamp-tls
           hosts:
