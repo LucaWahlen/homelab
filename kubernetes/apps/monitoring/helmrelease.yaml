@@ -367,6 +367,10 @@ spec:
         GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/token
         GF_AUTH_GENERIC_OAUTH_API_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/userinfo
         GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
+        # Roles are only mapped at sign-in. Bedrock issues no refresh token to
+        # Grafana, so this signs the user out when the one-hour access token
+        # expires, and the next sign-in maps whatever roles they hold then.
+        GF_AUTH_GENERIC_OAUTH_USE_REFRESH_TOKEN: "true"
         GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
         GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN: "true"
         # Deny a token that carries no recognised Grafana role, and map the

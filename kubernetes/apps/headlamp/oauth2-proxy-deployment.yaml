@@ -15,6 +15,10 @@ spec:
     metadata:
       labels:
         app: oauth2-proxy
+      annotations:
+        # Environment from a ConfigMap is only read at start-up. Bump this with
+        # every change to oauth2-proxy-configmap.yaml so the pod is replaced.
+        lucawahlen.com/config-revision: "2"
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
