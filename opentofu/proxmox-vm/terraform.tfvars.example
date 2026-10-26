@@ -1,5 +1,5 @@
 proxmox_endpoint  = "https://192.168.178.XXX:8006/"
-proxmox_api_token = "terraform@pve!terraform=00000000-0000-0000-0000-000000000000"
+proxmox_api_token = "terraform@pve!opentofu=00000000-0000-0000-0000-000000000000"
 
 proxmox_node = "pve"
 storage_pool = "local-lvm"
