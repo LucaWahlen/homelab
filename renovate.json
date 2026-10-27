@@ -23,7 +23,7 @@
       "matchStrings": [
         "https://cloud\\.debian\\.org/images/cloud/trixie/(?<currentValue>\\d{8}-\\d+)/debian-13-genericcloud-amd64-\\d{8}-\\d+\\.qcow2"
       ],
-      "replaceString": "https://cloud.debian.org/images/cloud/trixie/{{{newValue}}}/debian-13-genericcloud-amd64-{{{newValue}}}.qcow2",
+      "autoReplaceStringTemplate": "https://cloud.debian.org/images/cloud/trixie/{{{newValue}}}/debian-13-genericcloud-amd64-{{{newValue}}}.qcow2",
       "depNameTemplate": "debian/trixie-genericcloud-amd64",
       "datasourceTemplate": "custom.debian-cloud-image",
       "versioningTemplate": "regex:^(?<major>\\d{8})-(?<minor>\\d+)$"
