@@ -15,8 +15,26 @@
       "depNameTemplate": "k3s-io/k3s",
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\+k3s(?<build>\\d+)$"
+    },
+    {
+      "customType": "regex",
+      "description": "Debian 13 (trixie) genericcloud image pinned in opentofu",
+      "managerFilePatterns": ["/^opentofu/proxmox-vm/variables\\.tf$/"],
+      "matchStrings": [
+        "https://cloud\\.debian\\.org/images/cloud/trixie/(?<currentValue>\\d{8}-\\d+)/debian-13-genericcloud-amd64-\\d{8}-\\d+\\.qcow2"
+      ],
+      "replaceString": "https://cloud.debian.org/images/cloud/trixie/{{{newValue}}}/debian-13-genericcloud-amd64-{{{newValue}}}.qcow2",
+      "depNameTemplate": "debian/trixie-genericcloud-amd64",
+      "datasourceTemplate": "custom.debian-cloud-image",
+      "versioningTemplate": "regex:^(?<major>\\d{8})-(?<minor>\\d+)$"
     }
   ],
+  "customDatasources": {
+    "debian-cloud-image": {
+      "defaultRegistryUrlTemplate": "https://cloud.debian.org/images/cloud/trixie/",
+      "format": "html"
+    }
+  },
   "packageRules": [
     {
       "description": "Flux system manifests are managed by the native flux manager",
@@ -54,6 +72,13 @@
       "groupName": "kubernetes",
       "separateMultipleMinor": true,
       "automerge": false
+    },
+    {
+      "description": "Debian cloud image: the release directory is the version, newest wins",
+      "matchDatasources": ["custom.debian-cloud-image"],
+      "extractVersion": "^(?<version>\\d{8}-\\d+)/?$",
+      "groupName": "debian-cloud-image",
+      "automerge": true
     }
   ]
 }
