@@ -47,7 +47,7 @@ spec:
         - name: bedrock
           # No versioned releases yet; edge is pinned by digest and Renovate
           # can bump it. Do not replace this with a floating tag.
-          image: ghcr.io/lucawahlen/bedrock:edge@sha256:0c019ed82d0558b6c6d46d7126d05a51b345861b267bd9934c233a2890385074
+          image: ghcr.io/lucawahlen/bedrock:edge@sha256:182a26619c108261bbf2dfb9c80206094129887b3c35ab7adc0ea92d5a6cdbaf
           env:
             # The runtime sets HOSTNAME to the pod name; listen on every
             # interface so probes and the Service both reach the server.
