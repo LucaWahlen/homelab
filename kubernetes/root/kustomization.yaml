@@ -10,5 +10,6 @@ resources:
   - headlamp.yaml
   - monitoring.yaml
   - ntfy.yaml
+  - rustfs.yaml
   - shale.yaml
   - velero.yaml
