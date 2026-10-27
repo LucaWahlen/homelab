@@ -78,5 +78,8 @@ spec:
         value: urn:bedrock:roles
       - name: RUSTFS_IDENTITY_OPENID_EMAIL_CLAIM
         value: email
+      # Bedrock signs email/name into the ID token but never preferred_username,
+      # so the default leaves the username empty and the Console falls back to
+      # showing a derived identity hash instead of a name.
       - name: RUSTFS_IDENTITY_OPENID_USERNAME_CLAIM
-        value: preferred_username
+        value: email
