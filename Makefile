@@ -6,10 +6,10 @@ init:
 	for s in $(STACKS); do tofu -chdir=$$s init || exit 1; done
 
 plan:
-	for s in $(STACKS); do tofu -chdir=$$s plan || exit 1; done
+	for s in $(STACKS); do sops exec-env $$s/secrets.enc.yaml "tofu -chdir=$$s plan" || exit 1; done
 
 infra:
-	for s in $(STACKS); do tofu -chdir=$$s apply || exit 1; done
+	for s in $(STACKS); do sops exec-env $$s/secrets.enc.yaml "tofu -chdir=$$s apply" || exit 1; done
 
 seal:
 	scripts/seal-cloudflared.sh
@@ -20,10 +20,8 @@ bootstrap:
 apply: infra seal bootstrap
 
 destroy:
-	tofu -chdir=opentofu/proxmox-vm destroy
-	tofu -chdir=opentofu/cloudflare-tunnel destroy
+	for s in $(STACKS); do sops exec-env $$s/secrets.enc.yaml "tofu -chdir=$$s destroy" || exit 1; done
 
-# Everything lint-related lives in lefthook.yml and runs via git hooks too.
 lint:
 	lefthook run pre-commit --all-files --force
 	lefthook run pre-push --all-files --force

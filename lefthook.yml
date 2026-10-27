@@ -23,6 +23,10 @@ pre-commit:
       # Fails if a secret under kubernetes/ could reach Git unencrypted.
       run: scripts/check-sops.sh
       glob: "kubernetes/**"
+    tofu-state:
+      # Fails if committed state is unencrypted or a plaintext tfvars is staged.
+      run: scripts/check-tofu-state.sh
+      glob: "opentofu/**"
 
 pre-push:
   parallel: true

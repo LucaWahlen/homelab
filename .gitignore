@@ -2,8 +2,9 @@
 **/.terraform/
 *.tfstate
 *.tfstate.*
+!opentofu/**/terraform.tfstate
+*.tfplan
 *.tfvars
-!*.tfvars.example
 crash.log
 crash.*.log
 
