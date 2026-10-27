@@ -20,14 +20,18 @@ variable "proxmox_node" {
   type        = string
 }
 
+# Pinned to a dated Debian release rather than .../trixie/latest/... so the image
+# is fetched only once. Renovate bumps the version (see renovate.json); `url` is
+# a ForceNew attribute, so a bump replaces the resource and re-downloads the new
+# image automatically on the next apply.
 variable "cloud_image_url" {
   description = "URL of the cloud-init-ready disk image OpenTofu downloads onto the Proxmox node and boots the VM from"
   type        = string
-  default     = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
+  default     = "https://cloud.debian.org/images/cloud/trixie/20261026-2643/debian-13-genericcloud-amd64-20261026-2643.qcow2"
 }
 
 variable "cloud_image_file_name" {
-  description = "File name for the image on Proxmox; must end in .qcow2 for content_type import (Debian's genericcloud image is qcow2)"
+  description = "File name for the image on Proxmox; must end in .qcow2 for content_type import (Debian's genericcloud image is qcow2). Kept unversioned so the VM disk's import_from does not change when the pinned release is bumped"
   type        = string
   default     = "debian-13-genericcloud-amd64.qcow2"
 }

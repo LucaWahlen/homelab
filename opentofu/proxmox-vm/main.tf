@@ -1,9 +1,15 @@
+# The image is fetched onto the Proxmox node once and reused. overwrite = false
+# stops the provider from re-downloading when the datastore file size drifts; the
+# pinned, dated URL means a new image is only fetched when that version changes
+# (Renovate opens the bump, and since `url` is ForceNew the resource is replaced
+# and re-downloaded automatically on the next apply).
 resource "proxmox_download_file" "cloud_image" {
   content_type = "import"
   datastore_id = var.image_datastore_id
   node_name    = var.proxmox_node
   url          = var.cloud_image_url
   file_name    = var.cloud_image_file_name
+  overwrite    = false
 }
 
 resource "proxmox_virtual_environment_vm" "k3s_node" {
