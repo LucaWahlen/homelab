@@ -2,6 +2,7 @@ FROM quay.io/fedora/fedora:46
 
 RUN dnf -y install \
         git \
+        jq \
         make \
         openssh-clients \
         ansible-core \
