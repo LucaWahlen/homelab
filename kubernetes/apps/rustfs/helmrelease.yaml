@@ -37,8 +37,6 @@ spec:
         memory: 1Gi
     ingress:
       enabled: true
-      # The chart defaults to nginx when this is unset, and this cluster only
-      # runs Traefik; without this the Ingress is never programmed.
       className: traefik
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
