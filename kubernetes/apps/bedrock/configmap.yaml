@@ -9,12 +9,13 @@ data:
   SEED_ADMIN_EMAIL: mail@lucawahlen.com
   SEED_ADMIN_NAME: Luca Wahlen
 
-  # Cloudflare R2. Public reads use the bucket's custom domain.
-  S3_REGION: auto
+  # RustFS (self-hosted). Public reads go through the s3.lucawahlen.com
+  # ingress with an anonymous-read bucket policy.
+  S3_REGION: us-east-1
   S3_BUCKET: bedrock-media
-  S3_ENDPOINT: https://918313ddac1a5febb3798b7630b4b7d4.r2.cloudflarestorage.com
+  S3_ENDPOINT: https://s3.lucawahlen.com
   S3_FORCE_PATH_STYLE: "true"
-  S3_PUBLIC_URL: https://bedrock-media.lucawahlen.com
+  S3_PUBLIC_URL: https://s3.lucawahlen.com/bedrock-media
 
   # Resend speaks SMTP: port 587 negotiates STARTTLS.
   EMAIL_SENDER_NAME: Bedrock
