@@ -2,3 +2,6 @@ k3s_version: "v1.37.1+k3s1"
 repo_root: "{{ playbook_dir }}/.."
 kubeconfig: "{{ repo_root }}/kubeconfig"
 sops_age_key_file: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/sops/age/keys.txt"
+lvm_data_disk: /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1
+# Must match volgroup in kubernetes/apps/openebs/storageclass.yaml.
+lvm_volume_group: k3s-data

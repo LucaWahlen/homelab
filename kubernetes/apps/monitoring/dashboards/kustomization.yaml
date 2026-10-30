@@ -91,15 +91,6 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Kubernetes
-  - name: grafana-dashboard-velero
-    files:
-      - velero.json
-    options:
-      disableNameSuffixHash: true
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Velero
   - name: grafana-dashboard-cloudflare-r2
     files:
       - cloudflare-r2.json

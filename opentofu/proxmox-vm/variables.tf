@@ -72,6 +72,12 @@ variable "vm_disk_size" {
   default     = 500
 }
 
+variable "vm_data_disk_size" {
+  description = "Size of the data disk backing the OpenEBS LVM volume group, in GB"
+  type        = number
+  default     = 200
+}
+
 variable "storage_pool" {
   description = "Proxmox storage pool to use for the VM disk and cloud-init drive"
   type        = string
