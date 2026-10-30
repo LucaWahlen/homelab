@@ -2,6 +2,10 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: openebs-lvm
+  annotations:
+    # Sole default StorageClass: k3s' bundled local-path provisioner is disabled
+    # (see ansible/roles/k3s), so nothing can silently consume the OS disk.
+    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: local.csi.openebs.io
 parameters:
   storage: lvm

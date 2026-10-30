@@ -85,7 +85,7 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        storageClassName: local-path
+        storageClassName: openebs-lvm
         resources:
           requests:
-            storage: 5Gi
+            storage: 2Gi

@@ -29,28 +29,30 @@ spec:
         extraArgs:
           storage.minFreeDiskSpaceBytes: "5GiB"
         storage:
+          storageClassName: openebs-lvm
           accessModes:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 15Gi
+              storage: 10Gi
 
     # --- Logs ----------------------------------------------------------
     vlsingle:
       enabled: true
       spec:
         retentionPeriod: 30d
-        # local-path PVs are unquota'd directories on the node disk, so cap the
-        # log store and drop the oldest partitions before the node fills up.
+        # Cap the log store and drop the oldest partitions before the volume
+        # fills up, independent of the PVC request size.
         # https://docs.victoriametrics.com/victorialogs/#absolute-disk-space-limit
         extraArgs:
           retention.maxDiskSpaceUsageBytes: "2GiB"
         storage:
+          storageClassName: openebs-lvm
           accessModes:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 5Gi
+              storage: 2Gi
     vlagent:
       enabled: true
       spec:
@@ -367,7 +369,7 @@ spec:
                     ntfy_topic: cloudflare
       persistence:
         enabled: true
-        storageClassName: local-path
+        storageClassName: openebs-lvm
         size: 1Gi
         annotations:
           helm.sh/resource-policy: keep
