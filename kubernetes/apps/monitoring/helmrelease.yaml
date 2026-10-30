@@ -84,6 +84,11 @@ spec:
     # --- Grafana -------------------------------------------------------
     grafana:
       replicas: 1
+      # The data volume is a single-mount LVM volume (RWO), so a rolling update
+      # deadlocks: the new pod cannot mount the device while the old pod holds
+      # it. Recreate tears the old pod down before starting the new one.
+      deploymentStrategy:
+        type: Recreate
       admin:
         existingSecret: grafana-admin
       # VictoriaLogs datasource plugin (the VictoriaMetrics datasource is built in).
