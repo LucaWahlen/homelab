@@ -12,7 +12,5 @@ resources:
   - grafana-admin.enc.yaml
   # Grafana OIDC client secret (Bedrock), encrypted with SOPS/age.
   - grafana-oidc.enc.yaml
-  # Grafana alerting provisioning pointing at ntfy (token stays encrypted).
-  - grafana-ntfy-alerting.enc.yaml
   - helmrepository.yaml
   - helmrelease.yaml

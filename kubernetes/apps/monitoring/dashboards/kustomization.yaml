@@ -91,21 +91,3 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Kubernetes
-  - name: grafana-dashboard-cloudflare-r2
-    files:
-      - cloudflare-r2.json
-    options:
-      disableNameSuffixHash: true
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Cloudflare
-  - name: grafana-dashboard-ntfy
-    files:
-      - ntfy.json
-    options:
-      disableNameSuffixHash: true
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: ntfy
