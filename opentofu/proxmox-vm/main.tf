@@ -53,6 +53,17 @@ resource "proxmox_virtual_environment_vm" "k3s_node" {
     discard      = "on"
   }
 
+  # Raw disk for the OpenEBS LVM volume group; shows up as
+  # /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1 in the guest.
+  disk {
+    datastore_id = var.storage_pool
+    interface    = "scsi1"
+    size         = var.vm_data_disk_size
+    file_format  = "raw"
+    iothread     = true
+    discard      = "on"
+  }
+
   network_device {
     bridge = var.network_bridge
   }

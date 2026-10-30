@@ -1,8 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: velero
-  namespace: velero
+  name: openebs-lvm
 spec:
   interval: 1h
-  url: https://vmware-tanzu.github.io/helm-charts
+  url: https://openebs.github.io/lvm-localpv
