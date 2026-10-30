@@ -89,6 +89,8 @@ spec:
       # it. Recreate tears the old pod down before starting the new one.
       deploymentStrategy:
         type: Recreate
+        # Clear the defaulted rollingUpdate block; it is invalid with Recreate.
+        rollingUpdate: null
       admin:
         existingSecret: grafana-admin
       # VictoriaLogs datasource plugin (the VictoriaMetrics datasource is built in).
