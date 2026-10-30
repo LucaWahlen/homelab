@@ -69,7 +69,7 @@ variable "vm_memory" {
 variable "vm_disk_size" {
   description = "Disk size for the VM, in GB"
   type        = number
-  default     = 64
+  default     = 32
 }
 
 variable "vm_data_disk_size" {
