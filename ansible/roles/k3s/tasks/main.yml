@@ -5,6 +5,18 @@
   changed_when: false
   failed_when: false
 
+# All persistent data lives on the OpenEBS LVM data disk; the small OS disk is
+# reserved for the OS and container images. Disable the bundled local-path
+# provisioner so PVCs cannot silently consume the OS disk. A fresh install reads
+# this on first start; an existing install picks it up on its next k3s restart.
+- name: Configure k3s
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/config.yaml
+    mode: "0600"
+    content: |
+      disable:
+        - local-storage
+
 - name: Install or upgrade k3s
   when: k3s_version not in k3s_installed.stdout | default('')
   block:

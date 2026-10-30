@@ -32,8 +32,8 @@ spec:
         # response compression until that is fixed upstream.
         compress_enable: "off"
     storageclass:
-      name: local-path
-      dataStorageSize: 100Gi
+      name: openebs-lvm
+      dataStorageSize: 10Gi
     resources:
       requests:
         cpu: 50m
