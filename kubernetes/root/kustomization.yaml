@@ -6,7 +6,6 @@ resources:
   - cert-manager.yaml
   - cloudflared.yaml
   - halite.yaml
-  - headlamp.yaml
   - monitoring.yaml
   - openebs.yaml
   - pgadmin.yaml
