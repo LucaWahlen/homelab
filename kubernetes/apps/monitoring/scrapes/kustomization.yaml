@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+# Scrape configs for apps outside the monitoring stack. They need the
+# VictoriaMetrics CRDs, so Flux applies them after the monitoring release (see
+# monitoring-scrapes in kubernetes/root/monitoring.yaml).
+resources:
+  - blocky.yaml

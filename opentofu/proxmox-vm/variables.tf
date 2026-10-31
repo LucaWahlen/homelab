@@ -92,12 +92,14 @@ variable "network_bridge" {
   default     = "vmbr0"
 }
 
-# Statically assigned so it never depends on the (random) NIC MAC. This is the
-# address adguardhome binds for IPv6 and that the FritzBox points its DNS at.
+# From the FritzBox's ULA prefix, which stays fixed; the provider's 2003:...
+# prefix changes, so an address in it stops working. Statically assigned so it
+# never depends on the (random) NIC MAC. Blocky listens on it for DNS (see
+# kubernetes/apps/blocky/config.yaml).
 variable "vm_ipv6_address" {
   description = "Static IPv6 address (with prefix length) for the VM"
   type        = string
-  default     = "2003:fb:8f33:7500::234/64"
+  default     = "fd14:d507:58a5::234/64"
 }
 
 variable "vm_ip_address" {
