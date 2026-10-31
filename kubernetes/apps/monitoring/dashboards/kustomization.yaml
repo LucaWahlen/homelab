@@ -92,11 +92,16 @@ configMapGenerator:
       annotations:
         grafana_folder: Kubernetes
   # Upstream blocky v0.35.0 docs/blocky-grafana.json, changed to fit this setup:
-  # - removed "Blocking control": its buttons call blocky's plain-HTTP API from
-  #   the browser, which the HTTPS Grafana page can't do
-  # - removed per-client panels (the FritzBox is the only client) and panels for
+  # - removed "Blocking control" and the "Blocking active" timeline: the buttons
+  #   call blocky's plain-HTTP API from the browser, which the HTTPS Grafana page
+  #   can't do
+  # - removed per-client panels (the FritzBox is the only client), panels for
   #   features that are off (allowlists, prefetching, Redis, DNSSEC, rate limits)
-  # - added a "Query log" row that reads blocky's logs from VictoriaLogs
+  #   and the per-group list panels (there is one group)
+  # - removed the job/instance dropdowns; queries select job="blocky", which the
+  #   scrape in ../scrapes/blocky.yaml sets
+  # - added a "Query log" row and top blocked/allowed domains, read from blocky's
+  #   query log in VictoriaLogs
   - name: grafana-dashboard-blocky
     files:
       - blocky.json

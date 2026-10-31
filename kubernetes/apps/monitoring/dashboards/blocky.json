@@ -19,20 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "links": [
-    {
-      "title": "blocky docs",
-      "type": "link",
-      "icon": "doc",
-      "url": "https://0xerr0r.github.io/blocky/",
-      "targetBlank": true,
-      "tooltip": "",
-      "asDropdown": false,
-      "includeVars": false,
-      "keepTime": false,
-      "tags": []
-    }
-  ],
+  "links": [],
   "panels": [
     {
       "id": 1,
@@ -40,10 +27,10 @@
       "title": "Overview",
       "collapsed": false,
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 0
+        "y": 0,
+        "w": 24,
+        "h": 1
       },
       "panels": []
     },
@@ -56,10 +43,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 0,
-        "y": 1
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -124,7 +111,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "min(blocky_blocking_enabled{job=~\"$job\", instance=~\"$instance\"})",
+          "expr": "min(blocky_blocking_enabled{job=\"blocky\"})",
           "refId": "A",
           "range": false,
           "instant": true
@@ -141,10 +128,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 4,
-        "y": 1
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -190,7 +177,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(blocky_query_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum(rate(blocky_query_total{job=\"blocky\"}[$__rate_interval]))",
           "refId": "A",
           "range": true,
           "instant": false
@@ -207,10 +194,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 8,
-        "y": 1
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -256,7 +243,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(blocky_response_total{response_type=~\"BLOCKED|REBIND\", job=~\"$job\", instance=~\"$instance\"}[$__range])) / sum(increase(blocky_query_total{job=~\"$job\", instance=~\"$instance\"}[$__range]))",
+          "expr": "sum(increase(blocky_response_total{job=\"blocky\", response_type=~\"BLOCKED|REBIND\"}[$__range])) / sum(increase(blocky_query_total{job=\"blocky\"}[$__range]))",
           "refId": "A",
           "range": false,
           "instant": true
@@ -273,10 +260,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 12,
-        "y": 1
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -329,7 +316,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=\"blocky\"}[$__rate_interval])))",
           "refId": "A",
           "range": true,
           "instant": false
@@ -346,10 +333,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 16,
-        "y": 1
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -403,7 +390,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(blocky_cache_hits_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) / (sum(rate(blocky_cache_hits_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) + sum(rate(blocky_cache_misses_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])))",
+          "expr": "sum(rate(blocky_cache_hits_total{job=\"blocky\"}[$__rate_interval])) / (sum(rate(blocky_cache_hits_total{job=\"blocky\"}[$__rate_interval])) + sum(rate(blocky_cache_misses_total{job=\"blocky\"}[$__rate_interval])))",
           "refId": "A",
           "range": true,
           "instant": false
@@ -420,10 +407,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 20,
-        "y": 1
+        "y": 1,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -477,7 +464,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(blocky_error_total{job=~\"$job\", instance=~\"$instance\"}[$__range]))",
+          "expr": "sum(increase(blocky_error_total{job=\"blocky\"}[$__range]))",
           "refId": "A",
           "range": false,
           "instant": true
@@ -494,10 +481,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 0,
-        "y": 5
+        "y": 5,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -542,7 +529,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "blocky_build_info{job=~\"$job\", instance=~\"$instance\"}",
+          "expr": "blocky_build_info{job=\"blocky\"}",
           "refId": "A",
           "range": false,
           "instant": true,
@@ -559,10 +546,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 4,
-        "y": 5
+        "y": 5,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -608,7 +595,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "time() - max(process_start_time_seconds{job=~\"$job\", instance=~\"$instance\"})",
+          "expr": "time() - max(process_start_time_seconds{job=\"blocky\"})",
           "refId": "A",
           "range": false,
           "instant": true
@@ -625,10 +612,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 8,
-        "y": 5
+        "y": 5,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -673,7 +660,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(blocky_denylist_cache_entries{job=~\"$job\", instance=~\"$instance\"})",
+          "expr": "sum(blocky_denylist_cache_entries{job=\"blocky\"})",
           "refId": "A",
           "range": false,
           "instant": true
@@ -690,10 +677,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 12,
-        "y": 5
+        "y": 5,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -746,7 +733,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "time() - max(blocky_last_list_group_refresh_timestamp_seconds{job=~\"$job\", instance=~\"$instance\"})",
+          "expr": "time() - max(blocky_last_list_group_refresh_timestamp_seconds{job=\"blocky\"})",
           "refId": "A",
           "range": false,
           "instant": true
@@ -763,10 +750,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 16,
-        "y": 5
+        "y": 5,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -811,7 +798,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(blocky_cache_entries{job=~\"$job\", instance=~\"$instance\"})",
+          "expr": "sum(blocky_cache_entries{job=\"blocky\"})",
           "refId": "A",
           "range": false,
           "instant": true
@@ -828,10 +815,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
         "x": 20,
-        "y": 5
+        "y": 5,
+        "w": 4,
+        "h": 4
       },
       "fieldConfig": {
         "defaults": {
@@ -885,7 +872,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(blocky_failed_downloads_total{job=~\"$job\", instance=~\"$instance\"}[$__range])) or vector(0)",
+          "expr": "sum(increase(blocky_failed_downloads_total{job=\"blocky\"}[$__range])) or vector(0)",
           "refId": "A",
           "range": false,
           "instant": true
@@ -900,26 +887,26 @@
       "collapsed": false,
       "panels": [],
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 9
+        "y": 9,
+        "w": 24,
+        "h": 1
       }
     },
     {
       "id": 51,
       "type": "logs",
       "title": "Queries",
-      "description": "blocky query log, plus warnings and errors, from VictoriaLogs. Filter by domain with the Search box.",
+      "description": "blocky query log, plus warnings and errors, from VictoriaLogs. Use the search icon on the right to search and filter the lines, e.g. BLOCKED.",
       "datasource": {
         "type": "victoriametrics-logs-datasource",
         "uid": "VictoriaLogs"
       },
       "gridPos": {
-        "h": 14,
-        "w": 24,
         "x": 0,
-        "y": 10
+        "y": 10,
+        "w": 24,
+        "h": 14
       },
       "options": {
         "showTime": true,
@@ -929,7 +916,12 @@
         "dedupStrategy": "none",
         "prettifyLogMessage": false,
         "showCommonLabels": false,
-        "showLabels": false
+        "showLabels": false,
+        "showControls": true,
+        "showLevel": true,
+        "syntaxHighlighting": false,
+        "enableInfiniteScrolling": true,
+        "detailsMode": "inline"
       },
       "targets": [
         {
@@ -940,7 +932,7 @@
           },
           "editorMode": "code",
           "queryType": "instant",
-          "expr": "{kubernetes.pod_namespace=\"blocky\"} (prefix:=queryLog or level:in(warning, error, fatal)) question_name:~\"$search\" | format if (prefix:=queryLog) \"<question_type> <question_name> → <response_reason> <response_code> <answer>\" as _msg | fields _time, _msg, level"
+          "expr": "{kubernetes.pod_namespace=\"blocky\"} (prefix:=queryLog or level:in(warning, error, fatal)) | format if (prefix:=queryLog) \"<question_type> <question_name> → <response_reason> <response_code> <answer>\" as _msg | fields _time, _msg, level"
         }
       ]
     },
@@ -950,10 +942,10 @@
       "title": "Traffic",
       "collapsed": false,
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 24
+        "y": 24,
+        "w": 24,
+        "h": 1
       },
       "panels": []
     },
@@ -966,10 +958,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 9,
-        "w": 24,
         "x": 0,
-        "y": 25
+        "y": 25,
+        "w": 24,
+        "h": 9
       },
       "fieldConfig": {
         "defaults": {
@@ -1168,7 +1160,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (response_type) (rate(blocky_response_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum by (response_type) (rate(blocky_response_total{job=\"blocky\"}[$__rate_interval]))",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -1186,10 +1178,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 8,
-        "w": 8,
         "x": 0,
-        "y": 34
+        "y": 34,
+        "w": 8,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
@@ -1241,7 +1233,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (type) (ceil(increase(blocky_query_total{job=~\"$job\", instance=~\"$instance\"}[$__range])))",
+          "expr": "sum by (type) (ceil(increase(blocky_query_total{job=\"blocky\"}[$__range])))",
           "refId": "A",
           "range": false,
           "instant": true,
@@ -1259,10 +1251,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 8,
-        "w": 8,
         "x": 8,
-        "y": 34
+        "y": 34,
+        "w": 8,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
@@ -1314,7 +1306,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (response_code) (ceil(increase(blocky_response_total{job=~\"$job\", instance=~\"$instance\"}[$__range])))",
+          "expr": "sum by (response_code) (ceil(increase(blocky_response_total{job=\"blocky\"}[$__range])))",
           "refId": "A",
           "range": false,
           "instant": true,
@@ -1332,10 +1324,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 8,
-        "w": 8,
         "x": 16,
-        "y": 34
+        "y": 34,
+        "w": 8,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
@@ -1387,7 +1379,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (reason) (ceil(increase(blocky_response_total{job=~\"$job\", instance=~\"$instance\"}[$__range])))",
+          "expr": "sum by (reason) (ceil(increase(blocky_response_total{job=\"blocky\"}[$__range])))",
           "refId": "A",
           "range": false,
           "instant": true,
@@ -1402,10 +1394,10 @@
       "title": "Latency",
       "collapsed": false,
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 42
+        "y": 42,
+        "w": 24,
+        "h": 1
       },
       "panels": []
     },
@@ -1418,10 +1410,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
         "x": 0,
-        "y": 43
+        "y": 43,
+        "w": 12,
+        "h": 9
       },
       "fieldConfig": {
         "defaults": {
@@ -1545,7 +1537,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.50, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=\"blocky\"}[$__rate_interval])))",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -1557,7 +1549,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.90, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.90, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=\"blocky\"}[$__rate_interval])))",
           "refId": "B",
           "range": true,
           "instant": false,
@@ -1569,7 +1561,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(blocky_request_duration_seconds_bucket{job=\"blocky\"}[$__rate_interval])))",
           "refId": "C",
           "range": true,
           "instant": false,
@@ -1587,10 +1579,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
         "x": 12,
-        "y": 43
+        "y": 43,
+        "w": 12,
+        "h": 9
       },
       "fieldConfig": {
         "defaults": {
@@ -1649,7 +1641,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (le) (increase(blocky_request_duration_seconds_bucket{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum by (le) (increase(blocky_request_duration_seconds_bucket{job=\"blocky\"}[$__rate_interval]))",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -1669,10 +1661,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
         "x": 0,
-        "y": 52
+        "y": 52,
+        "w": 24,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
@@ -1871,7 +1863,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (le, response_type) (rate(blocky_request_duration_seconds_bucket{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.95, sum by (le, response_type) (rate(blocky_request_duration_seconds_bucket{job=\"blocky\"}[$__rate_interval])))",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -1886,106 +1878,12 @@
       "title": "Blocking & lists",
       "collapsed": false,
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 60
+        "y": 60,
+        "w": 24,
+        "h": 1
       },
       "panels": []
-    },
-    {
-      "id": 27,
-      "type": "state-timeline",
-      "title": "Blocking active",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 24,
-        "x": 0,
-        "y": 61
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "Disabled",
-                  "color": "red",
-                  "index": 1
-                },
-                "1": {
-                  "text": "Enabled",
-                  "color": "green",
-                  "index": 0
-                }
-              }
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          },
-          "custom": {
-            "lineWidth": 0,
-            "fillOpacity": 80,
-            "spanNulls": false,
-            "insertNulls": false,
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "mergeValues": true,
-        "showValue": "auto",
-        "alignValue": "center",
-        "rowHeight": 0.9,
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "min(blocky_blocking_enabled{job=~\"$job\", instance=~\"$instance\"})",
-          "refId": "A",
-          "range": true,
-          "instant": false,
-          "legendFormat": "blocking"
-        }
-      ],
-      "description": "History of the blocking switch — shows when blocking was temporarily disabled."
     },
     {
       "id": 28,
@@ -1996,10 +1894,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
         "x": 0,
-        "y": 64
+        "y": 61,
+        "w": 24,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
@@ -2124,7 +2022,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(blocky_response_total{response_type=~\"BLOCKED|REBIND\", job=~\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum(rate(blocky_response_total{job=\"blocky\", response_type=~\"BLOCKED|REBIND\"}[$__rate_interval]))",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -2136,7 +2034,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(blocky_response_total{response_type=~\"BLOCKED|REBIND\", job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) / sum(rate(blocky_query_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
+          "expr": "sum(rate(blocky_response_total{job=\"blocky\", response_type=~\"BLOCKED|REBIND\"}[$__rate_interval])) / sum(rate(blocky_query_total{job=\"blocky\"}[$__rate_interval]))",
           "refId": "B",
           "range": true,
           "instant": false,
@@ -2146,121 +2044,42 @@
       "description": "Rate of blocked queries (left axis) and blocked share of all queries (right axis)."
     },
     {
-      "id": 29,
+      "id": 52,
       "type": "bargauge",
-      "title": "Top block reasons",
+      "title": "Top blocked domains",
+      "description": "Most blocked domains in the selected time range, from the query log.",
       "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "type": "victoriametrics-logs-datasource",
+        "uid": "VictoriaLogs"
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 64
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-BlPu"
-          },
-          "unit": "short",
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "displayMode": "gradient",
-        "orientation": "horizontal",
-        "valueMode": "color",
-        "showUnfilled": true,
-        "minVizHeight": 16,
-        "minVizWidth": 8,
-        "maxVizHeight": 300,
-        "sizing": "auto",
-        "namePlacement": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "topk(10, sum by (reason) (ceil(increase(blocky_response_total{response_type=~\"BLOCKED|REBIND\", job=~\"$job\", instance=~\"$instance\"}[$__range]))))",
-          "refId": "A",
-          "range": false,
-          "instant": true,
-          "legendFormat": "{{reason}}"
-        }
-      ],
-      "description": "Which denylist groups blocked the most queries in the dashboard time range. The `reason` metric label is intentionally group-level to keep its cardinality bounded; for the specific matched rule/domain, use the query-log dashboard."
-    },
-    {
-      "id": 30,
-      "type": "bargauge",
-      "title": "Denylist entries by group",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
         "x": 0,
-        "y": 72
+        "y": 69,
+        "w": 12,
+        "h": 9
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "continuous-BlPu"
-          },
           "unit": "short",
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "red"
+          },
+          "min": 0,
+          "decimals": 0
         },
         "overrides": []
       },
       "options": {
-        "displayMode": "gradient",
+        "displayMode": "basic",
         "orientation": "horizontal",
         "valueMode": "color",
         "showUnfilled": true,
+        "namePlacement": "left",
+        "sizing": "manual",
         "minVizHeight": 16,
+        "maxVizHeight": 24,
         "minVizWidth": 8,
-        "maxVizHeight": 300,
-        "sizing": "auto",
-        "namePlacement": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -2269,139 +2088,90 @@
           "values": false
         },
         "legend": {
-          "calcs": [],
+          "showLegend": false,
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "calcs": []
         }
       },
       "targets": [
         {
+          "refId": "A",
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "type": "victoriametrics-logs-datasource",
+            "uid": "VictoriaLogs"
           },
           "editorMode": "code",
-          "expr": "sum by (group) (blocky_denylist_cache_entries{job=~\"$job\", instance=~\"$instance\"})",
-          "refId": "A",
-          "range": false,
-          "instant": true,
-          "legendFormat": "{{group}}"
+          "queryType": "stats",
+          "legendFormat": "{{question_name}}",
+          "expr": "{kubernetes.pod_namespace=\"blocky\"} prefix:=queryLog response_type:=BLOCKED | replace_regexp (\"\\\\.$\", \"\") at question_name | stats by (question_name) count() hits | sort by (hits desc) | limit 10"
         }
       ]
     },
     {
-      "id": 32,
-      "type": "timeseries",
-      "title": "Failed list downloads",
+      "id": 53,
+      "type": "bargauge",
+      "title": "Top allowed domains",
+      "description": "Most queried domains that were not blocked, in the selected time range, from the query log.",
       "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
+        "type": "victoriametrics-logs-datasource",
+        "uid": "VictoriaLogs"
       },
       "gridPos": {
-        "h": 7,
-        "w": 12,
         "x": 12,
-        "y": 72
+        "y": 69,
+        "w": 12,
+        "h": 9
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
           "unit": "short",
-          "custom": {
-            "drawStyle": "bars",
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "fillOpacity": 80,
-            "gradientMode": "opacity",
-            "showPoints": "never",
-            "pointSize": 5,
-            "spanNulls": false,
-            "insertNulls": false,
-            "axisPlacement": "auto",
-            "axisLabel": "",
-            "axisColorMode": "text",
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisSoftMin": 0,
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            },
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
+          "min": 0,
+          "decimals": 0
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "failures"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "red"
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "options": {
-        "legend": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "valueMode": "color",
+        "showUnfilled": true,
+        "namePlacement": "left",
+        "sizing": "manual",
+        "minVizHeight": 16,
+        "maxVizHeight": 24,
+        "minVizWidth": 8,
+        "reduceOptions": {
           "calcs": [
-            "sum"
+            "lastNotNull"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
+        "legend": {
+          "showLegend": false,
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
         }
       },
       "targets": [
         {
+          "refId": "A",
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "type": "victoriametrics-logs-datasource",
+            "uid": "VictoriaLogs"
           },
           "editorMode": "code",
-          "expr": "sum(increase(blocky_failed_downloads_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
-          "refId": "A",
-          "range": true,
-          "instant": false,
-          "legendFormat": "failures"
+          "queryType": "stats",
+          "legendFormat": "{{question_name}}",
+          "expr": "{kubernetes.pod_namespace=\"blocky\"} prefix:=queryLog response_type:!=BLOCKED | replace_regexp (\"\\\\.$\", \"\") at question_name | stats by (question_name) count() hits | sort by (hits desc) | limit 10"
         }
-      ],
-      "description": "List download failures over time — investigate sustained failures (lists go stale)."
+      ]
     },
     {
       "id": 33,
@@ -2409,10 +2179,10 @@
       "title": "Cache",
       "collapsed": false,
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 79
+        "y": 78,
+        "w": 24,
+        "h": 1
       },
       "panels": []
     },
@@ -2425,10 +2195,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
         "x": 0,
-        "y": 80
+        "y": 79,
+        "w": 12,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
@@ -2524,7 +2294,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(blocky_cache_hits_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) / (sum(rate(blocky_cache_hits_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) + sum(rate(blocky_cache_misses_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])))",
+          "expr": "sum(rate(blocky_cache_hits_total{job=\"blocky\"}[$__rate_interval])) / (sum(rate(blocky_cache_hits_total{job=\"blocky\"}[$__rate_interval])) + sum(rate(blocky_cache_misses_total{job=\"blocky\"}[$__rate_interval])))",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -2541,10 +2311,10 @@
         "uid": "${DS_PROMETHEUS}"
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
         "x": 12,
-        "y": 80
+        "y": 79,
+        "w": 12,
+        "h": 8
       },
       "fieldConfig": {
         "defaults": {
@@ -2622,26 +2392,14 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(blocky_cache_entries{job=~\"$job\", instance=~\"$instance\"})",
+          "expr": "sum(blocky_cache_entries{job=\"blocky\"})",
           "refId": "A",
           "range": true,
           "instant": false,
           "legendFormat": "result cache entries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "editorMode": "code",
-          "expr": "sum(blocky_prefetch_domain_name_cache_entries{job=~\"$job\", instance=~\"$instance\"})",
-          "refId": "B",
-          "range": true,
-          "instant": false,
-          "legendFormat": "prefetch candidates"
         }
       ],
-      "description": "Entries in the result cache and number of domains tracked as prefetch candidates."
+      "description": "Entries in the result cache."
     },
     {
       "id": 49,
@@ -2649,10 +2407,10 @@
       "title": "Go runtime",
       "collapsed": true,
       "gridPos": {
-        "h": 1,
-        "w": 24,
         "x": 0,
-        "y": 88
+        "y": 87,
+        "w": 24,
+        "h": 1
       },
       "panels": [
         {
@@ -2745,7 +2503,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "sum(go_memstats_alloc_bytes{job=~\"$job\", instance=~\"$instance\"})",
+              "expr": "sum(go_memstats_alloc_bytes{job=\"blocky\"})",
               "refId": "A",
               "range": true,
               "instant": false,
@@ -2757,7 +2515,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "sum(go_memstats_sys_bytes{job=~\"$job\", instance=~\"$instance\"})",
+              "expr": "sum(go_memstats_sys_bytes{job=\"blocky\"})",
               "refId": "B",
               "range": true,
               "instant": false,
@@ -2769,7 +2527,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "sum(process_resident_memory_bytes{job=~\"$job\", instance=~\"$instance\"})",
+              "expr": "sum(process_resident_memory_bytes{job=\"blocky\"})",
               "refId": "C",
               "range": true,
               "instant": false,
@@ -2867,7 +2625,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "sum(go_goroutines{job=~\"$job\", instance=~\"$instance\"})",
+              "expr": "sum(go_goroutines{job=\"blocky\"})",
               "refId": "A",
               "range": true,
               "instant": false,
@@ -2965,7 +2723,7 @@
                 "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
-              "expr": "sum(rate(process_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval]))",
+              "expr": "sum(rate(process_cpu_seconds_total{job=\"blocky\"}[$__rate_interval]))",
               "refId": "A",
               "range": true,
               "instant": false,
@@ -2998,63 +2756,8 @@
         "query": "prometheus",
         "refresh": 1,
         "regex": "",
-        "type": "datasource"
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "definition": "label_values(blocky_build_info, job)",
-        "includeAll": true,
-        "multi": true,
-        "label": "job",
-        "name": "job",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(blocky_build_info, job)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "definition": "label_values(blocky_build_info{job=~\"$job\"}, instance)",
-        "includeAll": true,
-        "multi": true,
-        "label": "instance",
-        "name": "instance",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(blocky_build_info{job=~\"$job\"}, instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "name": "search",
-        "type": "textbox",
-        "label": "Search",
-        "description": "Regex on the queried domain, for the query log",
-        "query": "",
-        "current": {
-          "text": "",
-          "value": ""
-        },
-        "hide": 0
+        "type": "datasource",
+        "hide": 2
       }
     ]
   },

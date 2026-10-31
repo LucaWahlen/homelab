@@ -11,3 +11,8 @@ spec:
       app: blocky
   podMetricsEndpoints:
     - port: http
+      # A fixed job label, so the Blocky dashboard can select blocky's Go and
+      # process metrics without a job dropdown.
+      relabelConfigs:
+        - targetLabel: job
+          replacement: blocky
