@@ -14,7 +14,8 @@
     "source=${localEnv:HOME}/.agents/skills,target=/home/vscode/.agents/skills,type=bind"
   ],
   "remoteEnv": {
-    "KUBECONFIG": "${containerWorkspaceFolder}/kubeconfig"
+    "KUBECONFIG": "${containerWorkspaceFolder}/kubeconfig",
+    "K9S_SKIN": "vercel"
   },
   "customizations": {
     "vscode": {
