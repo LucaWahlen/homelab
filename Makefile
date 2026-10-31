@@ -11,6 +11,8 @@ plan:
 infra:
 	for s in $(STACKS); do sops exec-env $$s/secrets.enc.yaml "tofu -chdir=$$s apply" || exit 1; done
 
+# Commits and pushes the re-encrypted tunnel token to main when it changed,
+# because Flux syncs from the remote.
 seal:
 	scripts/seal-cloudflared.sh
 
