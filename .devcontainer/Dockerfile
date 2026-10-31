@@ -43,6 +43,8 @@ ARG KUBE_LINTER_VERSION=0.8.3
 ARG TRIVY_VERSION=0.76.1
 # renovate: datasource=github-releases depName=gitleaks/gitleaks extractVersion=^v(?<version>.*)$
 ARG GITLEAKS_VERSION=8.30.1
+# renovate: datasource=github-releases depName=derailed/k9s extractVersion=^v(?<version>.*)$
+ARG K9S_VERSION=0.51.0
 
 RUN set -e; \
     case "$(uname -m)" in \
@@ -67,4 +69,5 @@ RUN set -e; \
     curl -fsSL "https://github.com/stackrox/kube-linter/releases/download/v${KUBE_LINTER_VERSION}/kube-linter-linux${kl}.tar.gz" | tar -xz -C /usr/local/bin kube-linter; \
     curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${tv}.tar.gz" | tar -xz -C /usr/local/bin trivy; \
     curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_${oc}.tar.gz" | tar -xz -C /usr/local/bin gitleaks; \
-    chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks
+    curl -fsSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${k}.tar.gz" | tar -xz -C /usr/local/bin k9s; \
+    chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks /usr/local/bin/k9s
