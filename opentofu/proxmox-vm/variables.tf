@@ -1,6 +1,7 @@
 variable "proxmox_endpoint" {
   description = "Proxmox API endpoint, e.g. https://proxmox.example.lan:8006/"
   type        = string
+  default     = "https://192.168.178.210:8006/"
 }
 
 variable "proxmox_api_token" {
@@ -18,6 +19,7 @@ variable "proxmox_insecure" {
 variable "proxmox_node" {
   description = "Name of the Proxmox node to deploy the VM on"
   type        = string
+  default     = "pve"
 }
 
 # Pinned to a dated Debian release rather than .../trixie/latest/... so the image
@@ -81,6 +83,7 @@ variable "vm_data_disk_size" {
 variable "storage_pool" {
   description = "Proxmox storage pool to use for the VM disk and cloud-init drive"
   type        = string
+  default     = "local-lvm"
 }
 
 variable "network_bridge" {
@@ -100,6 +103,7 @@ variable "vm_ipv6_address" {
 variable "vm_ip_address" {
   description = "Static IPv4 address for the VM, e.g. 192.168.1.50"
   type        = string
+  default     = "192.168.178.234"
 }
 
 variable "vm_subnet_mask" {
@@ -111,6 +115,7 @@ variable "vm_subnet_mask" {
 variable "vm_gateway" {
   description = "Default gateway for the VM's network, e.g. 192.168.1.1"
   type        = string
+  default     = "192.168.178.1"
 }
 
 variable "vm_user" {
@@ -122,4 +127,5 @@ variable "vm_user" {
 variable "ssh_public_key" {
   description = "Your SSH public key contents, e.g. file(\"~/.ssh/id_ed25519.pub\")"
   type        = string
+  default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK872K+2ovo7CLGbqGzB+cCpJTGqfCbtDwYbQUpgrAqI luca-laptop"
 }
