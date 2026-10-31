@@ -6,7 +6,6 @@ namespace: monitoring
 resources:
   - namespace.yaml
   - middleware.yaml
-  - headlamp-service.yaml
   - dashboards
   # Grafana admin credentials, encrypted with SOPS/age and decrypted by Flux.
   - grafana-admin.enc.yaml
