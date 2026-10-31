@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: blocky
+resources:
+  - namespace.yaml
+  - deployment.yaml
+configMapGenerator:
+  # The generated name carries a hash of the config, so changing it rolls the
+  # pod.
+  - name: blocky-config
+    files:
+      - config.yaml

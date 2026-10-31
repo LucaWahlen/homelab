@@ -91,3 +91,14 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Kubernetes
+  # Upstream blocky v0.35.0 docs/blocky-grafana.json, minus its "Blocking
+  # control" panel: those buttons call blocky's plain-HTTP API from the browser.
+  - name: grafana-dashboard-blocky
+    files:
+      - blocky.json
+    options:
+      disableNameSuffixHash: true
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Blocky

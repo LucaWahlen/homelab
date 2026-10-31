@@ -1,0 +1,74 @@
+# Blocky configuration: https://0xerr0r.github.io/blocky/latest/configuration/
+# The FritzBox hands itself out as the network's DNS server and forwards every
+# query here.
+ports:
+  # The node's static addresses from opentofu/proxmox-vm/variables.tf.
+  dns:
+    - 192.168.178.234:53
+    - "[fd14:d507:58a5::234]:53"
+  # Start even if an address isn't on the node yet (e.g. IPv6 still coming up
+  # at boot) instead of crash-looping; the listener works once it appears.
+  freeBind: true
+  # Prometheus metrics for vmagent. The REST API on this port has no auth and
+  # is reachable from the LAN.
+  http: 192.168.178.234:4000
+
+# Upstream and list connections use IPv4 only. Blocky tries resolved addresses
+# one at a time without happy eyeballs, so a dead IPv6 route would stall every
+# new connection.
+connectIPVersion: v4
+
+upstreams:
+  # Send each query to one upstream and retry on the other if it fails.
+  strategy: random
+  groups:
+    default:
+      - https://cloudflare-dns.com/dns-query
+      - https://dns10.quad9.net/dns-query
+
+# Resolves the DoH hostnames and list URLs. Public on purpose: the FritzBox
+# forwards to blocky, so bootstrapping through it would loop.
+bootstrapDns:
+  - tcp+udp:1.1.1.1
+  - tcp+udp:9.9.9.10
+
+# The FritzBox answers for local hostnames and reverse lookups in the home
+# subnets. Only these subnets, so other private reverse lookups can't bounce
+# FritzBox -> blocky -> FritzBox.
+conditional:
+  mapping:
+    fritz.box: 192.168.178.1
+    178.168.192.in-addr.arpa: 192.168.178.1
+    # The FritzBox's ULA /64; change it together with ports.dns.
+    0.0.0.0.5.a.8.5.7.0.5.d.4.1.d.f.ip6.arpa: 192.168.178.1
+
+# *.internal.lucawahlen.com resolves to the k3s node (Traefik) on the LAN. A
+# mapping also answers all subdomains, and the most specific mapping wins.
+# There are no AAAA records, so AAAA queries get an empty answer.
+customDNS:
+  mapping:
+    internal.lucawahlen.com: 192.168.178.234
+    proxmox.internal.lucawahlen.com: 192.168.178.210
+
+blocking:
+  denylists:
+    ads:
+      - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/multi.txt
+  clientGroupsBlock:
+    default:
+      - ads
+  # Blocky's default is 6h; keep it short so an allowlisted domain works again
+  # quickly.
+  blockTTL: 1m
+  loading:
+    # Serve DNS right away and load the lists in the background.
+    strategy: fast
+
+# One JSON line per query on stdout, which vlagent ships to VictoriaLogs.
+queryLog:
+  type: console
+log:
+  format: json
+
+prometheus:
+  enable: true
