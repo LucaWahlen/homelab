@@ -76,3 +76,9 @@ RUN set -e; \
     curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_${oc}.tar.gz" | tar -xz -C /usr/local/bin gitleaks; \
     curl -fsSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${k}.tar.gz" | tar -xz -C /usr/local/bin k9s; \
     chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks /usr/local/bin/k9s
+
+# k9s Vercel skin from the same release; selected with K9S_SKIN in devcontainer.json.
+RUN mkdir -p /home/vscode/.config/k9s/skins \
+    && curl -fsSL "https://raw.githubusercontent.com/derailed/k9s/v${K9S_VERSION}/skins/vercel.yaml" \
+        -o /home/vscode/.config/k9s/skins/vercel.yaml \
+    && chown -R vscode:vscode /home/vscode/.config
