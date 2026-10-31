@@ -7,11 +7,13 @@ variable "cloudflare_api_token" {
 variable "cloudflare_account_id" {
   description = "Cloudflare account ID"
   type        = string
+  default     = "918313ddac1a5febb3798b7630b4b7d4"
 }
 
 variable "cloudflare_zone_id" {
   description = "Zone ID for the domain (lucawahlen.com)"
   type        = string
+  default     = "5a19f3bb1df1a405987998ac9f1773bb"
 }
 
 variable "domain" {
