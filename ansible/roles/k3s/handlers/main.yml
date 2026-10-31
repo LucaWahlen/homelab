@@ -1,0 +1,7 @@
+---
+# Skipped on a fresh install: the install script starts k3s with the new config.
+- name: Restart k3s
+  ansible.builtin.systemd_service:
+    name: k3s
+    state: restarted
+  when: k3s_installed.rc == 0

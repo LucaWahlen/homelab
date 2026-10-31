@@ -9,12 +9,13 @@ spec:
   path: ./kubernetes/apps/adguardhome
   prune: true
   wait: true
-  timeout: 5m
+  timeout: 10m
   sourceRef:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: cert-manager
+    - name: openebs
+    - name: cert-manager-issuers
   decryption:
     provider: sops
     secretRef:

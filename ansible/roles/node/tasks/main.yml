@@ -1,26 +1,23 @@
 ---
-- name: Install QEMU guest agent
+- name: Install node packages
   ansible.builtin.apt:
-    name: qemu-guest-agent
+    name:
+      - qemu-guest-agent
+      - lvm2
     update_cache: true
     cache_valid_time: 3600
 
+# The unit is static (started by udev when the virtio port appears), so it
+# cannot be enabled; just make sure it is running.
 - name: Start QEMU guest agent
   ansible.builtin.systemd_service:
     name: qemu-guest-agent
     state: started
 
-- name: Install LVM tools
-  ansible.builtin.apt:
-    name: lvm2
-
-- name: Check for the OpenEBS volume group
-  ansible.builtin.command: vgs {{ lvm_volume_group }}
-  register: node_lvm_vg
-  changed_when: false
-  failed_when: false
-
-- name: Create the OpenEBS volume group on the data disk
-  ansible.builtin.command: vgcreate {{ lvm_volume_group }} {{ lvm_data_disk }}
-  when: node_lvm_vg.rc != 0
-  changed_when: true
+# Creates the volume group on first run and grows the physical volume after the
+# data disk is enlarged in opentofu/proxmox-vm (vm_data_disk_size).
+- name: Ensure the OpenEBS volume group spans the data disk
+  community.general.lvg:
+    vg: "{{ lvm_volume_group }}"
+    pvs: "{{ lvm_data_disk }}"
+    pvresize: true

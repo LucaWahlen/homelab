@@ -18,6 +18,13 @@ spec:
     spec:
       hostNetwork: true
       dnsPolicy: Default
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      # Runs as root: binding :53 on the host network needs NET_BIND_SERVICE,
+      # which a non-root process cannot gain with allowPrivilegeEscalation off.
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       initContainers:
         - name: seed-config
           image: busybox:1.38.0

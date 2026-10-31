@@ -5,15 +5,14 @@ resources:
   - namespace.yaml
   - pvc.yaml
   - deployment.yaml
-  - service-dns.yaml
-  - service-web.yaml
+  - service.yaml
   - ingress.yaml
   - middleware.yaml
   # Bedrock OIDC gate: oauth2-proxy fronts the AdGuard Home UI.
   - oauth2-proxy-deployment.yaml
   - oauth2-proxy-service.yaml
   - oauth2-proxy-secret.enc.yaml
-  - config.enc.yaml
+  - secret.enc.yaml
 configMapGenerator:
   # oauth2-proxy's environment. The generated name carries a hash of these
   # values, so changing any of them rolls the pod.

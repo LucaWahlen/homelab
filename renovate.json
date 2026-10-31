@@ -43,11 +43,6 @@
       "enabled": false
     },
     {
-      "description": "Keep the Flux CLI pin and the in-cluster components in sync",
-      "matchPackageNames": ["fluxcd/flux2"],
-      "groupName": "flux"
-    },
-    {
       "description": "Merge non-major updates once CI passes",
       "matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
       "automerge": true
@@ -65,6 +60,11 @@
     {
       "matchFileNames": [".devcontainer/**"],
       "groupName": "devcontainer"
+    },
+    {
+      "description": "Keep the Flux CLI pin and the in-cluster components in sync (after the devcontainer rule so it wins)",
+      "matchPackageNames": ["fluxcd/flux2"],
+      "groupName": "flux"
     },
     {
       "description": "Cluster and kubectl together, one minor at a time",

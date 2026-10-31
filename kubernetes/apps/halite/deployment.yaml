@@ -16,7 +16,14 @@ spec:
       labels:
         app: halite
     spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
       initContainers:
@@ -25,14 +32,12 @@ spec:
           command:
             - sh
             - -c
-            - mkdir -p /data/uploads && chown -R 65532:65532 /data
+            - mkdir -p /data/uploads
           securityContext:
-            runAsNonRoot: false
-            runAsUser: 0
             allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
-              add: ["CHOWN"]
           volumeMounts:
             - name: data
               mountPath: /data
@@ -53,9 +58,6 @@ spec:
             - name: http
               containerPort: 8080
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 65532
-            runAsGroup: 65532
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities:

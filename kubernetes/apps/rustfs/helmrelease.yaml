@@ -2,7 +2,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: rustfs
-  namespace: rustfs
 spec:
   interval: 1h
   chart:
@@ -12,6 +11,14 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: rustfs
+  install:
+    crds: Create
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
   values:
     mode:
       standalone:
@@ -35,24 +42,11 @@ spec:
         memory: 128Mi
       limits:
         memory: 1Gi
+    # Defined in ingress.yaml: the chart puts both hosts behind one TLS ingress,
+    # but s3.lucawahlen.com arrives as plain HTTP from the tunnel and must not
+    # get the HTTPS redirect the internal console needs.
     ingress:
-      enabled: true
-      className: traefik
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt
-      tls:
-        enabled: true
-      hosts:
-        - host: rustfs.internal.lucawahlen.com
-          paths:
-            - path: /
-              pathType: Prefix
-              servicePort: console
-        - host: s3.lucawahlen.com
-          paths:
-            - path: /
-              pathType: Prefix
-              servicePort: endpoint
+      enabled: false
     extraEnv:
       - name: RUSTFS_BROWSER_REDIRECT_URL
         value: https://rustfs.internal.lucawahlen.com

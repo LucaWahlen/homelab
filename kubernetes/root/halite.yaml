@@ -8,10 +8,13 @@ spec:
   retryInterval: 5m
   path: ./kubernetes/apps/halite
   prune: true
-  wait: false
+  wait: true
+  timeout: 10m
   sourceRef:
     kind: GitRepository
     name: flux-system
+  dependsOn:
+    - name: openebs
   decryption:
     provider: sops
     secretRef:

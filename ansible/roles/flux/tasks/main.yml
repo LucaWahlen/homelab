@@ -42,13 +42,6 @@
     KUBECONFIG: "{{ kubeconfig }}"
   changed_when: true
 
-- name: Apply the root Kustomization
-  ansible.builtin.command: kubectl apply --filename {{ repo_root }}/kubernetes/root.yaml
-  environment:
-    KUBECONFIG: "{{ kubeconfig }}"
-  register: flux_root_apply
-  changed_when: "'unchanged' not in flux_root_apply.stdout"
-
 - name: Wait for the GitRepository to be Ready
   ansible.builtin.command: >-
     kubectl --namespace flux-system get gitrepository flux-system

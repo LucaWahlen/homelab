@@ -8,12 +8,14 @@ spec:
   retryInterval: 5m
   path: ./kubernetes/apps/monitoring
   prune: true
-  wait: false
+  wait: true
+  timeout: 10m
   sourceRef:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: cert-manager
+    - name: openebs
+    - name: cert-manager-issuers
   decryption:
     provider: sops
     secretRef:
