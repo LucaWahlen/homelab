@@ -8,8 +8,8 @@ resources:
   - middleware.yaml
   - dashboards
   # Grafana admin credentials, encrypted with SOPS/age and decrypted by Flux.
-  - grafana-admin.enc.yaml
+  - grafana-admin-secret.enc.yaml
   # Grafana OIDC client secret (Bedrock), encrypted with SOPS/age.
-  - grafana-oidc.enc.yaml
+  - grafana-oidc-secret.enc.yaml
   - helmrepository.yaml
   - helmrelease.yaml

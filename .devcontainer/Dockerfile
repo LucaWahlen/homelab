@@ -11,6 +11,11 @@ RUN dnf -y install \
         ShellCheck \
     && dnf clean all
 
+# renovate: datasource=galaxy-collection depName=community.general
+ARG COMMUNITY_GENERAL_VERSION=13.5.0
+RUN ansible-galaxy collection install --collections-path /usr/share/ansible/collections \
+        "community.general==${COMMUNITY_GENERAL_VERSION}"
+
 RUN useradd -u 1000 -ms /bin/bash vscode \
     && mkdir -p /home/vscode/.config/opencode /home/vscode/.local/share/opencode \
     && chown -R vscode:vscode /home/vscode

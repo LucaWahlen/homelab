@@ -19,7 +19,25 @@ spec:
   retryInterval: 5m
   path: ./kubernetes/flux-system
   prune: true
-  wait: true
+  # Health-check only the controllers: `wait: true` would also wait on the root
+  # Kustomization this applies, and so on every app.
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: source-controller
+      namespace: flux-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: kustomize-controller
+      namespace: flux-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: helm-controller
+      namespace: flux-system
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: notification-controller
+      namespace: flux-system
   timeout: 5m
   sourceRef:
     kind: GitRepository

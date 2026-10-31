@@ -9,7 +9,7 @@ spec:
   path: ./kubernetes/apps/cert-manager
   prune: true
   wait: true
-  timeout: 5m
+  timeout: 10m
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -29,7 +29,7 @@ spec:
   path: ./kubernetes/apps/cert-manager/issuers
   prune: true
   wait: true
-  timeout: 5m
+  timeout: 10m
   sourceRef:
     kind: GitRepository
     name: flux-system
