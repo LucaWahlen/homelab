@@ -32,6 +32,7 @@ stringData:
 YAML
 mv "$tmp" "$target"
 
+echo "Committing $target and pushing it to origin/main"
 git add "$target"
 git commit --message "update cloudflared tunnel token" -- "$target"
 git push origin main

@@ -50,31 +50,73 @@ ARG TRIVY_VERSION=0.76.1
 ARG GITLEAKS_VERSION=8.30.1
 # renovate: datasource=github-releases depName=derailed/k9s extractVersion=^v(?<version>.*)$
 ARG K9S_VERSION=0.51.0
+# renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
+ARG OPENCODE_VERSION=1.19.5
 
-RUN set -e; \
+# Every download is checked against the SHA-256 its project publishes. Where a
+# release ships no usable checksum list, GitHub's recorded asset digest is used.
+RUN set -eu; \
     case "$(uname -m)" in \
         x86_64)  k=amd64;  oc=x64;   tv=64bit; kl="";       lh=x86_64 ;; \
         aarch64) k=arm64;  oc=arm64; tv=ARM64; kl="_arm64"; lh=arm64  ;; \
         *) echo "unsupported arch $(uname -m)" >&2; exit 1 ;; \
     esac; \
-    curl -fsSL "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${k}/kubectl" -o /usr/local/bin/kubectl; \
-    curl -fsSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${k}.tar.gz" | tar -xz -C /tmp; \
-    mv "/tmp/linux-${k}/helm" /usr/local/bin/helm && rm -rf "/tmp/linux-${k}"; \
-    curl -fsSL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_${k}.tar.gz" | tar -xz -C /usr/local/bin kustomize; \
-    curl -fsSL "https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${k}.tar.gz" | tar -xz -C /usr/local/bin flux; \
-    curl -fsSL "https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${k}" -o /usr/local/bin/sops; \
-    curl -fsSL "https://github.com/opentofu/opentofu/releases/download/v${OPENTOFU_VERSION}/tofu_${OPENTOFU_VERSION}_linux_${k}.tar.gz" | tar -xz -C /usr/local/bin tofu; \
-    curl -fsSL "https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-${k}.tar.gz" | tar -xz -C /tmp; \
-    mv "/tmp/age/age" "/tmp/age/age-keygen" /usr/local/bin/ && rm -rf "/tmp/age"; \
-    curl -fsSL "https://opencode.ai/update/api/latest/cli/opencode/opencode-linux-${oc}.tar.gz" | tar -xz -C /usr/local/bin opencode; \
-    curl -fsSL "https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-${k}.tar.gz" | tar -xz -C /usr/local/bin kubeconform; \
-    curl -fsSL "https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${k}" -o /usr/local/bin/yq; \
-    curl -fsSL "https://github.com/home-operations/flate/releases/download/v${FLATE_VERSION}/flate_${FLATE_VERSION}_linux_${k}.tar.gz" | tar -xz -C /usr/local/bin flate; \
-    curl -fsSL "https://github.com/evilmartians/lefthook/releases/download/v${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION}_Linux_${lh}.gz" | gunzip > /usr/local/bin/lefthook; \
-    curl -fsSL "https://github.com/stackrox/kube-linter/releases/download/v${KUBE_LINTER_VERSION}/kube-linter-linux${kl}.tar.gz" | tar -xz -C /usr/local/bin kube-linter; \
-    curl -fsSL "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-${tv}.tar.gz" | tar -xz -C /usr/local/bin trivy; \
-    curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_${oc}.tar.gz" | tar -xz -C /usr/local/bin gitleaks; \
-    curl -fsSL "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_${k}.tar.gz" | tar -xz -C /usr/local/bin k9s; \
+    gh=https://github.com; \
+    listed() { curl -fsSL "$1" | awk -v f="$2" '$2 == f || $2 == "*" f { print $1 }'; }; \
+    digest() { curl -fsSL "https://api.github.com/repos/$1/releases/tags/$2" \
+        | jq -r --arg f "$3" '.assets[] | select(.name == $f) | .digest | ltrimstr("sha256:")'; }; \
+    fetch() { \
+        [ -n "$2" ] || { echo "no checksum for $1" >&2; exit 1; }; \
+        curl -fsSL "$1" -o "$3"; \
+        echo "$2  $3" | sha256sum --check --quiet -; \
+    }; \
+    dl=$(mktemp -d); cd "$dl"; \
+    u="https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/${k}"; \
+    fetch "$u/kubectl" "$(curl -fsSL "$u/kubectl.sha256")" /usr/local/bin/kubectl; \
+    f="helm-v${HELM_VERSION}-linux-${k}.tar.gz"; \
+    fetch "https://get.helm.sh/$f" "$(listed "https://get.helm.sh/$f.sha256sum" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin --strip-components=1 "linux-${k}/helm"; \
+    u="$gh/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}"; f="kustomize_v${KUSTOMIZE_VERSION}_linux_${k}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/checksums.txt" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin kustomize; \
+    u="$gh/fluxcd/flux2/releases/download/v${FLUX_VERSION}"; f="flux_${FLUX_VERSION}_linux_${k}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/flux_${FLUX_VERSION}_checksums.txt" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin flux; \
+    u="$gh/getsops/sops/releases/download/v${SOPS_VERSION}"; f="sops-v${SOPS_VERSION}.linux.${k}"; \
+    fetch "$u/$f" "$(listed "$u/sops-v${SOPS_VERSION}.checksums.txt" "$f")" /usr/local/bin/sops; \
+    u="$gh/opentofu/opentofu/releases/download/v${OPENTOFU_VERSION}"; f="tofu_${OPENTOFU_VERSION}_linux_${k}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/tofu_${OPENTOFU_VERSION}_SHA256SUMS" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin tofu; \
+    f="age-v${AGE_VERSION}-linux-${k}.tar.gz"; \
+    fetch "$gh/FiloSottile/age/releases/download/v${AGE_VERSION}/$f" "$(digest FiloSottile/age "v${AGE_VERSION}" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin --strip-components=1 age/age age/age-keygen; \
+    f="opencode-linux-${oc}.tar.gz"; \
+    fetch "$gh/anomalyco/opencode/releases/download/v${OPENCODE_VERSION}/$f" "$(digest anomalyco/opencode "v${OPENCODE_VERSION}" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin opencode; \
+    u="$gh/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}"; f="kubeconform-linux-${k}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/CHECKSUMS" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin kubeconform; \
+    f="yq_linux_${k}"; \
+    fetch "$gh/mikefarah/yq/releases/download/v${YQ_VERSION}/$f" "$(digest mikefarah/yq "v${YQ_VERSION}" "$f")" /usr/local/bin/yq; \
+    u="$gh/home-operations/flate/releases/download/v${FLATE_VERSION}"; f="flate_${FLATE_VERSION}_linux_${k}.tar.gz"; \
+    fetch "$u/$f" "$(curl -fsSL "$u/$f.sha256")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin flate; \
+    u="$gh/evilmartians/lefthook/releases/download/v${LEFTHOOK_VERSION}"; f="lefthook_${LEFTHOOK_VERSION}_Linux_${lh}.gz"; \
+    fetch "$u/$f" "$(listed "$u/lefthook_checksums.txt" "$f")" "$f"; \
+    gunzip -c "$f" > /usr/local/bin/lefthook; \
+    f="kube-linter-linux${kl}.tar.gz"; \
+    fetch "$gh/stackrox/kube-linter/releases/download/v${KUBE_LINTER_VERSION}/$f" "$(digest stackrox/kube-linter "v${KUBE_LINTER_VERSION}" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin kube-linter; \
+    u="$gh/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}"; f="trivy_${TRIVY_VERSION}_Linux-${tv}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/trivy_${TRIVY_VERSION}_checksums.txt" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin trivy; \
+    u="$gh/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"; f="gitleaks_${GITLEAKS_VERSION}_linux_${oc}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/gitleaks_${GITLEAKS_VERSION}_checksums.txt" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin gitleaks; \
+    u="$gh/derailed/k9s/releases/download/v${K9S_VERSION}"; f="k9s_Linux_${k}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/checksums.sha256" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin k9s; \
+    cd /; rm -rf "$dl"; \
     chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks /usr/local/bin/k9s
 
 # k9s Vercel skin from the same release; selected with K9S_SKIN in devcontainer.json.

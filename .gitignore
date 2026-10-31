@@ -11,6 +11,7 @@ crash.*.log
 # Ansible
 *.retry
 kubeconfig
+ansible/known_hosts
 *.kubeconfig
 
 # Helm charts pulled by kustomize --enable-helm
