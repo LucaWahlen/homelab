@@ -26,11 +26,6 @@ spec:
     config:
       rustfs:
         obs_log_directory: ""
-        # RustFS 1.0.4 advertises `Content-Encoding: gzip` on compressible
-        # responses (e.g. SVG) without actually gzip-encoding the body, so
-        # browsers fail to decode them and the image never renders. Disable HTTP
-        # response compression until that is fixed upstream.
-        compress_enable: "off"
     storageclass:
       name: openebs-lvm
       dataStorageSize: 10Gi
