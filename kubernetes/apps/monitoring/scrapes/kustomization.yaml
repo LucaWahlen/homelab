@@ -6,3 +6,4 @@ namespace: monitoring
 # monitoring-scrapes in kubernetes/root/monitoring.yaml).
 resources:
   - blocky.yaml
+  - openebs-lvm.yaml
