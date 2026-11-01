@@ -1,0 +1,26 @@
+# Imported by the pgAdmin entrypoint on start (PGADMIN_SERVER_JSON_FILE). The
+# import runs as the internal admin account, which is what lets the server be
+# marked Shared: every other user then sees it and connects with their own
+# username and password. Without a master password (MASTER_PASSWORD_REQUIRED is
+# off) each user re-enters the password per session.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-servers
+data:
+  servers.json: |
+    {
+      "Servers": {
+        "1": {
+          "Name": "PostgreSQL",
+          "Group": "Servers",
+          "Host": "postgres-rw.postgres.svc.cluster.local",
+          "Port": 5432,
+          "MaintenanceDB": "postgres",
+          "Username": "admin",
+          "SSLMode": "require",
+          "Shared": true,
+          "Comment": "CloudNativePG cluster (postgres-rw). TLS required."
+        }
+      }
+    }
