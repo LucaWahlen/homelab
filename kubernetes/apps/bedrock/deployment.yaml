@@ -23,6 +23,16 @@ spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       terminationGracePeriodSeconds: 30
+      # Resolve dotted names absolutely first. With the default ndots:5 the
+      # resolver tries the search domains (…svc.cluster.local and the node's
+      # domains) before the name actually queried, so every FQDN the app uses
+      # (Postgres, S3, SMTP, OIDC) pays a CoreDNS forward to the upstream
+      # resolver — and fails with getaddrinfo EAI_AGAIN when that upstream is
+      # slow. ndots:1 skips the search list for anything with a dot.
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
