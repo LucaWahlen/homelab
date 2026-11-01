@@ -1,0 +1,18 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: cloudnative-pg
+spec:
+  # Operator controller metrics (reconcile errors, webhooks) on the chart's
+  # plain-HTTP "metrics" port, for the CloudNativePG dashboard's Operator row.
+  namespaceSelector:
+    matchNames:
+      - cnpg-system
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cloudnative-pg
+  podMetricsEndpoints:
+    - port: metrics
+      relabelConfigs:
+        - targetLabel: job
+          replacement: cloudnative-pg

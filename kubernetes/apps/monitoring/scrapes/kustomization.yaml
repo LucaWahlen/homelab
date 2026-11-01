@@ -6,5 +6,6 @@ namespace: monitoring
 # monitoring-scrapes in kubernetes/root/monitoring.yaml).
 resources:
   - blocky.yaml
+  - cloudnative-pg.yaml
   - openebs-lvm.yaml
   - postgres.yaml
