@@ -60,6 +60,12 @@ spec:
             # Don't call out to the pgAdmin release server on every startup.
             - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
               value: "False"
+            # Import the shared server definition (servers.yaml) on start, and
+            # re-apply it on every restart so edits to the file take effect.
+            - name: PGADMIN_SERVER_JSON_FILE
+              value: /etc/pgadmin-servers/servers.json
+            - name: PGADMIN_REPLACE_SERVERS_ON_STARTUP
+              value: "True"
           ports:
             - name: http
               containerPort: 8080
@@ -97,6 +103,9 @@ spec:
             - name: config
               mountPath: /etc/pgadmin
               readOnly: true
+            - name: servers
+              mountPath: /etc/pgadmin-servers
+              readOnly: true
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -106,3 +115,6 @@ spec:
         - name: config
           configMap:
             name: pgadmin-config
+        - name: servers
+          configMap:
+            name: pgadmin-servers
