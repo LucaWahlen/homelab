@@ -16,6 +16,11 @@ OAUTH2_CONFIG = [{
     # From the SOPS-encrypted pgadmin-secret (see deployment.yaml).
     'OAUTH2_CLIENT_SECRET': os.environ['OAUTH2_CLIENT_SECRET'],
     'OAUTH2_SERVER_METADATA_URL': 'https://bedrock.lucawahlen.com/api/auth/.well-known/openid-configuration',
+    # pgAdmin only calls the userinfo endpoint when it is named here; it does
+    # not use userinfo_endpoint from the discovery document. Bedrock returns
+    # email (and the role claim) from userinfo, not in the ID token, so without
+    # this the login fails with "Could not extract username from OIDC claims".
+    'OAUTH2_USERINFO_ENDPOINT': 'https://bedrock.lucawahlen.com/api/auth/oauth2/userinfo',
     'OAUTH2_SCOPE': 'openid profile email roles',
     'OAUTH2_USERNAME_CLAIM': 'email',
     'OAUTH2_CHALLENGE_METHOD': 'S256',
