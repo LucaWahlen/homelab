@@ -9,6 +9,12 @@ AUTHENTICATION_SOURCES = ['oauth2']
 OAUTH2_AUTO_LOGIN = True
 OAUTH2_AUTO_CREATE_USER = True
 
+# OAuth2 gives pgAdmin no login password to derive an encryption key from, so it
+# would otherwise prompt for a master password the first time someone signs in.
+# Turn the requirement off; PostgreSQL server passwords are then not persisted
+# between sessions.
+MASTER_PASSWORD_REQUIRED = False
+
 OAUTH2_CONFIG = [{
     'OAUTH2_NAME': 'bedrock',
     'OAUTH2_DISPLAY_NAME': 'Bedrock',
