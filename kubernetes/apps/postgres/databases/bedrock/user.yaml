@@ -1,0 +1,13 @@
+# App login for the database in this folder; reaches only that database (see pg_hba).
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: bedrock
+spec:
+  cluster:
+    name: postgres
+  name: bedrock
+  login: true
+  passwordSecret:
+    name: bedrock-credentials
+  databaseRoleReclaimPolicy: retain

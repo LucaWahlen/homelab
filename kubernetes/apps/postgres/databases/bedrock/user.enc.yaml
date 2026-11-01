@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: bedrock-credentials
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:PDJtacnejw==,iv:gCXzlt4YlgglaRZmVHzdxicVndNSd/VqKDn9jy24BYY=,tag:jdwQx1BAVvtRgFVjj/Ajuw==,type:str]
+    password: ENC[AES256_GCM,data:DdMn1AOQFiN5cNAfWDIKi+pl/hM4CAFHVlKSSz0KXgiEWiBX5pWjngQRTCNtaAvs,iv:2AeB/TIC3dSNjU4Z4e7qSbri4VxHeEJ5cEb3UE/DFec=,tag:T6l0+X+xP9d39lp5fY8JWA==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBYTFNkdEpGZVY2amFGMEZO
+            MUJhY3dPZUc2UjU3ZERJYkdWRThVUTZXekRRCmc1M0dQR1h4MmNZc1JyVGlWVkd6
+            WkdEeFVDcTNIUCtFbVR5VG1vNnNYWGcKLS0tIFd0ajBmeEVibDRxRFR0UXFvaWJS
+            MFF2RUZENDQ5ZmZXMEluWU9BVnRhQmsKu7Oz+evG2kB04T/Vku+dsXItVUNTmMSH
+            Bl8hllC0N+X0ap0/k6+Jr3Q/BKJLKxhT919l7TookU2dBlLhxbCoYA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1fwn0l05325gc4p827dgqw5s0k38an0cuum87pj2359ugyd0rhc6s50yqn9
+    lastmodified: "2026-11-01T16:26:26Z"
+    mac: ENC[AES256_GCM,data:buVXm0l2aGRLtur+75UA79cmDdR/Q28nyMRil4gJ4r3dvL2jJV/LMuLrtPQHDZlMkh3RhYJbaBE8wk4c8ZsXlCHmP2O2ibIGXlve8N2VhUQXmZCtPX2gZffHjOMeoz5Lqa9X5NQ4u0CJi6SgKrU3fTcP3bR+E67feYUr2m1Mb2s=,iv:vP99BovOHZ3yjGAKf+1a3OHRVqA2MrXS5oXUId57Z6I=,tag:jhs9ZVTFdWrkNwelqKsjvg==,type:str]
+    unencrypted_regex: ^(apiVersion|kind|metadata|type)$
+    version: 3.13.3

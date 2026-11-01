@@ -1,0 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# One folder per app: its database and the app's login (same name), with the
+# login's SOPS-encrypted password (user.enc.yaml, Secret <name>-credentials).
+resources:
+  - bedrock

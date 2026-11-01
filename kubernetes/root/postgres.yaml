@@ -1,0 +1,53 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: postgres
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 5m
+  path: ./kubernetes/apps/postgres
+  prune: true
+  wait: true
+  timeout: 15m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: cloudnative-pg
+    - name: openebs
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  # wait: true health-checks every applied object; these tell Flux when CNPG
+  # resources, including every app's Database and DatabaseRole, are ready.
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      current: >-
+        has(status.conditions) &&
+        status.conditions.exists(c, c.type == 'Ready' && c.status == 'True')
+      inProgress: >-
+        !has(status.conditions) ||
+        !status.conditions.exists(c, c.type == 'Ready' && c.status == 'True')
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: DatabaseRole
+      current: >-
+        has(status.applied) && status.applied == true &&
+        has(status.observedGeneration) &&
+        status.observedGeneration == metadata.generation
+      inProgress: >-
+        !has(status.applied) || status.applied != true ||
+        !has(status.observedGeneration) ||
+        status.observedGeneration != metadata.generation
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Database
+      current: >-
+        has(status.applied) && status.applied == true &&
+        has(status.observedGeneration) &&
+        status.observedGeneration == metadata.generation
+      inProgress: >-
+        !has(status.applied) || status.applied != true ||
+        !has(status.observedGeneration) ||
+        status.observedGeneration != metadata.generation
