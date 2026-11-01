@@ -53,7 +53,7 @@ ARG K9S_VERSION=0.51.0
 # renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg extractVersion=^v(?<version>.*)$
 ARG CNPG_VERSION=1.30.1
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
-ARG OPENCODE_VERSION=1.19.5
+ARG OPENCODE_VERSION=2.2.5
 
 # Every download is checked against the SHA-256 its project publishes. Where a
 # release ships no usable checksum list, GitHub's recorded asset digest is used.
