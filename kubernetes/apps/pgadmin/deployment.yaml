@@ -32,6 +32,8 @@ spec:
         - name: pgadmin
           image: dpage/pgadmin4:9.19.0
           env:
+            # Only used on first start (empty data volume) to create pgAdmin's
+            # internal setup user; that login is disabled (config_system.py).
             - name: PGADMIN_DEFAULT_EMAIL
               valueFrom:
                 secretKeyRef:
@@ -42,6 +44,12 @@ spec:
                 secretKeyRef:
                   name: pgadmin-secret
                   key: PGADMIN_DEFAULT_PASSWORD
+            # Bedrock OAuth client secret, read by config_system.py.
+            - name: OAUTH2_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: pgadmin-secret
+                  key: OAUTH2_CLIENT_SECRET
             # Listen above 1024 so the container never needs NET_BIND_SERVICE and
             # allowPrivilegeEscalation can stay off.
             - name: PGADMIN_LISTEN_PORT
@@ -86,9 +94,15 @@ spec:
               mountPath: /var/lib/pgadmin
             - name: tmp
               mountPath: /tmp
+            - name: config
+              mountPath: /etc/pgadmin
+              readOnly: true
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: pgadmin
         - name: tmp
           emptyDir: {}
+        - name: config
+          configMap:
+            name: pgadmin-config
