@@ -1,0 +1,19 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: openebs-lvm
+spec:
+  # The LVM node plugin exports volume group and logical volume metrics on the
+  # chart's headless metrics Service (lvmPlugin.metricsPort, 9500 by default).
+  namespaceSelector:
+    matchNames:
+      - openebs
+  selector:
+    matchLabels:
+      openebs.io/component-name: openebs-lvm-node
+  endpoints:
+    - port: metrics
+      # A fixed job label, so the Storage dashboard can select these metrics.
+      relabelConfigs:
+        - targetLabel: job
+          replacement: openebs-lvm
