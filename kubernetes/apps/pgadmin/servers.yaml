@@ -13,7 +13,7 @@ data:
       "Servers": {
         "1": {
           "Name": "PostgreSQL",
-          "Group": "Servers",
+          "Group": "PostgreSQL",
           "Host": "postgres-rw.postgres.svc.cluster.local",
           "Port": 5432,
           "MaintenanceDB": "postgres",
