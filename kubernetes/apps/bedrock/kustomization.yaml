@@ -4,8 +4,6 @@ namespace: bedrock
 resources:
   - namespace.yaml
   - configmap.yaml
-  - postgres-service.yaml
-  - postgres-statefulset.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
