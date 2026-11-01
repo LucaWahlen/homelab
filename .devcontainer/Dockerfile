@@ -50,6 +50,8 @@ ARG TRIVY_VERSION=0.76.1
 ARG GITLEAKS_VERSION=8.30.1
 # renovate: datasource=github-releases depName=derailed/k9s extractVersion=^v(?<version>.*)$
 ARG K9S_VERSION=0.51.0
+# renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg extractVersion=^v(?<version>.*)$
+ARG CNPG_VERSION=1.30.1
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
 ARG OPENCODE_VERSION=1.19.5
 
@@ -116,8 +118,11 @@ RUN set -eu; \
     u="$gh/derailed/k9s/releases/download/v${K9S_VERSION}"; f="k9s_Linux_${k}.tar.gz"; \
     fetch "$u/$f" "$(listed "$u/checksums.sha256" "$f")" "$f"; \
     tar -xzf "$f" -C /usr/local/bin k9s; \
+    u="$gh/cloudnative-pg/cloudnative-pg/releases/download/v${CNPG_VERSION}"; f="kubectl-cnpg_${CNPG_VERSION}_linux_${lh}.tar.gz"; \
+    fetch "$u/$f" "$(listed "$u/cnpg-${CNPG_VERSION}-checksums.txt" "$f")" "$f"; \
+    tar -xzf "$f" -C /usr/local/bin kubectl-cnpg; \
     cd /; rm -rf "$dl"; \
-    chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks /usr/local/bin/k9s
+    chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks /usr/local/bin/k9s /usr/local/bin/kubectl-cnpg
 
 # k9s Vercel skin from the same release; selected with K9S_SKIN in devcontainer.json.
 RUN mkdir -p /home/vscode/.config/k9s/skins \
