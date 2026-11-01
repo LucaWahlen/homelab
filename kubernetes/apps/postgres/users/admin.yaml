@@ -1,0 +1,14 @@
+# Personal superuser, e.g. for pgAdmin. Reaches every database.
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: admin
+spec:
+  cluster:
+    name: postgres
+  name: admin
+  login: true
+  superuser: true
+  passwordSecret:
+    name: admin-credentials
+  databaseRoleReclaimPolicy: retain

@@ -7,3 +7,4 @@ namespace: monitoring
 resources:
   - blocky.yaml
   - openebs-lvm.yaml
+  - postgres.yaml

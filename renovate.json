@@ -27,6 +27,13 @@
       "depNameTemplate": "debian/trixie-genericcloud-amd64",
       "datasourceTemplate": "custom.debian-cloud-image",
       "versioningTemplate": "regex:^(?<major>\\d{8})-(?<minor>\\d+)$"
+    },
+    {
+      "customType": "regex",
+      "description": "CloudNativePG Cluster imageName (the kubernetes manager only reads image:)",
+      "managerFilePatterns": ["/^kubernetes/.+\\.yaml$/"],
+      "matchStrings": ["imageName:\\s*(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)@(?<currentDigest>sha256:[a-f0-9]{64})"],
+      "datasourceTemplate": "docker"
     }
   ],
   "customDatasources": {
@@ -46,6 +53,12 @@
       "description": "Merge non-major updates once CI passes",
       "matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
       "automerge": true
+    },
+    {
+      "description": "A PostgreSQL major upgrade is a planned migration, not an image bump",
+      "matchPackageNames": ["ghcr.io/cloudnative-pg/postgresql"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     },
     {
       "description": "Providers come from the OpenTofu registry, matching the lock files",

@@ -5,9 +5,11 @@ resources:
   - blocky.yaml
   - cert-manager.yaml
   - cloudflared.yaml
+  - cloudnative-pg.yaml
   - halite.yaml
   - monitoring.yaml
   - openebs.yaml
   - pgadmin.yaml
+  - postgres.yaml
   - rustfs.yaml
   - shale.yaml
