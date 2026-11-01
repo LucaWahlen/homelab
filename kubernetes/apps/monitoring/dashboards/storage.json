@@ -284,7 +284,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "sum(max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes))",
+          "expr": "sum(max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}))",
           "refId": "A",
           "range": false,
           "instant": true
@@ -550,7 +550,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "count(max by (namespace, persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes) unless on (namespace, persistentvolumeclaim) max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes)) or vector(0)",
+          "expr": "count(max by (namespace, persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes) unless on (namespace, persistentvolumeclaim) max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"})) or vector(0)",
           "refId": "A",
           "range": false,
           "instant": true
@@ -617,7 +617,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "count((max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes)) > 0.8) or vector(0)",
+          "expr": "count((max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{job=\"kubelet\"})) > 0.8) or vector(0)",
           "refId": "A",
           "range": false,
           "instant": true
@@ -689,7 +689,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max(max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes))",
+          "expr": "max(max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{job=\"kubelet\"}))",
           "refId": "A",
           "range": false,
           "instant": true
@@ -994,7 +994,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes)",
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"})",
           "refId": "used",
           "range": false,
           "instant": true,
@@ -1006,7 +1006,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_available_bytes)",
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_available_bytes{job=\"kubelet\"})",
           "refId": "free",
           "range": false,
           "instant": true,
@@ -1018,7 +1018,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes)",
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{job=\"kubelet\"})",
           "refId": "usedpct",
           "range": false,
           "instant": true,
@@ -1030,7 +1030,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes) - max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes offset 24h)",
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}) - max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"} offset 24h)",
           "refId": "change",
           "range": false,
           "instant": true,
@@ -1042,7 +1042,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_inodes_used) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_inodes)",
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_inodes_used{job=\"kubelet\"}) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_inodes{job=\"kubelet\"})",
           "refId": "inodes",
           "range": false,
           "instant": true,
@@ -1054,7 +1054,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "(count by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes) * 0 + 1) or on (namespace, persistentvolumeclaim) (max by (namespace, persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes) * 0)",
+          "expr": "(count by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}) * 0 + 1) or on (namespace, persistentvolumeclaim) (max by (namespace, persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes) * 0)",
           "refId": "mounted",
           "range": false,
           "instant": true,
@@ -1167,7 +1167,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes)",
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}) / max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_capacity_bytes{job=\"kubelet\"})",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -1233,7 +1233,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes)",
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"})",
           "refId": "A",
           "range": true,
           "instant": false,
@@ -1365,7 +1365,7 @@
             "uid": "${ds}"
           },
           "editorMode": "code",
-          "expr": "sum(max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes))",
+          "expr": "sum(max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{job=\"kubelet\"}))",
           "refId": "C",
           "range": true,
           "instant": false,
