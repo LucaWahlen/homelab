@@ -19,9 +19,15 @@ spec:
     serverAltDNSNames:
       - postgres-rw.postgres.svc.cluster.local
   # Human logins live in users/; each app's database and login in
-  # databases/<app>/. CNPG itself always creates an `app` database and login
-  # at first start; keep it (its default metrics queries run there), but it
-  # cannot log in over the network (see pg_hba).
+  # databases/<app>/. CNPG always creates one database and login at first start
+  # (it cannot be skipped): make it the admin user from users/, with its
+  # password from admin-credentials. CNPG's metrics queries run in it.
+  bootstrap:
+    initdb:
+      database: admin
+      owner: admin
+      secret:
+        name: admin-credentials
   storage:
     storageClass: openebs-lvm
     size: 10Gi
@@ -33,11 +39,9 @@ spec:
       memory: 2Gi
   postgresql:
     pg_hba:
-      # First match wins. CNPG's own `app` login is unused; app logins reach
-      # only the database with their own name; admin reaches every database.
-      # All over TLS; anything else is rejected instead of falling through to
-      # CNPG's default allow-all rule.
-      - host all app all reject
+      # First match wins. App logins reach only the database with their own
+      # name; admin reaches every database. All over TLS; anything else is
+      # rejected instead of falling through to CNPG's default allow-all rule.
       - hostssl sameuser all all scram-sha-256
       - hostssl all admin all scram-sha-256
       - host all all all reject

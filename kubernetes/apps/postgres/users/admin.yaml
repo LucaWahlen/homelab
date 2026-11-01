@@ -1,4 +1,5 @@
-# Personal superuser, e.g. for pgAdmin. Reaches every database.
+# Personal superuser, e.g. for pgAdmin. Reaches every database. Also the
+# cluster's first-start login and owner of the `admin` database (cluster.yaml).
 apiVersion: postgresql.cnpg.io/v1
 kind: DatabaseRole
 metadata:
