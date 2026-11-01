@@ -60,12 +60,14 @@ spec:
             # Don't call out to the pgAdmin release server on every startup.
             - name: PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED
               value: "False"
-            # Import the shared server definition (servers.yaml) on start, and
-            # re-apply it on every restart so edits to the file take effect.
+            # Import the shared server definition (servers.yaml) on start.
+            # Not REPLACE: a replace re-creates the server with a new id on
+            # every restart, orphaning each user's per-user SharedServer row.
+            # Changes to servers.yaml need a fresh config DB to take effect.
             - name: PGADMIN_SERVER_JSON_FILE
               value: /etc/pgadmin-servers/servers.json
             - name: PGADMIN_REPLACE_SERVERS_ON_STARTUP
-              value: "True"
+              value: "False"
           ports:
             - name: http
               containerPort: 8080
