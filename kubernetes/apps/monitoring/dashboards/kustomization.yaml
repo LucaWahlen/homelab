@@ -122,3 +122,21 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Blocky
+  # Upstream cloudnative-pg/grafana-dashboards cluster-v0.0.5
+  # charts/cluster/grafana-dashboard.json, changed to fit this setup:
+  # - removed __inputs/__requires/__elements; every query uses the dashboard's
+  #   DS_PROMETHEUS variable (row headers had a hardcoded "prometheus" uid) and
+  #   the reconcile-errors stat uses Grafana's built-in __expr__ datasource
+  # - CPU panels read raw cAdvisor container_cpu_usage_seconds_total instead of
+  #   the node_namespace_pod_container:… recording rule, as defaultRules are off
+  # The Operator row needs ../scrapes/cloudnative-pg.yaml; the Backups row stays
+  # empty until backups are set up.
+  - name: grafana-dashboard-cloudnative-pg
+    files:
+      - cloudnative-pg.json
+    options:
+      disableNameSuffixHash: true
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: CloudNativePG
