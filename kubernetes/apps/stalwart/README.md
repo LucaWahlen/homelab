@@ -12,11 +12,12 @@ It replaces Resend for Bedrock. The root domain stays on Proton; only the
 | 465 | Submission, implicit TLS | public |
 | 587 | Submission, STARTTLS | public |
 | 993 | IMAPS | public |
-| 80 | ACME HTTP-01 challenge | public, Traefik → `stalwart-acme` Ingress |
-| 8080 | WebUI / management | cluster only; `https://stalwart.internal.lucawahlen.com` on the LAN |
+| 80 | WebUI over HTTP + ACME HTTP-01 | public, Traefik → `stalwart` service |
+| 443 | WebUI over HTTPS | LAN via Traefik; `https://mail.lucawahlen.com/admin` |
+| 8080 | WebUI / management | cluster only (backend for the Ingress) |
 
-`stalwart-mail` is a `LoadBalancer`, so k3s ServiceLB binds those ports on the
-node. Forward them from the FritzBox to the node's LAN address
+`stalwart-mail` is a `LoadBalancer`, so k3s ServiceLB binds the mail ports on
+the node. Forward them from the FritzBox to the node's LAN address
 (`192.168.178.234`). Port 8080 is deliberately not in that Service.
 
 ## Prerequisites
@@ -49,14 +50,12 @@ node. Forward them from the FritzBox to the node's LAN address
 
 ## First boot
 
-Flux creates the namespace, StatefulSet and the 20Gi `openebs-lvm` volume.
+The WebUI is served at <https://mail.lucawahlen.com/admin>. On the LAN, blocky
+resolves `mail` to the node, and the `mail` Ingress presents a cert-manager
+certificate for that hostname. The server's `STALWART_PUBLIC_URL` is set to
+the same URL, which is what makes the OAuth sign-in work.
 
-```bash
-kubectl -n stalwart port-forward svc/stalwart 8080:8080
-```
-
-Open <http://localhost:8080/admin> and sign in as `admin` with the password
-from:
+Sign in as `admin` with the password from:
 
 ```bash
 sops -d kubernetes/apps/stalwart/secret.enc.yaml | grep STALWART_RECOVERY_ADMIN
@@ -70,7 +69,8 @@ the key only for lockout recovery.
 
 All of this is stored in the RocksDB database on the PVC, not in Git.
 
-1. **System settings** → hostname `mail.lucawahlen.com`.
+1. **System settings** → hostname `mail.lucawahlen.com`. Do this before
+   sending: the default SMTP banner is the pod name (`stalwart-0`).
 2. **Domains** → add `mail.lucawahlen.com`.
 3. **Accounts**:
    - `bedrock@mail.lucawahlen.com`, with the password from the Bedrock secret:
@@ -78,13 +78,14 @@ All of this is stored in the RocksDB database on the PVC, not in Git.
      sops -d kubernetes/apps/bedrock/secret.enc.yaml | grep SMTP_PASSWORD
      ```
    - your own mailbox, for example `luca@mail.lucawahlen.com`.
-4. **Listeners**: keep 25, 465 and 993; add submission on 587 with STARTTLS.
-   No listener for 80 is needed in Stalwart: Traefik routes only the ACME path
-   to the management listener.
+4. **Listeners**: 25, 465 and 993 already exist. Add submission on 587 with
+   STARTTLS (or point clients at 465 with implicit TLS and skip 587).
 5. **TLS**: create an ACME provider (Let's Encrypt, `Http01`, your contact
    email), then set the domain's certificate management to Automatic with that
-   provider. The `stalwart-acme` Ingress and the port 80 forward answer the
-   challenge. Stalwart renews the certificate itself.
+   provider. The `mail` Ingress serves the WebUI and passes
+   `/.well-known/acme-challenge` to Stalwart, so no port 80 listener is needed
+   inside Stalwart. Stalwart renews the mail certificate itself; the WebUI's
+   separate certificate (`stalwart-web-tls`) is managed by cert-manager.
 6. **DKIM**: create a key for the domain and publish the TXT record it shows.
 7. **Outbound**: no relay/smarthost. On the default `mx` route, set the IP
    lookup strategy to IPv4-only so the sending IP, SPF and PTR stay

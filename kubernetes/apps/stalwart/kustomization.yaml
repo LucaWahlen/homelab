@@ -5,9 +5,7 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - secret.enc.yaml
-  - middleware.yaml
   - statefulset.yaml
   - service.yaml
   - ingress.yaml
-  - ingress-acme.yaml
   - ddns.yaml

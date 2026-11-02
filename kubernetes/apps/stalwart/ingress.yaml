@@ -4,15 +4,14 @@ metadata:
   name: stalwart
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/router.middlewares: stalwart-redirect-https@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - stalwart.internal.lucawahlen.com
-      secretName: stalwart-tls
+        - mail.lucawahlen.com
+      secretName: stalwart-web-tls
   rules:
-    - host: stalwart.internal.lucawahlen.com
+    - host: mail.lucawahlen.com
       http:
         paths:
           - path: /
