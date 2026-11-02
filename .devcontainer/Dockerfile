@@ -12,7 +12,7 @@ RUN dnf -y install \
     && dnf clean all
 
 # renovate: datasource=galaxy-collection depName=community.general
-ARG COMMUNITY_GENERAL_VERSION=13.5.0
+ARG COMMUNITY_GENERAL_VERSION=13.5.1
 RUN ansible-galaxy collection install --collections-path /usr/share/ansible/collections \
         "community.general==${COMMUNITY_GENERAL_VERSION}"
 
