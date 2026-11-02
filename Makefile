@@ -1,4 +1,4 @@
-STACKS := opentofu/proxmox-vm opentofu/cloudflare-tunnel
+STACKS := opentofu/proxmox-vm opentofu/cloudflare
 
 .PHONY: init plan infra seal bootstrap apply destroy lint
 

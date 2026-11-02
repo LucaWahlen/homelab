@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 target=kubernetes/apps/cloudflared/secret.enc.yaml
-token=$(tofu -chdir=opentofu/cloudflare-tunnel output -raw tunnel_token)
+token=$(tofu -chdir=opentofu/cloudflare output -raw tunnel_token)
 current=$(sops decrypt --extract '["stringData"]["TUNNEL_TOKEN"]' "$target" 2>/dev/null || true)
 
 if [[ "$token" == "$current" ]]; then
