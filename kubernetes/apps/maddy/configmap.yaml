@@ -12,9 +12,9 @@ data:
   # The mail domain is the mail.lucawahlen.com subdomain; the root domain stays
   # on Proton.
   #
-  # maddy listens on unprivileged ports in the container (8465 implicit TLS,
-  # 8587 STARTTLS) because the official image runs as root and carries no
-  # NET_BIND_SERVICE file capability. The Service maps 465/587 onto them.
+  # maddy listens on an unprivileged port in the container (8465, implicit
+  # TLS) because the official image runs as root and carries no
+  # NET_BIND_SERVICE file capability. The Service maps 465 onto it.
   maddy.conf: |
     $(hostname) = mail.lucawahlen.com
     $(primary_domain) = mail.lucawahlen.com
@@ -35,9 +35,9 @@ data:
 
     hostname $(hostname)
 
-    # Submission only. 8465 uses implicit TLS from the first byte (Bedrock
-    # uses this); 8587 is STARTTLS.
-    submission tls://0.0.0.0:8465 tcp://0.0.0.0:8587 {
+    # Submission only, implicit TLS from the first byte (what Bedrock uses).
+    # Add a "tcp://0.0.0.0:8587" listener here if a client needs STARTTLS.
+    submission tls://0.0.0.0:8465 {
         limits {
             all rate 50 1s
         }

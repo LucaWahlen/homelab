@@ -18,25 +18,24 @@ and the delivery queue lives in a memory-backed `emptyDir`.
 | Port | Purpose | Where |
 |---|---|---|
 | 465 | Submission, implicit TLS | public, via `maddy-mail` LoadBalancer |
-| 587 | Submission, STARTTLS | public |
 
-Nothing else is exposed: there is deliberately **no port 25** (no receiving)
-and no IMAP. maddy listens on unprivileged ports inside the container
-(8465 / 8587) and the Service maps 465/587 onto them. The official image runs
-as root and sets no `NET_BIND_SERVICE` file capability, so a non-root container
-cannot bind 465/587 directly; this keeps the pod on a locked-down
-securityContext (non-root, read-only root filesystem, all capabilities
-dropped).
+Nothing else is exposed: there is deliberately **no port 25** (no receiving),
+no 587 (no STARTTLS submission listener) and no IMAP. maddy listens on an
+unprivileged port inside the container (8465) and the Service maps 465 onto it.
+The official image runs as root and sets no `NET_BIND_SERVICE` file capability,
+so a non-root container cannot bind 465 directly; this keeps the pod on a
+locked-down securityContext (non-root, read-only root filesystem, all
+capabilities dropped).
 
-`maddy-mail` is a `LoadBalancer`, so k3s ServiceLB binds the submission ports
-on the node. Forward `465` (and `587` if you use it) from the FritzBox to the
-node's LAN address (`192.168.178.234`).
+`maddy-mail` is a `LoadBalancer`, so k3s ServiceLB binds the submission port
+on the node. Forward `465` from the FritzBox to the node's LAN address
+(`192.168.178.234`).
 
 ## Prerequisites
 
 - A real public IPv4 (not CGNAT/DS-Lite) and outbound TCP 25 open.
-- FritzBox port forwards: `465`, `587` → `192.168.178.234`. (The old port 25
-  and 993 forwards can be removed.)
+- FritzBox port forward: `465` → `192.168.178.234`. (The old port 25, 587 and
+  993 forwards can be removed.)
 - The ISP should set the PTR for that IP to `mail.lucawahlen.com`:
 
   ```bash
