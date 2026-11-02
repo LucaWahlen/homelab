@@ -1,0 +1,15 @@
+# The mail certificate is managed by cert-manager over the existing
+# letsencrypt ClusterIssuer (validated with a Cloudflare DNS-01 challenge, so
+# no inbound port 80 is needed). maddy reads the mounted secret and reloads it
+# from disk when cert-manager renews.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: maddy-mail
+spec:
+  secretName: maddy-mail-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - mail.lucawahlen.com
