@@ -48,8 +48,6 @@ spec:
           ports:
             - name: smtps
               containerPort: 8465
-            - name: submission
-              containerPort: 8587
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
