@@ -10,7 +10,7 @@ It replaces Resend for Bedrock. The root domain stays on Proton; only the
 |---|---|---|
 | 25 | MX / server-to-server | public, via `stalwart-mail` LoadBalancer |
 | 465 | Submission, implicit TLS | public |
-| 587 | Submission, STARTTLS | public |
+| 587 | Submission, STARTTLS | optional; no listener by default |
 | 993 | IMAPS | public |
 | 80 | WebUI over HTTP + ACME HTTP-01 | public, Traefik → `stalwart` service |
 | 443 | WebUI over HTTPS | LAN via Traefik; `https://mail.lucawahlen.com/admin` |
@@ -48,6 +48,13 @@ the node. Forward them from the FritzBox to the node's LAN address
   PBL. Receiving still works; outbound delivery will be unreliable until you
   have a static IP with a PTR you can set (or a relay).
 
+- **FritzBox DNS rebind protection**: blocky answers `mail.lucawahlen.com`
+  with the node's private address (`192.168.178.234`) for split-horizon.
+  FRITZ!OS suppresses private answers for public names by default, which
+  shows up in the browser as `ERR_NAME_NOT_RESOLVED`. Add
+  `mail.lucawahlen.com` under **Heimnetz → Netzwerk → Netzwerkeinstellungen →
+  DNS-Rebind-Schutz → Ausnahme hinzufügen**.
+
 ## First boot
 
 The WebUI is served at <https://mail.lucawahlen.com/admin>. On the LAN, blocky
@@ -78,8 +85,10 @@ All of this is stored in the RocksDB database on the PVC, not in Git.
      sops -d kubernetes/apps/bedrock/secret.enc.yaml | grep SMTP_PASSWORD
      ```
    - your own mailbox, for example `luca@mail.lucawahlen.com`.
-4. **Listeners**: 25, 465 and 993 already exist. Add submission on 587 with
-   STARTTLS (or point clients at 465 with implicit TLS and skip 587).
+4. **Listeners**: 25, 465 and 993 already exist. Bedrock uses **465 with
+   implicit TLS**; no 587 listener is needed. If you created one, delete it —
+   especially do not leave a second listener on 465 next to the default
+   `submissions` one.
 5. **TLS**: create an ACME provider (Let's Encrypt, `Http01`, your contact
    email), then set the domain's certificate management to Automatic with that
    provider. The `mail` Ingress serves the WebUI and passes
@@ -140,7 +149,7 @@ For a static IP, skip the updater and create the A record by hand.
 
 ## Bedrock
 
-The ConfigMap now points at `mail.lucawahlen.com:587` with STARTTLS. The
+The ConfigMap now points at `mail.lucawahlen.com:465` with implicit TLS. The
 secret contains `SMTP_USER=bedrock@mail.lucawahlen.com` and a generated
 password. Create that same account in Stalwart, then restart the Bedrock
 deployment.

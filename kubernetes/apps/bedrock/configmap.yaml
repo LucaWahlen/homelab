@@ -17,14 +17,14 @@ data:
   S3_FORCE_PATH_STYLE: "true"
   S3_PUBLIC_URL: https://s3.lucawahlen.com/bedrock-media
 
-  # Stalwart on mail.lucawahlen.com. Port 587 starts in plaintext and upgrades
-  # with STARTTLS, so SMTP_SECURE stays false. Create the matching account in
-  # Stalwart's WebUI; the password is in the bedrock secret.
+  # Stalwart on mail.lucawahlen.com. Port 465 uses implicit TLS from the first
+  # byte, so SMTP_SECURE is true. The matching account is created in Stalwart's
+  # WebUI; the password is in the bedrock secret.
   EMAIL_SENDER_NAME: Bedrock
   EMAIL_SENDER_ADDRESS: bedrock@mail.lucawahlen.com
   SMTP_HOST: mail.lucawahlen.com
-  SMTP_PORT: "587"
-  SMTP_SECURE: "false"
+  SMTP_PORT: "465"
+  SMTP_SECURE: "true"
 
   PWNED_PASSWORD_CHECK: "true"
   AUDIT_RETENTION_DAYS: "90"
