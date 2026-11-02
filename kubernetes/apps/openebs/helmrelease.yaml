@@ -23,12 +23,19 @@ spec:
     analytics:
       enabled: false
     lvmController:
+      # Applied per-container to the controller pod's five containers
+      # (csi-provisioner/resizer/snapshotter, snapshot-controller, plugin).
       resources:
         requests:
           cpu: 10m
-          memory: 32Mi
+          memory: 64Mi
+        limits:
+          memory: 128Mi
     lvmNode:
+      # Applied per-container to the node plugin's two containers.
       resources:
         requests:
           cpu: 10m
-          memory: 32Mi
+          memory: 48Mi
+        limits:
+          memory: 128Mi

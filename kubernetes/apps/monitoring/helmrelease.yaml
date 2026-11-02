@@ -36,6 +36,14 @@ spec:
           resources:
             requests:
               storage: 10Gi
+        # Right-sized from observed usage; the limit still absorbs query bursts.
+        resources:
+          requests:
+            cpu: 50m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
 
     # --- Logs ----------------------------------------------------------
     vlsingle:
@@ -54,11 +62,35 @@ spec:
           resources:
             requests:
               storage: 2Gi
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 768Mi
     vlagent:
       enabled: true
       spec:
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            cpu: 250m
+            memory: 192Mi
         k8sCollector:
           enabled: true
+
+    vmagent:
+      spec:
+        resources:
+          requests:
+            cpu: 50m
+            memory: 192Mi
+          limits:
+            cpu: 500m
+            memory: 384Mi
 
     # --- Alerting disabled for now ------------------------------------
     alertmanager:
@@ -74,6 +106,31 @@ spec:
     syncJob:
       enabled: false
 
+    kube-state-metrics:
+      resources:
+        requests:
+          cpu: 25m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 192Mi
+    prometheus-node-exporter:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 96Mi
+    victoria-metrics-operator:
+      resources:
+        requests:
+          cpu: 25m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
     # k3s has no separate etcd/controller-manager/scheduler to scrape.
     kubeEtcd:
       enabled: false
@@ -85,6 +142,13 @@ spec:
     # --- Grafana -------------------------------------------------------
     grafana:
       replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 512Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
       # The data volume is a single-mount LVM volume (RWO), so a rolling update
       # deadlocks: the new pod cannot mount the device while the old pod holds
       # it. Recreate tears the old pod down before starting the new one.
