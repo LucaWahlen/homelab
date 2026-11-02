@@ -6,6 +6,6 @@ resources:
   - configmap.yaml
   - secret.enc.yaml
   - certificate.yaml
-  - statefulset.yaml
+  - deployment.yaml
   - service.yaml
   - ddns.yaml

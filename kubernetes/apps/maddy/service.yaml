@@ -1,58 +1,7 @@
-# Stable pod identity for the StatefulSet. The mail ports are served by the
-# regular Services below; this one only needs to exist for DNS.
-apiVersion: v1
-kind: Service
-metadata:
-  name: maddy-headless
-  labels:
-    app: maddy
-spec:
-  clusterIP: None
-  selector:
-    app: maddy
-  ports:
-    - name: smtp
-      port: 25
-      targetPort: smtp
-    - name: smtps
-      port: 465
-      targetPort: smtps
-    - name: submission
-      port: 587
-      targetPort: submission
-    - name: imaps
-      port: 993
-      targetPort: imaps
----
-# In-cluster access. Nothing here is published.
-apiVersion: v1
-kind: Service
-metadata:
-  name: maddy
-  labels:
-    app: maddy
-spec:
-  type: ClusterIP
-  selector:
-    app: maddy
-  ports:
-    - name: smtp
-      port: 25
-      targetPort: smtp
-    - name: smtps
-      port: 465
-      targetPort: smtps
-    - name: submission
-      port: 587
-      targetPort: submission
-    - name: imaps
-      port: 993
-      targetPort: imaps
----
-# Published mail ports. k3s ServiceLB binds these on the node; forward
-# 25/465/587/993 from the FritzBox to the node's LAN address. The container
-# listens on unprivileged ports, so the targetPorts differ from the service
-# ports.
+# Published submission ports. k3s ServiceLB binds these on the node; forward
+# 465 (and 587 if you use it) from the FritzBox to the node's LAN address. The
+# container listens on unprivileged ports, so the targetPorts differ. There is
+# no port 25: this server only sends.
 apiVersion: v1
 kind: Service
 metadata:
@@ -66,15 +15,9 @@ spec:
   selector:
     app: maddy
   ports:
-    - name: smtp
-      port: 25
-      targetPort: smtp
     - name: smtps
       port: 465
       targetPort: smtps
     - name: submission
       port: 587
       targetPort: submission
-    - name: imaps
-      port: 993
-      targetPort: imaps
