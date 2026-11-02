@@ -39,6 +39,12 @@ spec:
           args:
             - --config
             - /etc/stalwart/config.json
+          env:
+            # The WebUI identifies itself with a client metadata document at
+            # this URL. It must match the host the browser uses, otherwise
+            # sign-in fails with "Client metadata documents are disabled".
+            - name: STALWART_PUBLIC_URL
+              value: https://mail.lucawahlen.com
           envFrom:
             - secretRef:
                 name: stalwart-env
