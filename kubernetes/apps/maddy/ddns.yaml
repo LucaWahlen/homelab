@@ -1,8 +1,6 @@
-# Cloudflare DDNS for the mail hostname. Disabled by default: replace
-# CLOUDFLARE_API_TOKEN in secret.enc.yaml with a token scoped to
-# "Zone - DNS - Edit" on lucawahlen.com, then uncomment this file in
-# kustomization.yaml. The record must stay DNS-only: Cloudflare's proxy does
-# not carry SMTP/IMAP.
+# Cloudflare DDNS for the mail hostname. The token lives in maddy-secrets
+# ("Zone - DNS - Edit" on lucawahlen.com). The record must stay DNS-only:
+# Cloudflare's proxy does not carry SMTP/IMAP.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,7 +33,7 @@ spec:
             - name: CLOUDFLARE_API_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: stalwart-env
+                  name: maddy-secrets
                   key: CLOUDFLARE_API_TOKEN
             - name: DOMAINS
               value: mail.lucawahlen.com

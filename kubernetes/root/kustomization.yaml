@@ -7,10 +7,10 @@ resources:
   - cloudflared.yaml
   - cloudnative-pg.yaml
   - halite.yaml
+  - maddy.yaml
   - monitoring.yaml
   - openebs.yaml
   - pgadmin.yaml
   - postgres.yaml
   - rustfs.yaml
   - shale.yaml
-  - stalwart.yaml

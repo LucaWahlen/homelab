@@ -3,29 +3,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: stalwart-headless
+  name: maddy-headless
   labels:
-    app: stalwart
+    app: maddy
 spec:
   clusterIP: None
   selector:
-    app: stalwart
-  ports:
-    - name: mgmt
-      port: 8080
-      targetPort: mgmt
----
-# In-cluster access to the WebUI and mail ports. Nothing here is published.
-apiVersion: v1
-kind: Service
-metadata:
-  name: stalwart
-  labels:
-    app: stalwart
-spec:
-  type: ClusterIP
-  selector:
-    app: stalwart
+    app: maddy
   ports:
     - name: smtp
       port: 25
@@ -39,25 +23,48 @@ spec:
     - name: imaps
       port: 993
       targetPort: imaps
-    - name: mgmt
-      port: 8080
-      targetPort: mgmt
 ---
-# Published mail ports. k3s ServiceLB binds these as host ports on the node;
-# forward 25/465/587/993 from the FritzBox to the node's LAN address. Port 8080
-# is deliberately absent so the admin UI stays private.
+# In-cluster access. Nothing here is published.
 apiVersion: v1
 kind: Service
 metadata:
-  name: stalwart-mail
+  name: maddy
   labels:
-    app: stalwart
+    app: maddy
+spec:
+  type: ClusterIP
+  selector:
+    app: maddy
+  ports:
+    - name: smtp
+      port: 25
+      targetPort: smtp
+    - name: smtps
+      port: 465
+      targetPort: smtps
+    - name: submission
+      port: 587
+      targetPort: submission
+    - name: imaps
+      port: 993
+      targetPort: imaps
+---
+# Published mail ports. k3s ServiceLB binds these on the node; forward
+# 25/465/587/993 from the FritzBox to the node's LAN address. The container
+# listens on unprivileged ports, so the targetPorts differ from the service
+# ports.
+apiVersion: v1
+kind: Service
+metadata:
+  name: maddy-mail
+  labels:
+    app: maddy
 spec:
   type: LoadBalancer
-  # Keep the client IP so Stalwart can rate-limit/ban and log real sources.
+  # Keep the client IP so maddy can rate-limit/ban and log real sources.
   externalTrafficPolicy: Local
   selector:
-    app: stalwart
+    app: maddy
   ports:
     - name: smtp
       port: 25

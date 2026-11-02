@@ -1,12 +1,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: stalwart
+  name: maddy
   namespace: flux-system
 spec:
   interval: 60m
   retryInterval: 5m
-  path: ./kubernetes/apps/stalwart
+  path: ./kubernetes/apps/maddy
   prune: true
   wait: true
   timeout: 10m
@@ -15,6 +15,9 @@ spec:
     name: flux-system
   dependsOn:
     - name: openebs
+    # The Certificate needs the cert-manager CRDs and the letsencrypt issuer.
+    - name: cert-manager
+    - name: cert-manager-issuers
   decryption:
     provider: sops
     secretRef:
