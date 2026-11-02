@@ -1,0 +1,65 @@
+# Cloudflare DDNS for the mail hostname. Disabled by default: replace
+# CLOUDFLARE_API_TOKEN in secret.enc.yaml with a token scoped to
+# "Zone - DNS - Edit" on lucawahlen.com, then uncomment this file in
+# kustomization.yaml. The record must stay DNS-only: Cloudflare's proxy does
+# not carry SMTP/IMAP.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflare-ddns
+  labels:
+    app: cloudflare-ddns
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: cloudflare-ddns
+  template:
+    metadata:
+      labels:
+        app: cloudflare-ddns
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: cloudflare-ddns
+          image: favonia/cloudflare-ddns:1
+          env:
+            - name: CLOUDFLARE_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: stalwart-env
+                  key: CLOUDFLARE_API_TOKEN
+            - name: DOMAINS
+              value: mail.lucawahlen.com
+            - name: PROXIED
+              value: "false"
+            # IPv4 only: the PTR and MX setup is IPv4, and an AAAA record that
+            # points at the dynamic prefix would make senders prefer a path
+            # with no matching reverse DNS.
+            - name: IP4_PROVIDER
+              value: cloudflare.trace
+            - name: IP6_PROVIDER
+              value: none
+            - name: UPDATE_CRON
+              value: "@every 5m"
+            - name: TZ
+              value: Europe/Berlin
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi

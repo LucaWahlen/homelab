@@ -49,6 +49,10 @@ customDNS:
   mapping:
     internal.lucawahlen.com: 192.168.178.234
     proxmox.internal.lucawahlen.com: 192.168.178.210
+    # In-cluster clients reach Stalwart through the node's LoadBalancer address
+    # so the public mail.lucawahlen.com certificate validates. The public A
+    # record still points at the WAN address for external senders.
+    mail.lucawahlen.com: 192.168.178.234
 
 blocking:
   denylists:

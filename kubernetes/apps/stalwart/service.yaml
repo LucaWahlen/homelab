@@ -1,0 +1,73 @@
+# Stable pod identity for the StatefulSet. The mail ports are served by the
+# regular Services below; this one only needs to exist for DNS.
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart-headless
+  labels:
+    app: stalwart
+spec:
+  clusterIP: None
+  selector:
+    app: stalwart
+  ports:
+    - name: mgmt
+      port: 8080
+      targetPort: mgmt
+---
+# In-cluster access to the WebUI and mail ports. Nothing here is published.
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart
+  labels:
+    app: stalwart
+spec:
+  type: ClusterIP
+  selector:
+    app: stalwart
+  ports:
+    - name: smtp
+      port: 25
+      targetPort: smtp
+    - name: smtps
+      port: 465
+      targetPort: smtps
+    - name: submission
+      port: 587
+      targetPort: submission
+    - name: imaps
+      port: 993
+      targetPort: imaps
+    - name: mgmt
+      port: 8080
+      targetPort: mgmt
+---
+# Published mail ports. k3s ServiceLB binds these as host ports on the node;
+# forward 25/465/587/993 from the FritzBox to the node's LAN address. Port 8080
+# is deliberately absent so the admin UI stays private.
+apiVersion: v1
+kind: Service
+metadata:
+  name: stalwart-mail
+  labels:
+    app: stalwart
+spec:
+  type: LoadBalancer
+  # Keep the client IP so Stalwart can rate-limit/ban and log real sources.
+  externalTrafficPolicy: Local
+  selector:
+    app: stalwart
+  ports:
+    - name: smtp
+      port: 25
+      targetPort: smtp
+    - name: smtps
+      port: 465
+      targetPort: smtps
+    - name: submission
+      port: 587
+      targetPort: submission
+    - name: imaps
+      port: 993
+      targetPort: imaps

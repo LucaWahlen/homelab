@@ -13,3 +13,4 @@ resources:
   - postgres.yaml
   - rustfs.yaml
   - shale.yaml
+  - stalwart.yaml
