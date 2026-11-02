@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maddy
+  labels:
+    app: maddy
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  # Single stateless instance with an in-memory queue: recreate rather than
+  # run two pods during a rollout.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: maddy
+  template:
+    metadata:
+      labels:
+        app: maddy
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 30
+      # Absolute lookups first: maddy resolves MX hosts and MTA-STS endpoints,
+      # and the default ndots:5 wastes a search-domain round trip per name.
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: maddy
+          image: foxcpp/maddy:0.9.6
+          command:
+            - /bin/maddy
+          args:
+            - -config
+            - /etc/maddy/maddy.conf
+            - run
+          ports:
+            - name: smtps
+              containerPort: 8465
+            - name: submission
+              containerPort: 8587
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            tcpSocket:
+              port: smtps
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: smtps
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/maddy/maddy.conf
+              subPath: maddy.conf
+              readOnly: true
+            - name: secret
+              mountPath: /etc/maddy/secret
+              readOnly: true
+            - name: dkim
+              mountPath: /data/dkim_keys/mail.lucawahlen.com_default.key
+              subPath: dkim.key
+              readOnly: true
+            - name: tls
+              mountPath: /etc/maddy/tls
+              readOnly: true
+            - name: data
+              mountPath: /data
+            - name: run
+              mountPath: /run/maddy
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          configMap:
+            name: maddy-config
+        - name: secret
+          secret:
+            secretName: maddy-secrets
+            items:
+              - key: credentials
+                path: credentials
+        # The DKIM private key is a SOPS-managed Secret, mounted read-only at
+        # the path maddy's default "dkim <domain> <domains> default" expects.
+        - name: dkim
+          secret:
+            secretName: maddy-secrets
+            items:
+              - key: dkim.key
+                path: dkim.key
+        - name: tls
+          secret:
+            secretName: maddy-mail-tls
+        # Stateless: the queue, buffer and MTA-STS cache live in RAM only.
+        - name: data
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
+        - name: run
+          emptyDir:
+            sizeLimit: 16Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
