@@ -54,8 +54,9 @@ on the node. Forward `465` from the FritzBox to the node's LAN address
 ## DNS records (Cloudflare)
 
 Only the `mail` subdomain is involved. Leave the root `lucawahlen.com` MX
-pointing at Proton. These records are created by hand for now; the `mail` A
-record is kept current by the `cloudflare-ddns` deployment.
+pointing at Proton. The `mail` A record is kept current by the `cloudflare-ddns`
+deployment (and so is **not** managed by OpenTofu); the TXT records below are
+managed by OpenTofu in `opentofu/cloudflare/dns.tf`.
 
 | Type | Name (Cloudflare field) | Content / target | Priority | TTL | Proxy |
 |---|---|---|---|---|---|
@@ -64,10 +65,10 @@ record is kept current by the `cloudflare-ddns` deployment.
 | TXT | `_dmarc.mail` | `v=DMARC1; p=none` | — | Auto | n/a |
 | TXT | `default._domainkey.mail` | see below | — | Auto | n/a |
 
-**Remove the `MX` record for `mail`** (and any Resend MX/SPF/DKIM records on
-`mail.lucawahlen.com`): this server does not receive, so a published MX only
-causes bounces at senders. SPF uses `a:` rather than a literal IP so it follows
-the dynamic A record.
+The `MX` record for `mail` (and any Resend MX/SPF/DKIM records on
+`mail.lucawahlen.com`) has been removed: this server does not receive, so a
+published MX only causes bounces at senders. SPF uses `a:` rather than a literal
+IP so it follows the dynamic A record.
 
 The Cloudflare **Name** field is relative to the zone: enter `mail`, not
 `mail.lucawahlen.com`. The DKIM public key is derived from the private key in
