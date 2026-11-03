@@ -202,6 +202,14 @@ spec:
           contains("urn:bedrock:roles", 'grafana-admin') && 'GrafanaAdmin' ||
           contains("urn:bedrock:roles", 'grafana-developer') && 'Editor' ||
           contains("urn:bedrock:roles", 'grafana-viewer') && 'Viewer' || 'None'
+      # Alert recipient address, read from the SOPS-managed SMTP Secret so the
+      # personal address is not committed in this file. Provisioning expands
+      # $ALERT_EMAIL in the contact point below.
+      envValueFrom:
+        ALERT_EMAIL:
+          secretKeyRef:
+            name: grafana-smtp
+            key: alert_email
       # Grafana OIDC client secret, encrypted with SOPS/age.
       envFromSecret: grafana-oidc
       grafana.ini:
@@ -239,7 +247,7 @@ spec:
                 - uid: grafana-email
                   type: email
                   settings:
-                    addresses: redacted@example.com
+                    addresses: $ALERT_EMAIL
                     singleEmail: false
         policies.yaml:
           apiVersion: 1

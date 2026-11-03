@@ -6,7 +6,8 @@ data:
   # Public https URL: the OIDC issuer and passkey relying party. Pick it once.
   BETTER_AUTH_URL: https://bedrock.lucawahlen.com
 
-  SEED_ADMIN_EMAIL: redacted@example.com
+  # SEED_ADMIN_EMAIL is set in the SOPS-managed bedrock-secrets Secret so the
+  # address is not published in this ConfigMap.
   SEED_ADMIN_NAME: Luca Wahlen
 
   # RustFS (self-hosted). Public reads go through the s3.lucawahlen.com
