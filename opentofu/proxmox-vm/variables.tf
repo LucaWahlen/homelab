@@ -29,7 +29,7 @@ variable "proxmox_node" {
 variable "cloud_image_url" {
   description = "URL of the cloud-init-ready disk image OpenTofu downloads onto the Proxmox node and boots the VM from"
   type        = string
-  default     = "https://cloud.debian.org/images/cloud/trixie/20261026-2643/debian-13-genericcloud-amd64-20261026-2643.qcow2"
+  default     = "https://cloud.debian.org/images/cloud/trixie/20261103-2651/debian-13-genericcloud-amd64-20261103-2651.qcow2"
 }
 
 variable "cloud_image_file_name" {
