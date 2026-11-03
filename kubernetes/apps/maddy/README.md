@@ -94,10 +94,12 @@ once a mailbox for reports exists.
 
 Senders authenticate with the credentials file (`user:bcrypt:$2a$...`) mounted
 from `maddy-secrets`. Only senders at `mail.lucawahlen.com` are allowed, and
-the envelope/`From` must match the authenticated account. Two accounts exist:
+the envelope/`From` must match the authenticated account. Three accounts exist:
 
 - `bedrock@mail.lucawahlen.com`, using the password already in
   `kubernetes/apps/bedrock/secret.enc.yaml` (`SMTP_PASSWORD`).
+- `grafana@mail.lucawahlen.com`, used by Grafana for alert mail; the plaintext
+  password lives in `kubernetes/apps/monitoring/grafana-smtp-secret.enc.yaml`.
 - `redacted@example.com`, with a generated password:
 
   ```bash

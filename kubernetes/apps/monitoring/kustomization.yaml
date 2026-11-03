@@ -11,5 +11,7 @@ resources:
   - grafana-admin-secret.enc.yaml
   # Grafana OIDC client secret (Bedrock), encrypted with SOPS/age.
   - grafana-oidc-secret.enc.yaml
+  # Grafana SMTP sender credentials for maddy, encrypted with SOPS/age.
+  - grafana-smtp-secret.enc.yaml
   - helmrepository.yaml
   - helmrelease.yaml

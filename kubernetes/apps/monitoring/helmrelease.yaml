@@ -158,6 +158,12 @@ spec:
         rollingUpdate: null
       admin:
         existingSecret: grafana-admin
+      # Sender credentials for the maddy submission server. The chart injects
+      # them as GF_SMTP_USER/GF_SMTP_PASSWORD from the SOPS-managed Secret.
+      smtp:
+        existingSecret: grafana-smtp
+        userKey: user
+        passwordKey: password
       # VictoriaLogs datasource plugin (the VictoriaMetrics datasource is built in).
       plugins:
         - victoriametrics-logs-datasource
@@ -199,6 +205,14 @@ spec:
       # Grafana OIDC client secret, encrypted with SOPS/age.
       envFromSecret: grafana-oidc
       grafana.ini:
+        # Alert mail goes through maddy (send-only submission server). Port 465
+        # is implicit TLS from the first byte, so there is no STARTTLS upgrade.
+        smtp:
+          enabled: true
+          host: mail.lucawahlen.com:465
+          from_address: grafana@mail.lucawahlen.com
+          from_name: Grafana
+          startTLS_policy: NoStartTLS
         server:
           root_url: https://grafana.internal.lucawahlen.com
         users:
@@ -211,6 +225,38 @@ spec:
         # are all unused.
         plugins:
           disable_plugins: grafana-exploretraces-app,grafana-pyroscope-app,grafana-advisor-app,alertmanager,cloudwatch,elasticsearch,grafana-azure-monitor-datasource,grafana-postgresql-datasource,grafana-pyroscope-datasource,grafana-testdata-datasource,graphite,influxdb,jaeger,loki,mssql,mysql,opentsdb,stackdriver,tempo,zipkin  # yamllint disable-line rule:line-length
+      # Email notifications for Grafana's built-in unified alerting. The root
+      # policy is provisioned here, so it replaces the stale ntfy policy left in
+      # the database by the removed ntfy integration; the dead contact point is
+      # deleted in the same pass.
+      alerting:
+        contactpoints.yaml:
+          apiVersion: 1
+          contactPoints:
+            - orgId: 1
+              name: grafana-email
+              receivers:
+                - uid: grafana-email
+                  type: email
+                  settings:
+                    addresses: redacted@example.com
+                    singleEmail: false
+        policies.yaml:
+          apiVersion: 1
+          policies:
+            - orgId: 1
+              receiver: grafana-email
+              group_by:
+                - grafana_folder
+                - alertname
+              group_wait: 30s
+              group_interval: 5m
+              repeat_interval: 4h
+        delete-contactpoints.yaml:
+          apiVersion: 1
+          deleteContactPoints:
+            - orgId: 1
+              uid: ntfy-alerts
       persistence:
         enabled: true
         storageClassName: openebs-lvm
