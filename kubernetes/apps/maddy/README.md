@@ -100,7 +100,7 @@ the envelope/`From` must match the authenticated account. Three accounts exist:
   `kubernetes/apps/bedrock/secret.enc.yaml` (`SMTP_PASSWORD`).
 - `grafana@mail.lucawahlen.com`, used by Grafana for alert mail; the plaintext
   password lives in `kubernetes/apps/monitoring/grafana-smtp-secret.enc.yaml`.
-- `redacted@example.com`, with a generated password:
+- a personal account, with a generated password:
 
   ```bash
   sops -d kubernetes/apps/maddy/secret.enc.yaml | yq -r '.stringData."luca-password"'
