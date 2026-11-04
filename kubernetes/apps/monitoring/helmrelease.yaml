@@ -221,6 +221,10 @@ spec:
           from_address: grafana@mail.lucawahlen.com
           from_name: Grafana
           startTLS_policy: NoStartTLS
+        # Experimental visual refresh (new theme, typography and components).
+        # Remove this block to fall back to the previous design.
+        feature_toggles:
+          enable: grafana.visualDesignRefresh
         server:
           root_url: https://grafana.internal.lucawahlen.com
         users:
