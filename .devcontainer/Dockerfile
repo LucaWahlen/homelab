@@ -31,7 +31,7 @@ ARG FLUX_VERSION=2.10.0
 # renovate: datasource=github-releases depName=getsops/sops extractVersion=^v(?<version>.*)$
 ARG SOPS_VERSION=3.13.3
 # renovate: datasource=github-releases depName=opentofu/opentofu extractVersion=^v(?<version>.*)$
-ARG OPENTOFU_VERSION=1.13.8
+ARG OPENTOFU_VERSION=1.13.9
 # renovate: datasource=github-releases depName=FiloSottile/age extractVersion=^v(?<version>.*)$
 ARG AGE_VERSION=1.3.2
 # renovate: datasource=github-releases depName=yannh/kubeconform extractVersion=^v(?<version>.*)$
