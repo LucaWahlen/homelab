@@ -1,0 +1,420 @@
+# Lightweight Prometheus exporter for Barman Cloud S3 backup storage.
+# Lists each S3 backup location in locations.json via AWS SigV4 ListObjectsV2
+# (cached for 5 minutes) and exposes per-location size (base vs WAL) and object
+# counts on :9100/metrics. To track another S3 location, add an entry to
+# locations.json and reference its credentials Secret on the Deployment.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-backup-exporter
+data:
+  locations.json: |
+    [
+      {
+        "name": "offsite-s3",
+        "endpoint": "https://s3.homedrive.dev",
+        "destination": "s3://luca-backups/",
+        "retention": "30d",
+        "access_key_env": "ACCESS_KEY_ID",
+        "secret_key_env": "ACCESS_SECRET_KEY",
+        "region_env": "AWS_REGION"
+      }
+    ]
+  exporter.py: |
+    #!/usr/bin/env python3
+    """Prometheus exporter for CloudNativePG Barman Cloud S3 backup locations."""
+
+    from datetime import datetime, timezone
+    import hashlib
+    import hmac
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+    import json
+    import os
+    import sys
+    import threading
+    import time
+    import urllib.parse
+    import urllib.request
+    import xml.etree.ElementTree as ET
+
+    CONFIG_PATH = os.environ.get("LOCATIONS_CONFIG", "/config/locations.json")
+    LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "9100"))
+    CACHE_TTL_SECONDS = int(os.environ.get("CACHE_TTL_SECONDS", "300"))
+    HTTP_TIMEOUT_SECONDS = int(os.environ.get("HTTP_TIMEOUT_SECONDS", "25"))
+    EMPTY_PAYLOAD_HASH = hashlib.sha256(b"").hexdigest()
+
+    _cache_lock = threading.Lock()
+    _cached_body = ""
+    _cached_at = 0.0
+
+
+    def _sign(key: bytes, msg: str) -> bytes:
+        return hmac.new(key, msg.encode("utf-8"), hashlib.sha256).digest()
+
+
+    def _signing_key(secret_key: str, date_stamp: str, region: str, service: str = "s3") -> bytes:
+        k_date = _sign(("AWS4" + secret_key).encode("utf-8"), date_stamp)
+        k_region = _sign(k_date, region)
+        k_service = _sign(k_region, service)
+        return _sign(k_service, "aws4_request")
+
+
+    def _uri_encode(value: str, encode_slash: bool = True) -> str:
+        safe = "-_.~" if encode_slash else "-_.~/"
+        return urllib.parse.quote(value, safe=safe)
+
+
+    def _parse_destination(destination: str) -> tuple[str, str]:
+        parsed = urllib.parse.urlparse(destination)
+        bucket = parsed.netloc
+        prefix = parsed.path.lstrip("/")
+        return bucket, prefix
+
+
+    def _s3_list_objects_page(
+        endpoint: str,
+        bucket: str,
+        prefix: str,
+        access_key: str,
+        secret_key: str,
+        region: str,
+        continuation_token: str | None = None,
+    ) -> bytes:
+        parsed_ep = urllib.parse.urlparse(endpoint)
+        host = parsed_ep.netloc
+        base_path = parsed_ep.path.rstrip("/")
+        canonical_uri = _uri_encode(f"{base_path}/{bucket}", encode_slash=False)
+
+        query_params: dict[str, str] = {"list-type": "2"}
+        if prefix:
+            query_params["prefix"] = prefix
+        if continuation_token:
+            query_params["continuation-token"] = continuation_token
+
+        canonical_querystring = "&".join(
+            f"{_uri_encode(k)}={_uri_encode(v)}" for k, v in sorted(query_params.items())
+        )
+
+        now = datetime.now(timezone.utc)
+        amz_date = now.strftime("%Y%m%dT%H%M%SZ")
+        date_stamp = now.strftime("%Y%m%d")
+
+        canonical_headers = (
+            f"host:{host}\n"
+            f"x-amz-content-sha256:{EMPTY_PAYLOAD_HASH}\n"
+            f"x-amz-date:{amz_date}\n"
+        )
+        signed_headers = "host;x-amz-content-sha256;x-amz-date"
+        canonical_request = "\n".join(
+            [
+                "GET",
+                canonical_uri,
+                canonical_querystring,
+                canonical_headers,
+                signed_headers,
+                EMPTY_PAYLOAD_HASH,
+            ]
+        )
+
+        credential_scope = f"{date_stamp}/{region}/s3/aws4_request"
+        string_to_sign = "\n".join(
+            [
+                "AWS4-HMAC-SHA256",
+                amz_date,
+                credential_scope,
+                hashlib.sha256(canonical_request.encode("utf-8")).hexdigest(),
+            ]
+        )
+
+        signing_key = _signing_key(secret_key, date_stamp, region)
+        signature = hmac.new(
+            signing_key, string_to_sign.encode("utf-8"), hashlib.sha256
+        ).hexdigest()
+
+        authorization = (
+            f"AWS4-HMAC-SHA256 Credential={access_key}/{credential_scope}, "
+            f"SignedHeaders={signed_headers}, Signature={signature}"
+        )
+
+        url = f"{parsed_ep.scheme}://{host}{canonical_uri}?{canonical_querystring}"
+        req = urllib.request.Request(
+            url,
+            method="GET",
+            headers={
+                "Host": host,
+                "x-amz-date": amz_date,
+                "x-amz-content-sha256": EMPTY_PAYLOAD_HASH,
+                "Authorization": authorization,
+                "User-Agent": "cnpg-s3-backup-exporter/1.0",
+            },
+        )
+        with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT_SECONDS) as resp:
+            return resp.read()
+
+
+    def _classify_key(key: str) -> tuple[str, str | None]:
+        parts = [p for p in key.split("/") if p]
+        for idx, part in enumerate(parts):
+            if part == "base":
+                backup_id = parts[idx + 1] if idx + 1 < len(parts) else None
+                return "base", backup_id
+            if part in ("wals", "wal"):
+                return "wal", None
+        return "other", None
+
+
+    def _parse_iso_timestamp(value: str | None) -> float:
+        if not value:
+            return 0.0
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return dt.timestamp()
+        except ValueError:
+            return 0.0
+
+
+    def _collect_location(loc: dict) -> dict:
+        name = loc["name"]
+        endpoint = loc["endpoint"].rstrip("/")
+        destination = loc["destination"]
+        retention = loc.get("retention", "")
+        bucket, prefix = _parse_destination(destination)
+
+        access_key = os.environ.get(loc.get("access_key_env", "ACCESS_KEY_ID"), "").strip()
+        secret_key = os.environ.get(loc.get("secret_key_env", "ACCESS_SECRET_KEY"), "").strip()
+        region = os.environ.get(loc.get("region_env", "AWS_REGION"), "us-east-1").strip() or "us-east-1"
+
+        sizes = {"base": 0, "wal": 0, "other": 0}
+        counts = {"base": 0, "wal": 0, "other": 0}
+        base_backups: set[str] = set()
+        last_modified = 0.0
+
+        token: str | None = None
+        while True:
+            xml_bytes = _s3_list_objects_page(
+                endpoint=endpoint,
+                bucket=bucket,
+                prefix=prefix,
+                access_key=access_key,
+                secret_key=secret_key,
+                region=region,
+                continuation_token=token,
+            )
+            root = ET.fromstring(xml_bytes)
+            for content in root.findall("{*}Contents"):
+                key = content.findtext("{*}Key") or ""
+                size = int(content.findtext("{*}Size") or "0")
+                mod_ts = _parse_iso_timestamp(content.findtext("{*}LastModified"))
+                if mod_ts > last_modified:
+                    last_modified = mod_ts
+
+                kind, backup_id = _classify_key(key)
+                sizes[kind] += size
+                counts[kind] += 1
+                if backup_id:
+                    base_backups.add(backup_id)
+
+            is_truncated = (root.findtext("{*}IsTruncated") or "").lower() == "true"
+            if not is_truncated:
+                break
+            token = root.findtext("{*}NextContinuationToken")
+            if not token:
+                break
+
+        return {
+            "name": name,
+            "endpoint": endpoint,
+            "bucket": bucket,
+            "destination": destination,
+            "retention": retention,
+            "success": 1,
+            "sizes": sizes,
+            "counts": counts,
+            "base_count": len(base_backups),
+            "last_modified": last_modified,
+        }
+
+
+    def _fmt_labels(labels: dict[str, str]) -> str:
+        escaped = [
+            f'{k}="{str(v).replace(chr(92), chr(92)*2).replace(chr(34), chr(92)+chr(34))}"'
+            for k, v in labels.items()
+        ]
+        return "{" + ",".join(escaped) + "}"
+
+
+    def _build_metrics() -> str:
+        with open(CONFIG_PATH, "r", encoding="utf-8") as fh:
+            locations = json.load(fh)
+
+        lines = [
+            "# HELP cnpg_s3_backup_scrape_success 1 if listing the S3 backup location succeeded, 0 otherwise.",
+            "# TYPE cnpg_s3_backup_scrape_success gauge",
+            "# HELP cnpg_s3_backup_location_size_bytes Total bytes stored in the S3 backup location.",
+            "# TYPE cnpg_s3_backup_location_size_bytes gauge",
+            "# HELP cnpg_s3_backup_size_bytes Bytes stored in the S3 backup location by object category (base, wal, other).",
+            "# TYPE cnpg_s3_backup_size_bytes gauge",
+            "# HELP cnpg_s3_backup_location_objects Total objects stored in the S3 backup location.",
+            "# TYPE cnpg_s3_backup_location_objects gauge",
+            "# HELP cnpg_s3_backup_objects Objects stored in the S3 backup location by category (base, wal, other).",
+            "# TYPE cnpg_s3_backup_objects gauge",
+            "# HELP cnpg_s3_backup_base_count Number of distinct base backups present in the S3 backup location.",
+            "# TYPE cnpg_s3_backup_base_count gauge",
+            "# HELP cnpg_s3_backup_last_modified_timestamp_seconds Unix timestamp of the most recently modified object in the S3 location.",
+            "# TYPE cnpg_s3_backup_last_modified_timestamp_seconds gauge",
+        ]
+
+        for loc in locations:
+            bucket, _ = _parse_destination(loc["destination"])
+            base_labels = {
+                "location": loc["name"],
+                "endpoint": loc["endpoint"].rstrip("/"),
+                "bucket": bucket,
+                "destination": loc["destination"],
+                "retention": loc.get("retention", ""),
+            }
+            try:
+                res = _collect_location(loc)
+                lbl = _fmt_labels(base_labels)
+                total_size = sum(res["sizes"].values())
+                total_objs = sum(res["counts"].values())
+                lines.append(f"cnpg_s3_backup_scrape_success{lbl} 1")
+                lines.append(f"cnpg_s3_backup_location_size_bytes{lbl} {total_size}")
+                lines.append(f"cnpg_s3_backup_location_objects{lbl} {total_objs}")
+                lines.append(f"cnpg_s3_backup_base_count{lbl} {res['base_count']}")
+                lines.append(
+                    f"cnpg_s3_backup_last_modified_timestamp_seconds{lbl} {res['last_modified']:.0f}"
+                )
+                for kind in ("base", "wal", "other"):
+                    kind_lbl = _fmt_labels({**base_labels, "kind": kind})
+                    lines.append(f"cnpg_s3_backup_size_bytes{kind_lbl} {res['sizes'][kind]}")
+                    lines.append(f"cnpg_s3_backup_objects{kind_lbl} {res['counts'][kind]}")
+            except Exception as exc:  # noqa: BLE001
+                print(
+                    f"[postgres-backup-exporter] failed collecting {loc.get('name')}: {exc}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                lbl = _fmt_labels(base_labels)
+                lines.append(f"cnpg_s3_backup_scrape_success{lbl} 0")
+
+        return "\n".join(lines) + "\n"
+
+
+    def _get_metrics() -> str:
+        global _cached_body, _cached_at
+        now = time.monotonic()
+        with _cache_lock:
+            if _cached_body and (now - _cached_at) < CACHE_TTL_SECONDS:
+                return _cached_body
+        body = _build_metrics()
+        with _cache_lock:
+            _cached_body = body
+            _cached_at = time.monotonic()
+        return body
+
+
+    class MetricsHandler(BaseHTTPRequestHandler):
+        def do_GET(self) -> None:  # noqa: N802
+            if self.path == "/healthz":
+                payload = b"ok\n"
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            if self.path.startswith("/metrics"):
+                payload = _get_metrics().encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+                return
+
+            self.send_response(404)
+            self.end_headers()
+
+        def log_message(self, fmt: str, *args: object) -> None:
+            return
+
+
+    if __name__ == "__main__":
+        server = ThreadingHTTPServer(("0.0.0.0", LISTEN_PORT), MetricsHandler)
+        print(f"Listening on :{LISTEN_PORT}", flush=True)
+        server.serve_forever()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-backup-exporter
+  labels:
+    app: postgres-backup-exporter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: postgres-backup-exporter
+  template:
+    metadata:
+      labels:
+        app: postgres-backup-exporter
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: exporter
+          image: python:3.13-alpine
+          command:
+            - python3
+            - /config/exporter.py
+          envFrom:
+            - secretRef:
+                name: postgres-backup-s3
+          ports:
+            - name: metrics
+              containerPort: 9100
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+            initialDelaySeconds: 2
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: postgres-backup-exporter

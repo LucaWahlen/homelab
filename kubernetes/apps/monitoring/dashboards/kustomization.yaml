@@ -122,16 +122,14 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Blocky
-  # Upstream cloudnative-pg/grafana-dashboards cluster-v0.0.5
-  # charts/cluster/grafana-dashboard.json, changed to fit this setup:
-  # - removed __inputs/__requires/__elements; every query uses the dashboard's
-  #   DS_PROMETHEUS variable (row headers had a hardcoded "prometheus" uid) and
-  #   the reconcile-errors stat uses Grafana's built-in __expr__ datasource
-  # - CPU panels read raw cAdvisor container_cpu_usage_seconds_total instead of
-  #   the node_namespace_pod_container:… recording rule, as defaultRules are off
-  # - the Backups row reads the Barman Cloud plugin metrics
-  #   (barman_cloud_cloudnative_pg_io_*), which supersede the in-tree
-  #   cnpg_collector_* backup metrics
+  # Redesigned for this cluster from cloudnative-pg/grafana-dashboards:
+  # - replaced cramped upstream text-header fake tables and micro-tiles with
+  #   full-width Grafana tables and w=4 stat/gauge cards matching storage.json
+  # - hid single-value cluster/namespace/datasource variables, keeping only the
+  #   Instance filter in the top bar
+  # - added Backups & S3 Storage panels (per-location table, bar gauge, and
+  #   storage evolution charts) backed by Barman Cloud plugin metrics and
+  #   postgres-backup-exporter (../scrapes/postgres.yaml)
   # The Operator row needs ../scrapes/cloudnative-pg.yaml.
   - name: grafana-dashboard-cloudnative-pg
     files:

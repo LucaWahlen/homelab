@@ -6,3 +6,4 @@ resources:
   - credentials.enc.yaml
   - objectstore.yaml
   - scheduled-backup.yaml
+  - exporter.yaml

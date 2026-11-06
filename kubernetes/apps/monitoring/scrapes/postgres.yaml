@@ -14,3 +14,26 @@ spec:
       relabelConfigs:
         - targetLabel: job
           replacement: postgres
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: postgres-backup
+spec:
+  # S3 backup size and object count metrics per Barman Cloud location
+  # (kubernetes/apps/postgres/backup/exporter.yaml). The exporter caches S3
+  # listings in memory for 5 minutes so 1m scrapes keep series continuous
+  # without spamming S3 LIST calls.
+  namespaceSelector:
+    matchNames:
+      - postgres
+  selector:
+    matchLabels:
+      app: postgres-backup-exporter
+  podMetricsEndpoints:
+    - port: metrics
+      interval: 1m
+      scrapeTimeout: 30s
+      relabelConfigs:
+        - targetLabel: job
+          replacement: postgres-backup
