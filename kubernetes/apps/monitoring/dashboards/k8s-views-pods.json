@@ -2884,5 +2884,6 @@
   "title": "Kubernetes / Pods",
   "uid": "k8s_views_pods",
   "version": 41,
-  "weekStart": ""
+  "weekStart": "",
+  "tags": []
 }

@@ -7685,5 +7685,6 @@
   "timezone": "Europe/Berlin",
   "title": "VictoriaMetrics / vmagent",
   "uid": "G7Z9GzMGz",
-  "version": 1
+  "version": 1,
+  "tags": []
 }

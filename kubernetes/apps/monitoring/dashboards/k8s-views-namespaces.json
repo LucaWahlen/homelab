@@ -2908,5 +2908,6 @@
   "title": "Kubernetes / Namespaces",
   "uid": "k8s_views_ns",
   "version": 46,
-  "weekStart": ""
+  "weekStart": "",
+  "tags": []
 }

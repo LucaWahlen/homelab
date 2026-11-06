@@ -3031,5 +3031,6 @@
   "title": "Kubernetes / Global",
   "uid": "k8s_views_global",
   "version": 45,
-  "weekStart": ""
+  "weekStart": "",
+  "tags": []
 }

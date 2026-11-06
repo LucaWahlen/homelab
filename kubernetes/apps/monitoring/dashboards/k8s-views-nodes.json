@@ -3901,5 +3901,6 @@
   "title": "Kubernetes / Nodes",
   "uid": "k8s_views_nodes",
   "version": 40,
-  "weekStart": ""
+  "weekStart": "",
+  "tags": []
 }

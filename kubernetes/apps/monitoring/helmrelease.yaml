@@ -146,7 +146,9 @@ spec:
         - victoriametrics-logs-datasource
       env:
         TZ: Europe/Berlin
+        GF_AUTH_DISABLE_LOGIN_FORM: "true"
         GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+        GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN: "true"
         GF_AUTH_GENERIC_OAUTH_NAME: Bedrock
         GF_AUTH_GENERIC_OAUTH_CLIENT_ID: PwlcvpdcoGZNAQQONkaCKgPrMAcMidtt
         GF_AUTH_GENERIC_OAUTH_SCOPES: openid profile email roles
