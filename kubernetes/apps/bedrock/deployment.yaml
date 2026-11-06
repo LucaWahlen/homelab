@@ -44,7 +44,6 @@ spec:
               app: bedrock
       containers:
         - name: bedrock
-          # Pinned by digest so Renovate can track the floating nightly tag.
           image: ghcr.io/lucawahlen/bedrock:nightly@sha256:14b8c0c4c305d517925412508d8320d89a6052d611e345df261d6b7da0926eb5
           env:
             # Kubernetes sets HOSTNAME to the pod name; Next.js binds to it unless overridden.
