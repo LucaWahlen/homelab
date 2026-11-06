@@ -28,6 +28,13 @@ spec:
       owner: admin
       secret:
         name: admin-credentials
+  # WAL is archived continuously to the offsite S3 bucket by the Barman Cloud
+  # plugin. Base backups are scheduled in backup/scheduled-backup.yaml.
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: offsite-s3
   storage:
     storageClass: openebs-lvm
     size: 10Gi

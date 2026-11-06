@@ -1,0 +1,36 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: offsite-s3
+spec:
+  retentionPolicy: "30d"
+  configuration:
+    destinationPath: s3://luca-backups/
+    endpointURL: https://s3.homedrive.dev
+    s3Credentials:
+      accessKeyId:
+        name: postgres-backup-s3
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: postgres-backup-s3
+        key: ACCESS_SECRET_KEY
+      region:
+        name: postgres-backup-s3
+        key: AWS_REGION
+    wal:
+      compression: gzip
+      archiveAdditionalCommandArgs:
+        - --addressing-style=path
+      restoreAdditionalCommandArgs:
+        - --addressing-style=path
+    data:
+      compression: gzip
+      additionalCommandArgs:
+        - --addressing-style=path
+  instanceSidecarConfiguration:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 256Mi
