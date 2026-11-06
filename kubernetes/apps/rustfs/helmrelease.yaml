@@ -35,7 +35,7 @@ spec:
         obs_log_directory: ""
     storageclass:
       name: openebs-lvm
-      dataStorageSize: 10Gi
+      dataStorageSize: 100Gi
     resources:
       requests:
         cpu: 25m
