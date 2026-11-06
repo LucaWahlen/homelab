@@ -129,8 +129,10 @@ configMapGenerator:
   #   the reconcile-errors stat uses Grafana's built-in __expr__ datasource
   # - CPU panels read raw cAdvisor container_cpu_usage_seconds_total instead of
   #   the node_namespace_pod_container:… recording rule, as defaultRules are off
-  # The Operator row needs ../scrapes/cloudnative-pg.yaml; the Backups row stays
-  # empty until backups are set up.
+  # - the Backups row reads the Barman Cloud plugin metrics
+  #   (barman_cloud_cloudnative_pg_io_*), which supersede the in-tree
+  #   cnpg_collector_* backup metrics
+  # The Operator row needs ../scrapes/cloudnative-pg.yaml.
   - name: grafana-dashboard-cloudnative-pg
     files:
       - cloudnative-pg.json
