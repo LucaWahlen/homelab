@@ -16,7 +16,7 @@
     ]
   },
   "description": "Operational dashboard for the blocky DNS proxy and ad blocker: traffic, latency, blocking effectiveness, caching, DNSSEC, rate limiting and Go runtime health.",
-  "editable": true,
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "links": [],
@@ -1616,7 +1616,7 @@
         },
         "cellGap": 1,
         "filterValues": {
-          "le": 1E-9
+          "le": 1e-09
         },
         "rowsFrame": {
           "layout": "auto"
@@ -2766,7 +2766,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Berlin",
   "title": "Blocky",
   "uid": "blocky-dns",
   "version": 1,

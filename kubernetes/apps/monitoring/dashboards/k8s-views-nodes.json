@@ -4,61 +4,19 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
         "type": "dashboard"
-      },
-      {
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": false,
-        "iconColor": "#5c4ee5",
-        "name": "terraform",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [
-            "terraform"
-          ],
-          "type": "tags"
-        }
-      },
-      {
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": false,
-        "iconColor": "red",
-        "name": "oncall",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [
-            "oncall"
-          ],
-          "type": "tags"
-        }
       }
     ]
   },
   "description": "This is a modern 'Nodes View' dashboard for your Kubernetes cluster(s). Made for kube-prometheus-stack and take advantage of the latest Grafana features. GitHub repository: https://github.com/dotdc/grafana-dashboards-kubernetes",
-  "editable": true,
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "links": [],
@@ -151,7 +109,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU  Usage",
+      "title": "CPU Usage",
       "type": "gauge"
     },
     {
@@ -427,7 +385,7 @@
           "refId": "A"
         }
       ],
-      "title": "List of pods on node ($node)",
+      "title": "Pods on node",
       "transformations": [
         {
           "id": "organize",
@@ -843,7 +801,7 @@
           "refId": "A"
         }
       ],
-      "title": "uptime",
+      "title": "Uptime",
       "type": "stat"
     },
     {
@@ -3843,11 +3801,11 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "30s",
           "value": "30s"
         },
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "multi": false,
         "name": "resolution",
@@ -3895,7 +3853,7 @@
           "uid": "${datasource}"
         },
         "definition": "label_values(kube_node_info{}, node)",
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "multi": false,
         "name": "node",
@@ -3940,7 +3898,7 @@
   },
   "timepicker": {},
   "timezone": "Europe/Berlin",
-  "title": "Kubernetes / Views / Nodes",
+  "title": "Kubernetes / Nodes",
   "uid": "k8s_views_nodes",
   "version": 40,
   "weekStart": ""

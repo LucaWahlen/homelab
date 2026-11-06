@@ -1,9 +1,22 @@
 {
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
   },
   "description": "PersistentVolume usage against size, and the data and OS disks.",
-  "editable": true,
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "links": [],
@@ -1545,7 +1558,7 @@
       ]
     }
   ],
-  "refresh": "1m",
+  "refresh": "30s",
   "schemaVersion": 40,
   "tags": [
     "storage",
@@ -1575,7 +1588,7 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "Europe/Berlin",
   "title": "Storage",
   "uid": "storage-volumes",
   "version": 1

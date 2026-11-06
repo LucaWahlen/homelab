@@ -11,114 +11,15 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
         "type": "dashboard"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$DS_PROMETHEUS"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "blue",
-        "name": "version change",
-        "target": {
-          "expr": "sum(vm_app_version{job=~\"$job\", instance=~\"$instance\"}) by(short_version) unless (sum(vm_app_version{job=~\"$job\", instance=~\"$instance\"} offset $__interval) by(short_version))",
-          "interval": "",
-          "refId": "Anno"
-        },
-        "textFormat": "{{short_version}}",
-        "titleFormat": "Version change"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$DS_PROMETHEUS"
-        },
-        "enable": true,
-        "hide": false,
-        "iconColor": "orange",
-        "name": "restarts",
-        "target": {
-          "expr": "sum(changes(vm_app_start_timestamp{job=~\"$job\", instance=~\"$instance\"}[$__interval])) by(instance)",
-          "interval": "",
-          "refId": "Anno"
-        },
-        "textFormat": "{{instance}} restarted"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$DS_PROMETHEUS"
-        },
-        "enable": false,
-        "filter": {
-          "exclude": false,
-          "ids": [
-            75
-          ]
-        },
-        "hide": false,
-        "iconColor": "#57f26d1c",
-        "name": "gc",
-        "target": {
-          "expr": "go_memstats_last_gc_time_seconds{job=~\"$job\", instance=~\"$instance\"} * 1000",
-          "interval": "",
-          "refId": "Anno"
-        },
-        "textFormat": "GC event",
-        "useValueForTime": true
       }
     ]
   },
   "description": "Overview for single-node VictoriaLogs v1.29.0 or higher",
-  "editable": true,
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "links": [
-    {
-      "icon": "doc",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Docs",
-      "type": "link",
-      "url": "https://docs.victoriametrics.com/victorialogs/"
-    },
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Community support",
-      "type": "link",
-      "url": "https://victoriametrics.com/support/community-support/"
-    },
-    {
-      "asDropdown": false,
-      "icon": "bolt",
-      "includeVars": false,
-      "keepTime": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "Enterprise support",
-      "tooltip": "",
-      "type": "link",
-      "url": "https://victoriametrics.com/support/enterprise-support/"
-    },
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Releases",
-      "type": "link",
-      "url": "https://github.com/VictoriaMetrics/VictoriaLogs/releases"
-    }
-  ],
+  "links": [],
   "panels": [
     {
       "collapsed": false,
@@ -1836,7 +1737,7 @@
           "refId": "A"
         }
       ],
-      "title": "Total memory % usage ($instance)",
+      "title": "Total memory % usage",
       "type": "timeseries"
     },
     {
@@ -1947,7 +1848,7 @@
           "refId": "A"
         }
       ],
-      "title": "Anonymous memory % usage ($instance)",
+      "title": "Anonymous memory % usage",
       "type": "timeseries"
     },
     {
@@ -2319,7 +2220,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU % usage ($instance)",
+      "title": "CPU % usage",
       "type": "timeseries"
     },
     {
@@ -2327,7 +2228,7 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "Helps troubleshoot high CPU usage or throttling:\n\n- waiting: The percentage of time at least one task in the VictoriaLogs process was ready to run (runnable) but couldn't get scheduled on the CPU.\n- stalled: The percentage of time all tasks in the process (except idle ones) were unable to get CPU time \u2014 a full CPU stall.\n\nIf there's a CPU burst, it's normal to see waiting or stalled > 1%. It only becomes a concern if it consistently climbs above 5\u201310% and aligns with latency spikes or GC slowdowns.",
+      "description": "Helps troubleshoot high CPU usage or throttling:\n\n- waiting: The percentage of time at least one task in the VictoriaLogs process was ready to run (runnable) but couldn't get scheduled on the CPU.\n- stalled: The percentage of time all tasks in the process (except idle ones) were unable to get CPU time — a full CPU stall.\n\nIf there's a CPU burst, it's normal to see waiting or stalled > 1%. It only becomes a concern if it consistently climbs above 5–10% and aligns with latency spikes or GC slowdowns.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2605,7 +2506,7 @@
           "refId": "C"
         }
       ],
-      "title": "Disk writes/reads ($instance)",
+      "title": "Disk writes/reads",
       "type": "timeseries"
     },
     {
@@ -2744,7 +2645,7 @@
           "refId": "B"
         }
       ],
-      "title": "Storage read/write syscalls ($instance)",
+      "title": "Storage read/write syscalls",
       "type": "timeseries"
     },
     {
@@ -2873,7 +2774,7 @@
           "refId": "A"
         }
       ],
-      "title": "Open FDs % usage ($instance)",
+      "title": "Open FDs % usage",
       "type": "timeseries"
     },
     {
@@ -2881,7 +2782,7 @@
         "type": "prometheus",
         "uid": "$DS_PROMETHEUS"
       },
-      "description": "IO pressure based on [Pressure Stall Information](https://docs.kernel.org/accounting/psi.html). The lower the better.\n\n- waiting: at least one runnable thread blocked on block-`I/O` (disk, NVMe, network-storage) while others could still make progress.\n- stalled: all non-idle threads simultaneously waiting on `I/O`; no useful user code ran during these periods \u2192 true `I/O` thrashing.\n\nIf stalled > 0 while querying, it's recommended to increase queue depth on NVMe, raise blk-mq budgets, or relax cgroup I/O limits.",
+      "description": "IO pressure based on [Pressure Stall Information](https://docs.kernel.org/accounting/psi.html). The lower the better.\n\n- waiting: at least one runnable thread blocked on block-`I/O` (disk, NVMe, network-storage) while others could still make progress.\n- stalled: all non-idle threads simultaneously waiting on `I/O`; no useful user code ran during these periods → true `I/O` thrashing.\n\nIf stalled > 0 while querying, it's recommended to increase queue depth on NVMe, raise blk-mq budgets, or relax cgroup I/O limits.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3129,7 +3030,7 @@
           "refId": "A"
         }
       ],
-      "title": "TCP connections ($instance)",
+      "title": "TCP connections",
       "type": "timeseries"
     },
     {
@@ -3240,7 +3141,7 @@
           "refId": "A"
         }
       ],
-      "title": "TCP connections rate ($instance)",
+      "title": "TCP connections rate",
       "type": "timeseries"
     },
     {
@@ -3352,7 +3253,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU spent on GC ($instance)",
+      "title": "CPU spent on GC",
       "type": "timeseries"
     },
     {
@@ -3462,7 +3363,7 @@
           "refId": "A"
         }
       ],
-      "title": "Goroutines ($instance)",
+      "title": "Goroutines",
       "type": "timeseries"
     },
     {
@@ -3572,7 +3473,7 @@
           "refId": "A"
         }
       ],
-      "title": "Threads ($instance)",
+      "title": "Threads",
       "type": "timeseries"
     },
     {
@@ -3939,7 +3840,7 @@
               "refId": "A"
             }
           ],
-          "title": "Streams churn rate 24h ($instance)",
+          "title": "Streams churn rate 24h",
           "type": "timeseries"
         },
         {
@@ -4295,7 +4196,7 @@
               "refId": "A"
             }
           ],
-          "title": "Fsync avg duration ($instance)",
+          "title": "Fsync avg duration",
           "type": "timeseries"
         }
       ],
@@ -4490,7 +4391,7 @@
               "refId": "A"
             }
           ],
-          "title": "Part count max by type ($instance)",
+          "title": "Part count max by type",
           "type": "timeseries"
         },
         {
@@ -4621,7 +4522,7 @@
               "refId": "B"
             }
           ],
-          "title": "Disk ($instance)",
+          "title": "Disk",
           "type": "timeseries"
         },
         {
@@ -4842,7 +4743,7 @@
               "refId": "A"
             }
           ],
-          "title": "Merge duration p99 ($instance)",
+          "title": "Merge duration p99",
           "type": "timeseries"
         },
         {
@@ -4953,7 +4854,7 @@
               "refId": "A"
             }
           ],
-          "title": "Merge bytes p99 ($instance)",
+          "title": "Merge bytes p99",
           "type": "timeseries"
         },
         {
@@ -5064,7 +4965,7 @@
               "refId": "A"
             }
           ],
-          "title": "Pending rows ($instance)",
+          "title": "Pending rows",
           "type": "timeseries"
         },
         {
@@ -5170,7 +5071,7 @@
               "refId": "B"
             }
           ],
-          "title": "Storage read-only ($instance)",
+          "title": "Storage read-only",
           "type": "timeseries"
         }
       ],
@@ -5741,7 +5642,7 @@
               "refId": "A"
             }
           ],
-          "title": "Request duration p99 ($instance)",
+          "title": "Request duration p99",
           "type": "timeseries"
         },
         {
@@ -5867,7 +5768,7 @@
               "refId": "B"
             }
           ],
-          "title": "Message processors ($instance)",
+          "title": "Message processors",
           "type": "timeseries"
         },
         {
@@ -5978,7 +5879,7 @@
               "refId": "A"
             }
           ],
-          "title": "Max pending rows ($instance)",
+          "title": "Max pending rows",
           "type": "timeseries"
         },
         {
@@ -6110,7 +6011,7 @@
               "refId": "A"
             }
           ],
-          "title": "Concurrent insert limit reached ($instance)",
+          "title": "Concurrent insert limit reached",
           "type": "timeseries"
         },
         {
@@ -6238,7 +6139,7 @@
               "refId": "A"
             }
           ],
-          "title": "Insert timeouts ($instance)",
+          "title": "Insert timeouts",
           "type": "timeseries"
         },
         {
@@ -6790,7 +6691,7 @@
               "refId": "B"
             }
           ],
-          "title": "Concurrent queries ($instance)",
+          "title": "Concurrent queries",
           "type": "timeseries"
         },
         {
@@ -6912,7 +6813,7 @@
               "refId": "A"
             }
           ],
-          "title": "Query timeouts ($instance)",
+          "title": "Query timeouts",
           "type": "timeseries"
         }
       ],
@@ -6934,7 +6835,7 @@
             "type": "prometheus",
             "uid": "$DS_PROMETHEUS"
           },
-          "description": "Number of storage blocks scanned per query (99th percentile). Each block contains logs for a single log stream over some time range.\n\nHigh values usually mean the query has to consider many blocks, for example because:\n- The time range is wide\n- The query doesn\u2019t narrow down log streams (e.g. no good stream filter)\n- The filters are not selective and cannot quickly skip blocks\n\nCorrelate with `Bytes/query p99`: if blocks are high but bytes are low, each block contributes little data (often OK). If both are high, the query is reading a lot of data from storage.",
+          "description": "Number of storage blocks scanned per query (99th percentile). Each block contains logs for a single log stream over some time range.\n\nHigh values usually mean the query has to consider many blocks, for example because:\n- The time range is wide\n- The query doesn’t narrow down log streams (e.g. no good stream filter)\n- The filters are not selective and cannot quickly skip blocks\n\nCorrelate with `Bytes/query p99`: if blocks are high but bytes are low, each block contributes little data (often OK). If both are high, the query is reading a lot of data from storage.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -7037,7 +6938,7 @@
               "refId": "A"
             }
           ],
-          "title": "Blocks/query p99 ($instance)",
+          "title": "Blocks/query p99",
           "type": "timeseries"
         },
         {
@@ -7148,7 +7049,7 @@
               "refId": "A"
             }
           ],
-          "title": "Bytes/query p99 ($instance)",
+          "title": "Bytes/query p99",
           "type": "timeseries"
         },
         {
@@ -7259,7 +7160,7 @@
               "refId": "A"
             }
           ],
-          "title": "Block header bytes/query p99 ($instance)",
+          "title": "Block header bytes/query p99",
           "type": "timeseries"
         },
         {
@@ -7368,7 +7269,7 @@
               "refId": "A"
             }
           ],
-          "title": "Bloom filter bytes/query p99 ($instance)",
+          "title": "Bloom filter bytes/query p99",
           "type": "timeseries"
         },
         {
@@ -7376,7 +7277,7 @@
             "type": "prometheus",
             "uid": "$DS_PROMETHEUS"
           },
-          "description": "Bytes read from log values per query (99th percentile). This measures storage I/O spent on reading field values (not metadata like headers/bloom filters).\n\nHigh values indicate queries that have to fetch lots of log content from disk, for example because:\n- The time range is wide or filters are not selective\n- The query matches many logs\n- Logs have large payloads (large messages / JSON blobs / stack traces)\n\nIf you want to understand how much data was processed after decompression/decoding (CPU work), compare with the corresponding \u201cuncompressed values processed bytes\u201d metric/panel.",
+          "description": "Bytes read from log values per query (99th percentile). This measures storage I/O spent on reading field values (not metadata like headers/bloom filters).\n\nHigh values indicate queries that have to fetch lots of log content from disk, for example because:\n- The time range is wide or filters are not selective\n- The query matches many logs\n- Logs have large payloads (large messages / JSON blobs / stack traces)\n\nIf you want to understand how much data was processed after decompression/decoding (CPU work), compare with the corresponding “uncompressed values processed bytes” metric/panel.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -7479,7 +7380,7 @@
               "refId": "A"
             }
           ],
-          "title": "Value bytes/query p99 ($instance)",
+          "title": "Value bytes/query p99",
           "type": "timeseries"
         },
         {
@@ -7590,7 +7491,7 @@
               "refId": "A"
             }
           ],
-          "title": "_time bytes/query p99 ($instance)",
+          "title": "_time bytes/query p99",
           "type": "timeseries"
         },
         {
@@ -7701,7 +7602,7 @@
               "refId": "A"
             }
           ],
-          "title": "Column header index bytes/query p99 ($instance)",
+          "title": "Column header index bytes/query p99",
           "type": "timeseries"
         },
         {
@@ -7812,7 +7713,7 @@
               "refId": "A"
             }
           ],
-          "title": "Column header bytes/query p99 ($instance)",
+          "title": "Column header bytes/query p99",
           "type": "timeseries"
         }
       ],
@@ -7821,7 +7722,7 @@
     }
   ],
   "preload": false,
-  "refresh": "",
+  "refresh": "30s",
   "schemaVersion": 42,
   "templating": {
     "list": [
@@ -7908,7 +7809,7 @@
   },
   "timepicker": {},
   "timezone": "Europe/Berlin",
-  "title": "VictoriaLogs - single-node",
+  "title": "VictoriaLogs",
   "uid": "OqPIZTX4z",
   "version": 9,
   "weekStart": "",

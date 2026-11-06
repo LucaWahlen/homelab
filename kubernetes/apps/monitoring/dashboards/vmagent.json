@@ -4,102 +4,22 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
         "type": "dashboard"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$ds"
-        },
-        "enable": true,
-        "expr": "sum by(version) (\n    label_replace(vm_app_version{job=~\"$job\", instance=~\"$instance\", short_version!=\"\"}, \"version\", \"$1\", \"short_version\", \"(.*)\")\n    OR\n    vm_app_version{job=~\"$job\", instance=~\"$instance\", short_version=\"\"}\n) \nunless \n(\n    sum by(version) (\n        label_replace(vm_app_version{job=~\"$job\", instance=~\"$instance\", short_version!=\"\"}, \"version\", \"$1\", \"short_version\", \"(.*)\")\n        OR\n        vm_app_version{job=~\"$job\", instance=~\"$instance\", short_version=\"\"}\n    ) offset $__interval\n)",
-        "hide": true,
-        "iconColor": "dark-blue",
-        "name": "version",
-        "textFormat": "{{version}}",
-        "titleFormat": "Version change"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$ds"
-        },
-        "enable": true,
-        "expr": "sum(changes(vm_app_start_timestamp{job=~\"$job\", instance=~\"$instance\"}[$__interval])) by(job, instance)",
-        "hide": false,
-        "iconColor": "dark-yellow",
-        "name": "restarts",
-        "textFormat": "{{job}}:{{instance}} restarted"
       }
     ]
   },
   "description": "Overview for VictoriaMetrics vmagent v1.117.0 or higher",
-  "editable": true,
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "links": [
-    {
-      "icon": "doc",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Docs",
-      "type": "link",
-      "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/"
-    },
-    {
-      "asDropdown": false,
-      "icon": "question",
-      "includeVars": false,
-      "keepTime": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "Troubleshooting",
-      "tooltip": "",
-      "type": "link",
-      "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/#troubleshooting"
-    },
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Community support",
-      "type": "link",
-      "url": "https://victoriametrics.com/support/community-support/"
-    },
-    {
-      "asDropdown": false,
-      "icon": "bolt",
-      "includeVars": false,
-      "keepTime": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "Enterprise support",
-      "tooltip": "",
-      "type": "link",
-      "url": "https://victoriametrics.com/support/enterprise-support/"
-    },
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Releases",
-      "type": "link",
-      "url": "https://github.com/VictoriaMetrics/VictoriaMetrics/releases"
-    }
-  ],
+  "links": [],
   "panels": [
     {
       "collapsed": false,
@@ -587,13 +507,6 @@
         "y": 4
       },
       "id": 16,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/#troubleshooting"
-        }
-      ],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -1050,7 +963,7 @@
           "refId": "B"
         }
       ],
-      "title": "Samples rate ($instance)",
+      "title": "Samples rate",
       "type": "timeseries"
     },
     {
@@ -1136,12 +1049,6 @@
         "y": 13
       },
       "id": 17,
-      "links": [
-        {
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/#troubleshooting"
-        }
-      ],
       "options": {
         "legend": {
           "calcs": [
@@ -1177,7 +1084,7 @@
           "refId": "A"
         }
       ],
-      "title": "Persistent queue size  ($instance) to ($url)",
+      "title": "Persistent queue size",
       "type": "timeseries"
     },
     {
@@ -1371,13 +1278,6 @@
         "y": 21
       },
       "id": 49,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/#troubleshooting"
-        }
-      ],
       "options": {
         "legend": {
           "calcs": [
@@ -1410,7 +1310,7 @@
           "refId": "A"
         }
       ],
-      "title": "Persistent queue dropped rate ($instance)",
+      "title": "Persistent queue dropped rate",
       "type": "timeseries"
     },
     {
@@ -1517,7 +1417,7 @@
           "refId": "A"
         }
       ],
-      "title": "Requests rate  ($instance)",
+      "title": "Requests rate",
       "type": "timeseries"
     },
     {
@@ -1592,13 +1492,6 @@
         "y": 29
       },
       "id": 69,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/#troubleshooting"
-        }
-      ],
       "options": {
         "legend": {
           "calcs": [
@@ -1679,7 +1572,7 @@
           "refId": "E"
         }
       ],
-      "title": "Errors rate  ($instance)",
+      "title": "Errors rate",
       "type": "timeseries"
     },
     {
@@ -1805,7 +1698,7 @@
               "refId": "A"
             }
           ],
-          "title": "RSS memory % usage ($instance)",
+          "title": "RSS memory % usage",
           "type": "timeseries"
         },
         {
@@ -2040,7 +1933,7 @@
             "type": "prometheus",
             "uid": "$ds"
           },
-          "description": "CPU pressure based on [Pressure Stall Information](https://docs.kernel.org/accounting/psi.html).\n\n**Lower is better.**\n\nPressure is measured as amount of time within 1sec time window the process was:\n- waiting: at least one task in the process was ready to run (runnable) but couldn't get scheduled on the CPU.\n- stalled: all tasks in the process (except idle ones) were unable to get CPU time \u2014 a full CPU stall.\n\nIf there's a CPU burst, it's normal to see waiting or stalled > 100ms. It only becomes a concern if it consistently climbs above 50-100ms and aligns with latency spikes or GC slowdowns.",
+          "description": "CPU pressure based on [Pressure Stall Information](https://docs.kernel.org/accounting/psi.html).\n\n**Lower is better.**\n\nPressure is measured as amount of time within 1sec time window the process was:\n- waiting: at least one task in the process was ready to run (runnable) but couldn't get scheduled on the CPU.\n- stalled: all tasks in the process (except idle ones) were unable to get CPU time — a full CPU stall.\n\nIf there's a CPU burst, it's normal to see waiting or stalled > 100ms. It only becomes a concern if it consistently climbs above 50-100ms and aligns with latency spikes or GC slowdowns.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -2423,7 +2316,7 @@
               "refId": "B"
             }
           ],
-          "title": "Disk writes/reads ($instance)",
+          "title": "Disk writes/reads",
           "type": "timeseries"
         },
         {
@@ -2532,7 +2425,7 @@
               "refId": "A"
             }
           ],
-          "title": "Goroutines ($instance)",
+          "title": "Goroutines",
           "type": "timeseries"
         },
         {
@@ -2763,7 +2656,7 @@
               "refId": "A"
             }
           ],
-          "title": "Threads ($instance)",
+          "title": "Threads",
           "type": "timeseries"
         },
         {
@@ -2896,7 +2789,7 @@
               "refId": "B"
             }
           ],
-          "title": "Network  usage ($instance)",
+          "title": "Network usage",
           "type": "timeseries"
         },
         {
@@ -3005,7 +2898,7 @@
               "refId": "A"
             }
           ],
-          "title": "CPU spent on GC ($instance)",
+          "title": "CPU spent on GC",
           "type": "timeseries"
         },
         {
@@ -3331,7 +3224,7 @@
               "refId": "A"
             }
           ],
-          "title": "Open FDs usage % ($instance)",
+          "title": "Open FDs usage %",
           "type": "timeseries"
         }
       ],
@@ -3672,7 +3565,7 @@
               "refId": "A"
             }
           ],
-          "title": "Persistent queue write saturation ($instance)",
+          "title": "Persistent queue write saturation",
           "type": "timeseries"
         },
         {
@@ -3783,7 +3676,7 @@
               "refId": "A"
             }
           ],
-          "title": "Persistent queue read saturation ($instance)",
+          "title": "Persistent queue read saturation",
           "type": "timeseries"
         },
         {
@@ -3893,7 +3786,7 @@
               "refId": "A"
             }
           ],
-          "title": "Data blocks dropped ($instance) to ($url)",
+          "title": "Data blocks dropped",
           "type": "timeseries"
         },
         {
@@ -3968,13 +3861,6 @@
             "y": 158
           },
           "id": 18,
-          "links": [
-            {
-              "targetBlank": true,
-              "title": "Relabeling",
-              "url": "https://docs.victoriametrics.com/victoriametrics/relabeling/"
-            }
-          ],
           "options": {
             "legend": {
               "calcs": [
@@ -4009,7 +3895,7 @@
               "refId": "B"
             }
           ],
-          "title": "Rows dropped by relabeling ($instance) to ($url)",
+          "title": "Rows dropped by relabeling",
           "type": "timeseries"
         },
         {
@@ -4129,7 +4015,7 @@
               "refId": "B"
             }
           ],
-          "title": "Rows rate ($instance)",
+          "title": "Rows rate",
           "type": "timeseries"
         },
         {
@@ -4235,7 +4121,7 @@
               "refId": "A"
             }
           ],
-          "title": "Invalid datapoints rate ($instance)",
+          "title": "Invalid datapoints rate",
           "type": "timeseries"
         },
         {
@@ -4471,7 +4357,7 @@
               "refId": "A"
             }
           ],
-          "title": "Restarts ($job)",
+          "title": "Restarts",
           "type": "timeseries"
         },
         {
@@ -4577,7 +4463,7 @@
               "refId": "A"
             }
           ],
-          "title": "Rows ignored for last 1h ($instance)",
+          "title": "Rows ignored for last 1h",
           "type": "timeseries"
         },
         {
@@ -4681,7 +4567,7 @@
               "refId": "A"
             }
           ],
-          "title": "Fsync avg duration ($instance)",
+          "title": "Fsync avg duration",
           "type": "timeseries"
         }
       ],
@@ -5229,7 +5115,7 @@
               "refId": "A"
             }
           ],
-          "title": "Scrape rate  ($instance)",
+          "title": "Scrape rate",
           "type": "timeseries"
         },
         {
@@ -5335,7 +5221,7 @@
               "refId": "A"
             }
           ],
-          "title": "Scraped datapoints rate  ($instance)",
+          "title": "Scraped datapoints rate",
           "type": "timeseries"
         },
         {
@@ -5440,7 +5326,7 @@
               "refId": "A"
             }
           ],
-          "title": "Scrape response size 0.99 quantile ($instance)",
+          "title": "Scrape response size 0.99 quantile",
           "type": "timeseries"
         },
         {
@@ -5545,7 +5431,7 @@
               "refId": "A"
             }
           ],
-          "title": "Scrape duration 0.99 quantile ($instance)",
+          "title": "Scrape duration 0.99 quantile",
           "type": "timeseries"
         },
         {
@@ -5698,7 +5584,7 @@
               "refId": "E"
             }
           ],
-          "title": "Scrape fails  ($instance)",
+          "title": "Scrape fails",
           "type": "timeseries"
         }
       ],
@@ -5829,7 +5715,7 @@
               "refId": "B"
             }
           ],
-          "title": "Requests rate  ($instance)",
+          "title": "Requests rate",
           "type": "timeseries"
         },
         {
@@ -5949,7 +5835,7 @@
               "refId": "B"
             }
           ],
-          "title": "Rows rate ($instance)",
+          "title": "Rows rate",
           "type": "timeseries"
         },
         {
@@ -6066,7 +5952,7 @@
               "refId": "B"
             }
           ],
-          "title": "Concurrent inserts ($instance)",
+          "title": "Concurrent inserts",
           "type": "timeseries"
         },
         {
@@ -6179,7 +6065,7 @@
               "refId": "B"
             }
           ],
-          "title": "Error rate  ($instance)",
+          "title": "Error rate",
           "type": "timeseries"
         }
       ],
@@ -6295,7 +6181,7 @@
               "refId": "A"
             }
           ],
-          "title": "Matched samples ($instance)",
+          "title": "Matched samples",
           "type": "timeseries"
         },
         {
@@ -6391,7 +6277,7 @@
               "refId": "A"
             }
           ],
-          "title": "Dropped samples ($instance)",
+          "title": "Dropped samples",
           "type": "timeseries"
         },
         {
@@ -6493,7 +6379,7 @@
               "refId": "A"
             }
           ],
-          "title": "Produced samples ($instance)",
+          "title": "Produced samples",
           "type": "timeseries"
         },
         {
@@ -6603,7 +6489,7 @@
               "refId": "B"
             }
           ],
-          "title": "Flush timeouts ($instance)",
+          "title": "Flush timeouts",
           "type": "timeseries"
         },
         {
@@ -6701,7 +6587,7 @@
               "refId": "A"
             }
           ],
-          "title": "Samples lag 0.99 quantile ($instance)",
+          "title": "Samples lag 0.99 quantile",
           "type": "timeseries"
         },
         {
@@ -6798,7 +6684,7 @@
               "refId": "A"
             }
           ],
-          "title": "Dedup flush duration 0.99 quantile ($instance)",
+          "title": "Dedup flush duration 0.99 quantile",
           "type": "timeseries"
         },
         {
@@ -6925,7 +6811,7 @@
               "refId": "B"
             }
           ],
-          "title": "Labels compressor ($instance)",
+          "title": "Labels compressor",
           "type": "timeseries"
         }
       ],
@@ -7048,7 +6934,7 @@
               "refId": "A"
             }
           ],
-          "title": "Requests rate ($instance) to ($url)",
+          "title": "Requests rate",
           "type": "timeseries"
         },
         {
@@ -7156,7 +7042,7 @@
               "refId": "A"
             }
           ],
-          "title": "Bytes write rate ($instance)",
+          "title": "Bytes write rate",
           "type": "timeseries"
         },
         {
@@ -7264,7 +7150,7 @@
               "refId": "A"
             }
           ],
-          "title": "Retry rate ($instance) to ($url)",
+          "title": "Retry rate",
           "type": "timeseries"
         },
         {
@@ -7372,7 +7258,7 @@
               "refId": "A"
             }
           ],
-          "title": "Connections ($instance)",
+          "title": "Connections",
           "type": "timeseries"
         },
         {
@@ -7583,7 +7469,7 @@
               "refId": "A"
             }
           ],
-          "title": "Remote write connection saturation ($instance)",
+          "title": "Remote write connection saturation",
           "type": "timeseries"
         },
         {
@@ -7692,1393 +7578,10 @@
       ],
       "title": "Remote write",
       "type": "row"
-    },
-    {
-      "collapsed": true,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 43
-      },
-      "id": 163,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Positive series show bytes written by vmagent producers into Kafka. Negative series show bytes read by vmagent consumers from Kafka. Read this together with Messages in / out: a stable byte rate with rising message rate usually means smaller Kafka payloads and higher per-message overhead. Producer Kafka metrics aggregate at job level because they do not expose the full remoteWrite URL label.\n\nDocs: <a href=\"https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#estimating-message-size-and-rate\" target=\"_blank\">estimating message size and rate</a>. Kafka read docs: <a href=\"https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#reading-metrics\" target=\"_blank\">reading metrics</a>.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": true,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "Bps"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 44
-          },
-          "id": 164,
-          "links": [
-            {
-              "title": "Docs: estimating size/rate",
-              "url": "https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#estimating-message-size-and-rate"
-            },
-            {
-              "title": "Docs: reading metrics",
-              "url": "https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#reading-metrics"
-            }
-          ],
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(vmagent_remotewrite_kafka_sent_bytes_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Produced to Kafka",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "-sum(rate(vmagent_kafka_consumer_read_bytes_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Consumed from Kafka",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "Traffic (bytes)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Positive series show Kafka messages produced by vmagent. Negative series show Kafka messages consumed by vmagent. Read this together with Traffic (bytes), because a stable byte rate with rising message rate usually means smaller Kafka messages and higher per-message overhead. Producer Kafka metrics aggregate at job level because they do not expose the full remoteWrite URL label.\n\nDocs: <a href=\"https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#estimating-message-size-and-rate\" target=\"_blank\">estimating message size and rate</a>. Kafka read docs: <a href=\"https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#reading-metrics\" target=\"_blank\">reading metrics</a>.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": true,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  }
-                ]
-              },
-              "unit": "ops"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 44
-          },
-          "id": 165,
-          "links": [
-            {
-              "title": "Docs: estimating size/rate",
-              "url": "https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#estimating-message-size-and-rate"
-            },
-            {
-              "title": "Docs: reading metrics",
-              "url": "https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#reading-metrics"
-            }
-          ],
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(vmagent_remotewrite_kafka_messages_sent_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Produced to Kafka",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "-sum(rate(vmagent_kafka_messages_read_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Consumed from Kafka",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "Messages in / out",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Kafka producer-side errors from vmagent remote write. This panel shows send errors and delivery errors reported by Kafka producers.\n\nKafka write docs: <a href=\"https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#writing-metrics\" target=\"_blank\">writing metrics</a>.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "ops"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 52
-          },
-          "id": 167,
-          "links": [
-            {
-              "title": "Docs: writing metrics",
-              "url": "https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#writing-metrics"
-            },
-            {
-              "title": "Docs: reading metrics",
-              "url": "https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#reading-metrics"
-            }
-          ],
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(vmagent_remotewrite_kafka_messages_send_errors_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Producer send errors",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(vmagent_remotewrite_kafka_messages_delivery_errors_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Producer delivery errors",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "Producer errors",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Kafka consumer-side errors from vmagent. This panel shows client errors and ingest errors reported while reading from Kafka and passing data further downstream.\n\nKafka read docs: <a href=\"https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#reading-metrics\" target=\"_blank\">reading metrics</a>.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "ops"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 52
-          },
-          "id": 168,
-          "links": [
-            {
-              "title": "Docs: reading metrics",
-              "url": "https://docs.victoriametrics.com/victoriametrics/integrations/kafka/#reading-metrics"
-            }
-          ],
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(vmagent_kafka_client_errors_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Consumer client errors",
-              "range": true,
-              "refId": "C"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${ds}"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(vmagent_kafka_ingest_errors_total{job=~\"$job\"}[$__rate_interval])) by (job)",
-              "legendFormat": "Consumer ingest errors",
-              "range": true,
-              "refId": "D"
-            }
-          ],
-          "title": "Consumer errors",
-          "type": "timeseries"
-        }
-      ],
-      "title": "Kafka (Enterprise)",
-      "type": "row"
-    },
-    {
-      "collapsed": true,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 60
-      },
-      "id": 113,
-      "panels": [
-        {
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 2,
-            "w": 24,
-            "x": 0,
-            "y": 918
-          },
-          "id": 115,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "Drilldown row is used by other panels on the dashboard to show more detailed metrics per-instance.",
-            "mode": "markdown"
-          },
-          "pluginVersion": "12.2.0",
-          "title": "",
-          "transparent": true,
-          "type": "text"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 920
-          },
-          "id": 119,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "sum(rate(process_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job, instance)",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{instance}} ({{job}})",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "CPU usage ($instance)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Shows the used memory (resident).\nThe application's performance will significantly degrade when memory usage is close to 100%.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  }
-                ]
-              },
-              "unit": "decbytes"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 920
-          },
-          "id": 117,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "max_over_time(process_resident_memory_bytes{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])",
-              "interval": "",
-              "legendFormat": "{{instance}} ({{job}})",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "RSS memory usage ($instance)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Shows the persistent queue size of pending samples in bytes which hasn't been flushed to remote storage yet. \n\nIncreasing of value might be a sign of connectivity issues. In such cases, vmagent starts to flush pending data on disk with attempt to send it later once connection is restored.\n\nRemote write URLs are hidden by default but might be unveiled once `-remoteWrite.showURL` is set to true.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "bytes"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 928
-          },
-          "id": 125,
-          "links": [
-            {
-              "title": "Troubleshooting",
-              "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/#troubleshooting"
-            }
-          ],
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "sum(vmagent_remotewrite_pending_data_bytes{job=~\"$job\", instance=~\"$instance\", url=~\"$url\"}) by (instance, url)",
-              "interval": "",
-              "legendFormat": "{{instance}} => {{url}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "Persistent queue size  ($instance) to ($url)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Shows in/out samples rate including push and pull models. \n\nThe out-rate could be different to in-rate because of replication or additional timeseries added by vmagent for every scraped target.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byRegexp",
-                  "options": "/out .*/"
-                },
-                "properties": [
-                  {
-                    "id": "custom.transform",
-                    "value": "negative-Y"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 928
-          },
-          "id": 123,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate({__name__=~\"vm_promscrape_scraped_samples_sum|vmagent_rows_inserted_total\",job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job, instance)",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "in {{instance}} {{job}}",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(vmagent_remotewrite_block_size_rows_sum{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job, instance)",
-              "interval": "",
-              "legendFormat": "out {{instance}} {{job}}",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "Samples rate ($instance)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Shows the number of bytes read/write from the storage layer when vmagent has to buffer data on disk or read already buffered data.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "bytes"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "read"
-                },
-                "properties": [
-                  {
-                    "id": "custom.transform",
-                    "value": "negative-Y"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 936
-          },
-          "id": 121,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(process_io_storage_read_bytes_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job, instance)",
-              "format": "time_series",
-              "hide": false,
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "read {{instance}} {{job}}",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(process_io_storage_written_bytes_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job,instance)",
-              "format": "time_series",
-              "hide": false,
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "write {{instance}} {{job}}",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "Disk writes/reads ($instance)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Shows an estimated time until a persistent queue reaches its disk usage limit for a given instance and -remoteWrite.url.\n\nThe ETA is shown only when the pending queue size is actively growing, which typically indicates that remote write cannot keep up with ingestion (e.g. the remote endpoint is slow or unavailable).\n\nOnce the disk usage limit is reached, newly ingested metrics will be dropped.\n\nThe estimation is approximate and may fluctuate due to short-term changes in the queue growth rate.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "s"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 936
-          },
-          "id": 161,
-          "links": [
-            {
-              "title": "Troubleshooting",
-              "url": "https://docs.victoriametrics.com/victoriametrics/vmagent/#troubleshooting"
-            }
-          ],
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "(sum(vm_persistentqueue_free_disk_space_bytes{job=~\"$job\", instance=~\"$instance\"}) by (job, instance, path))\n/\n(sum(deriv(vm_persistentqueue_bytes_pending{job=~\"$job\", instance=~\"$instance\"}[1m])) by (job, instance, path) > 0)\n* on(job, instance, path) group_left(url)\n(vmagent_remotewrite_pending_data_bytes{job=~\"$job\", instance=~\"$instance\", url=~\"$url\"}*0 + 1)",
-              "interval": "",
-              "legendFormat": "{{instance}} => {{url}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "Persistent queue Full ETA ($instance)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$ds"
-          },
-          "description": "Shows the rate of logging the messages by their level. Unexpected spike in rate is a good reason to check logs.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "bars",
-                "fillOpacity": 100,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [
-                {
-                  "targetBlank": true,
-                  "title": "Source Code",
-                  "url": "https://l2s.victoriametrics.com/?app_version=${__field.labels.app_version}&location=${__field.labels.location}"
-                }
-              ],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 1309
-          },
-          "id": 162,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "12.2.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$ds"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "sum(rate(vm_log_messages_total{job=~\"$job\",instance=~\"$instance\", level!=\"info\"}[$__rate_interval])) by (job, instance, level, app_version, location) > 0",
-              "format": "time_series",
-              "interval": "5m",
-              "intervalFactor": 1,
-              "legendFormat": "{{instance}} - {{level}}: {{location}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "Logging rate",
-          "type": "timeseries"
-        }
-      ],
-      "title": "Drilldown",
-      "type": "row"
     }
   ],
   "preload": false,
-  "refresh": "",
+  "refresh": "30s",
   "schemaVersion": 42,
   "templating": {
     "list": [
@@ -9180,7 +7683,7 @@
     ]
   },
   "timezone": "Europe/Berlin",
-  "title": "VictoriaMetrics - vmagent",
+  "title": "VictoriaMetrics / vmagent",
   "uid": "G7Z9GzMGz",
   "version": 1
 }

@@ -144,11 +144,6 @@ spec:
         passwordKey: password
       plugins:
         - victoriametrics-logs-datasource
-      sidecar:
-        dashboards:
-          folderAnnotation: grafana_folder
-          provider:
-            foldersFromFilesStructure: true
       env:
         TZ: Europe/Berlin
         GF_AUTH_GENERIC_OAUTH_ENABLED: "true"

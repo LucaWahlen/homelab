@@ -9,8 +9,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: VictoriaMetrics
   - name: grafana-dashboard-vmagent
     files:
       - vmagent.json
@@ -18,8 +16,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: VictoriaMetrics
   - name: grafana-dashboard-victorialogs
     files:
       - victorialogs.json
@@ -27,8 +23,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: VictoriaLogs
   - name: grafana-dashboard-vlagent
     files:
       - vlagent.json
@@ -36,17 +30,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: VictoriaLogs
-  - name: grafana-dashboard-node-exporter-full
-    files:
-      - node-exporter-full.json
-    options:
-      disableNameSuffixHash: true
-      labels:
-        grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Kubernetes
   - name: grafana-dashboard-k8s-views-global
     files:
       - k8s-views-global.json
@@ -54,8 +37,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Kubernetes
   - name: grafana-dashboard-k8s-views-namespaces
     files:
       - k8s-views-namespaces.json
@@ -63,8 +44,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Kubernetes
   - name: grafana-dashboard-k8s-views-nodes
     files:
       - k8s-views-nodes.json
@@ -72,8 +51,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Kubernetes
   - name: grafana-dashboard-k8s-views-pods
     files:
       - k8s-views-pods.json
@@ -81,8 +58,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Kubernetes
   - name: grafana-dashboard-storage
     files:
       - storage.json
@@ -90,8 +65,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Kubernetes
   - name: grafana-dashboard-blocky
     files:
       - blocky.json
@@ -99,8 +72,6 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: Blocky
   - name: grafana-dashboard-cloudnative-pg
     files:
       - cloudnative-pg.json
@@ -108,5 +79,3 @@ configMapGenerator:
       disableNameSuffixHash: true
       labels:
         grafana_dashboard: "1"
-      annotations:
-        grafana_folder: CloudNativePG

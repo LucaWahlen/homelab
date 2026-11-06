@@ -4,102 +4,22 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "target": {
-          "limit": 100,
-          "matchAny": false,
-          "tags": [],
-          "type": "dashboard"
-        },
         "type": "dashboard"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$DS_PROMETHEUS"
-        },
-        "enable": true,
-        "expr": "sum(vm_app_version{job=~\"$job\", instance=~\"$instance\"}) by(short_version) unless (sum(vm_app_version{job=~\"$job\", instance=~\"$instance\"} offset $__interval) by(short_version))",
-        "hide": true,
-        "iconColor": "dark-blue",
-        "name": "version",
-        "textFormat": "{{short_version}}",
-        "titleFormat": "Version change"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "$DS_PROMETHEUS"
-        },
-        "enable": true,
-        "expr": "sum(changes(vm_app_start_timestamp{job=~\"$job\", instance=~\"$instance\"}[$__interval])) by(job, instance)",
-        "hide": false,
-        "iconColor": "dark-yellow",
-        "name": "restarts",
-        "textFormat": "{{job}}:{{instance}} restarted"
       }
     ]
   },
   "description": "Overview for VictoriaMetrics vlagent v1.29.0 or higher",
-  "editable": true,
+  "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "links": [
-    {
-      "icon": "doc",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Docs",
-      "type": "link",
-      "url": "https://docs.victoriametrics.com/victorialogs/vlagent/"
-    },
-    {
-      "asDropdown": false,
-      "icon": "question",
-      "includeVars": false,
-      "keepTime": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "Troubleshooting",
-      "tooltip": "",
-      "type": "link",
-      "url": "https://docs.victoriametrics.com/victorialogs/vlagent/#troubleshooting"
-    },
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Community support",
-      "type": "link",
-      "url": "https://victoriametrics.com/support/community-support/"
-    },
-    {
-      "asDropdown": false,
-      "icon": "bolt",
-      "includeVars": false,
-      "keepTime": false,
-      "tags": [],
-      "targetBlank": true,
-      "title": "Enterprise support",
-      "tooltip": "",
-      "type": "link",
-      "url": "https://victoriametrics.com/support/enterprise-support/"
-    },
-    {
-      "icon": "info",
-      "tags": [],
-      "targetBlank": true,
-      "title": "Releases",
-      "type": "link",
-      "url": "https://github.com/VictoriaMetrics/VictoriaLogs/releases"
-    }
-  ],
+  "links": [],
   "panels": [
     {
       "collapsed": false,
@@ -170,13 +90,6 @@
         "y": 1
       },
       "id": 16,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victorialogs/vlagent/#troubleshooting"
-        }
-      ],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -886,7 +799,7 @@
           "refId": "B"
         }
       ],
-      "title": "Logs ingestion rate ",
+      "title": "Logs ingestion rate",
       "type": "timeseries"
     },
     {
@@ -967,12 +880,6 @@
         "y": 9
       },
       "id": 17,
-      "links": [
-        {
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victorialogs/vlagent/#troubleshooting"
-        }
-      ],
       "options": {
         "legend": {
           "calcs": [
@@ -1008,7 +915,7 @@
           "refId": "A"
         }
       ],
-      "title": "Persistent queue size  to ($url)",
+      "title": "Persistent queue size",
       "type": "timeseries"
     },
     {
@@ -1119,7 +1026,7 @@
           "refId": "A"
         }
       ],
-      "title": "Requests rate ",
+      "title": "Requests rate",
       "type": "timeseries"
     },
     {
@@ -1194,13 +1101,6 @@
         "y": 17
       },
       "id": 49,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victorialogs/vlagent/#troubleshooting"
-        }
-      ],
       "options": {
         "legend": {
           "calcs": [
@@ -1233,7 +1133,7 @@
           "refId": "A"
         }
       ],
-      "title": "Persistent queue dropped rate ($instance)",
+      "title": "Persistent queue dropped rate",
       "type": "timeseries"
     },
     {
@@ -1421,13 +1321,6 @@
         "y": 25
       },
       "id": 69,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Troubleshooting",
-          "url": "https://docs.victoriametrics.com/victorialogs/vlagent/#troubleshooting"
-        }
-      ],
       "options": {
         "legend": {
           "calcs": [
@@ -1508,7 +1401,7 @@
           "refId": "E"
         }
       ],
-      "title": "Errors rate ",
+      "title": "Errors rate",
       "type": "timeseries"
     },
     {
@@ -1629,7 +1522,7 @@
               "refId": "A"
             }
           ],
-          "title": "RSS memory % usage ",
+          "title": "RSS memory % usage",
           "type": "timeseries"
         },
         {
@@ -2326,7 +2219,7 @@
               "refId": "A"
             }
           ],
-          "title": "Goroutines ($instance)",
+          "title": "Goroutines",
           "type": "timeseries"
         },
         {
@@ -2675,7 +2568,7 @@
               "refId": "B"
             }
           ],
-          "title": "Network  usage",
+          "title": "Network usage",
           "type": "timeseries"
         },
         {
@@ -2780,7 +2673,7 @@
               "refId": "A"
             }
           ],
-          "title": "CPU spent on GC ($instance)",
+          "title": "CPU spent on GC",
           "type": "timeseries"
         },
         {
@@ -3422,7 +3315,7 @@
               "refId": "A"
             }
           ],
-          "title": "Data blocks dropped to ($url)",
+          "title": "Data blocks dropped",
           "type": "timeseries"
         },
         {
@@ -3527,7 +3420,7 @@
               "refId": "A"
             }
           ],
-          "title": "Log Lines dropped to ($url)",
+          "title": "Log Lines dropped",
           "type": "timeseries"
         },
         {
@@ -3757,7 +3650,7 @@
               "refId": "A"
             }
           ],
-          "title": "Restarts ($job)",
+          "title": "Restarts",
           "type": "timeseries"
         },
         {
@@ -3861,7 +3754,7 @@
               "refId": "A"
             }
           ],
-          "title": "Fsync avg duration ($instance)",
+          "title": "Fsync avg duration",
           "type": "timeseries"
         }
       ],
@@ -4101,7 +3994,7 @@
               "refId": "B"
             }
           ],
-          "title": "Error rate ",
+          "title": "Error rate",
           "type": "timeseries"
         }
       ],
@@ -4219,7 +4112,7 @@
               "refId": "A"
             }
           ],
-          "title": "Requests rate to ($url)",
+          "title": "Requests rate",
           "type": "timeseries"
         },
         {
@@ -4425,7 +4318,7 @@
               "refId": "A"
             }
           ],
-          "title": "Retry rate to ($url)",
+          "title": "Retry rate",
           "type": "timeseries"
         },
         {
@@ -4637,497 +4530,10 @@
       ],
       "title": "Remote write",
       "type": "row"
-    },
-    {
-      "collapsed": true,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 37
-      },
-      "id": 113,
-      "panels": [
-        {
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 2,
-            "w": 24,
-            "x": 0,
-            "y": 38
-          },
-          "id": 115,
-          "options": {
-            "code": {
-              "language": "plaintext",
-              "showLineNumbers": false,
-              "showMiniMap": false
-            },
-            "content": "Drilldown row is used by other panels on the dashboard to show more detailed metrics per-instance.",
-            "mode": "markdown"
-          },
-          "pluginVersion": "9.2.3",
-          "title": "",
-          "transparent": true,
-          "type": "text"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$DS_PROMETHEUS"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 40
-          },
-          "id": 119,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "11.5.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$DS_PROMETHEUS"
-              },
-              "editorMode": "code",
-              "exemplar": false,
-              "expr": "sum(rate(process_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job, instance)",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{instance}} ({{job}})",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "CPU usage ($instance)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$DS_PROMETHEUS"
-          },
-          "description": "Shows the used memory (resident).\nThe application's performance will significantly degrade when memory usage is close to 100%.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  }
-                ]
-              },
-              "unit": "decbytes"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 40
-          },
-          "id": 117,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "11.5.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$DS_PROMETHEUS"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "max_over_time(process_resident_memory_bytes{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])",
-              "interval": "",
-              "legendFormat": "{{instance}} ({{job}})",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "RSS memory usage ($instance)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$DS_PROMETHEUS"
-          },
-          "description": "Shows the persistent queue size of pending samples in bytes which hasn't been flushed to remote storage yet. \n\nIncreasing of value might be a sign of connectivity issues. In such cases, vlagent starts to flush pending data on disk with attempt to send it later once connection is restored.\n\nRemote write URLs are hidden by default but might be unveiled once `-remoteWrite.showURL` is set to true.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "bytes"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 48
-          },
-          "id": 125,
-          "links": [
-            {
-              "title": "Troubleshooting",
-              "url": "https://docs.victoriametrics.com/victorialogs/vlagent/#troubleshooting"
-            }
-          ],
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "11.5.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$DS_PROMETHEUS"
-              },
-              "editorMode": "code",
-              "exemplar": true,
-              "expr": "sum(vlagent_remotewrite_pending_data_bytes{job=~\"$job\", instance=~\"$instance\", url=~\"$url\"}) by (instance, url)",
-              "interval": "",
-              "legendFormat": "{{instance}} => {{url}}",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "Persistent queue size  to ($url)",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "$DS_PROMETHEUS"
-          },
-          "description": "Shows the number of bytes read/write from the storage layer when vlagent has to buffer data on disk or read already buffered data.",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "bytes"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "read"
-                },
-                "properties": [
-                  {
-                    "id": "custom.transform",
-                    "value": "negative-Y"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 56
-          },
-          "id": 121,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true,
-              "sortBy": "Last *",
-              "sortDesc": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "11.5.0",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$DS_PROMETHEUS"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(process_io_storage_read_bytes_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job, instance)",
-              "format": "time_series",
-              "hide": false,
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "read {{instance}} {{job}}",
-              "range": true,
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "$DS_PROMETHEUS"
-              },
-              "editorMode": "code",
-              "expr": "sum(rate(process_io_storage_written_bytes_total{job=~\"$job\", instance=~\"$instance\"}[$__rate_interval])) by(job,instance)",
-              "format": "time_series",
-              "hide": false,
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "write {{instance}} {{job}}",
-              "range": true,
-              "refId": "B"
-            }
-          ],
-          "title": "Disk writes/reads",
-          "type": "timeseries"
-        }
-      ],
-      "title": "Drilldown",
-      "type": "row"
     }
   ],
   "preload": false,
-  "refresh": "",
+  "refresh": "30s",
   "schemaVersion": 42,
   "templating": {
     "list": [
@@ -5249,7 +4655,7 @@
     ]
   },
   "timezone": "Europe/Berlin",
-  "title": "VictoriaLogs - vlagent",
+  "title": "VictoriaLogs / vlagent",
   "uid": "Y5Z9GzMGz",
   "version": 2,
   "weekStart": "",
