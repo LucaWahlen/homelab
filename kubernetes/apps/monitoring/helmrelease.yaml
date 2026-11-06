@@ -155,6 +155,7 @@ spec:
         GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/authorize
         GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/token
         GF_AUTH_GENERIC_OAUTH_API_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/userinfo
+        GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/end-session?client_id=PwlcvpdcoGZNAQQONkaCKgPrMAcMidtt
         GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
         # Enforces the access token's 1h expiry so revoked Bedrock roles take effect.
         GF_AUTH_GENERIC_OAUTH_USE_REFRESH_TOKEN: "true"
