@@ -20,8 +20,6 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
-  # wait: true health-checks every applied object; these tell Flux when CNPG
-  # resources, including every app's Database and DatabaseRole, are ready.
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster

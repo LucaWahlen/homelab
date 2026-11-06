@@ -1,8 +1,3 @@
-# Lightweight Prometheus exporter for Barman Cloud S3 backup storage.
-# Lists each S3 backup location in locations.json via AWS SigV4 ListObjectsV2
-# (cached for 5 minutes) and exposes per-location size (base vs WAL) and object
-# counts on :9100/metrics. To track another S3 location, add an entry to
-# locations.json and reference its credentials Secret on the Deployment.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,18 +6,14 @@ data:
   locations.json: |
     [
       {
-        "name": "offsite-s3",
+        "name": "tommy-s3",
         "endpoint": "https://s3.homedrive.dev",
         "destination": "s3://luca-backups/",
-        "retention": "30d",
-        "access_key_env": "ACCESS_KEY_ID",
-        "secret_key_env": "ACCESS_SECRET_KEY",
-        "region_env": "AWS_REGION"
+        "retention": "30d"
       }
     ]
   exporter.py: |
     #!/usr/bin/env python3
-    """Prometheus exporter for CloudNativePG Barman Cloud S3 backup locations."""
 
     from datetime import datetime, timezone
     import hashlib
@@ -30,6 +21,7 @@ data:
     from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
     import json
     import os
+    from pathlib import Path
     import sys
     import threading
     import time
@@ -37,7 +29,8 @@ data:
     import urllib.request
     import xml.etree.ElementTree as ET
 
-    CONFIG_PATH = os.environ.get("LOCATIONS_CONFIG", "/config/locations.json")
+    CONFIG_PATH = Path(os.environ.get("LOCATIONS_CONFIG", "/config/locations.json"))
+    SECRETS_DIR = Path(os.environ.get("SECRETS_DIR", "/secrets"))
     LISTEN_PORT = int(os.environ.get("LISTEN_PORT", "9100"))
     CACHE_TTL_SECONDS = int(os.environ.get("CACHE_TTL_SECONDS", "300"))
     HTTP_TIMEOUT_SECONDS = int(os.environ.get("HTTP_TIMEOUT_SECONDS", "25"))
@@ -46,6 +39,7 @@ data:
     _cache_lock = threading.Lock()
     _cached_body = ""
     _cached_at = 0.0
+    _last_known: dict[str, dict] = {}
 
 
     def _sign(key: bytes, msg: str) -> bytes:
@@ -173,6 +167,13 @@ data:
             return 0.0
 
 
+    def _read_secret(secret_dir: Path, key: str, default: str = "") -> str:
+        path = secret_dir / key
+        if path.is_file():
+            return path.read_text(encoding="utf-8").strip()
+        return default
+
+
     def _collect_location(loc: dict) -> dict:
         name = loc["name"]
         endpoint = loc["endpoint"].rstrip("/")
@@ -180,9 +181,10 @@ data:
         retention = loc.get("retention", "")
         bucket, prefix = _parse_destination(destination)
 
-        access_key = os.environ.get(loc.get("access_key_env", "ACCESS_KEY_ID"), "").strip()
-        secret_key = os.environ.get(loc.get("secret_key_env", "ACCESS_SECRET_KEY"), "").strip()
-        region = os.environ.get(loc.get("region_env", "AWS_REGION"), "us-east-1").strip() or "us-east-1"
+        secret_dir = SECRETS_DIR / loc.get("secret", name)
+        access_key = _read_secret(secret_dir, "ACCESS_KEY_ID")
+        secret_key = _read_secret(secret_dir, "ACCESS_SECRET_KEY")
+        region = _read_secret(secret_dir, "AWS_REGION", "auto") or "auto"
 
         sizes = {"base": 0, "wal": 0, "other": 0}
         counts = {"base": 0, "wal": 0, "other": 0}
@@ -243,9 +245,23 @@ data:
         return "{" + ",".join(escaped) + "}"
 
 
-    def _build_metrics() -> str:
-        with open(CONFIG_PATH, "r", encoding="utf-8") as fh:
-            locations = json.load(fh)
+    def _append_location_metrics(lines: list[str], base_labels: dict[str, str], res: dict) -> None:
+        lbl = _fmt_labels(base_labels)
+        total_size = sum(res["sizes"].values())
+        total_objs = sum(res["counts"].values())
+        lines.append(f"cnpg_s3_backup_location_size_bytes{lbl} {total_size}")
+        lines.append(f"cnpg_s3_backup_location_objects{lbl} {total_objs}")
+        lines.append(f"cnpg_s3_backup_base_count{lbl} {res['base_count']}")
+        lines.append(f"cnpg_s3_backup_last_modified_timestamp_seconds{lbl} {res['last_modified']:.0f}")
+        for kind in ("base", "wal", "other"):
+            kind_lbl = _fmt_labels({**base_labels, "kind": kind})
+            lines.append(f"cnpg_s3_backup_size_bytes{kind_lbl} {res['sizes'][kind]}")
+            lines.append(f"cnpg_s3_backup_objects{kind_lbl} {res['counts'][kind]}")
+
+
+    def _build_metrics() -> tuple[str, bool]:
+        locations = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+        all_ok = True
 
         lines = [
             "# HELP cnpg_s3_backup_scrape_success 1 if listing the S3 backup location succeeded, 0 otherwise.",
@@ -265,40 +281,33 @@ data:
         ]
 
         for loc in locations:
+            name = loc["name"]
             bucket, _ = _parse_destination(loc["destination"])
             base_labels = {
-                "location": loc["name"],
+                "location": name,
                 "endpoint": loc["endpoint"].rstrip("/"),
                 "bucket": bucket,
                 "destination": loc["destination"],
                 "retention": loc.get("retention", ""),
             }
+            lbl = _fmt_labels(base_labels)
             try:
                 res = _collect_location(loc)
-                lbl = _fmt_labels(base_labels)
-                total_size = sum(res["sizes"].values())
-                total_objs = sum(res["counts"].values())
+                _last_known[name] = res
                 lines.append(f"cnpg_s3_backup_scrape_success{lbl} 1")
-                lines.append(f"cnpg_s3_backup_location_size_bytes{lbl} {total_size}")
-                lines.append(f"cnpg_s3_backup_location_objects{lbl} {total_objs}")
-                lines.append(f"cnpg_s3_backup_base_count{lbl} {res['base_count']}")
-                lines.append(
-                    f"cnpg_s3_backup_last_modified_timestamp_seconds{lbl} {res['last_modified']:.0f}"
-                )
-                for kind in ("base", "wal", "other"):
-                    kind_lbl = _fmt_labels({**base_labels, "kind": kind})
-                    lines.append(f"cnpg_s3_backup_size_bytes{kind_lbl} {res['sizes'][kind]}")
-                    lines.append(f"cnpg_s3_backup_objects{kind_lbl} {res['counts'][kind]}")
+                _append_location_metrics(lines, base_labels, res)
             except Exception as exc:  # noqa: BLE001
+                all_ok = False
                 print(
-                    f"[postgres-backup-exporter] failed collecting {loc.get('name')}: {exc}",
+                    f"[postgres-backup-exporter] failed collecting {name}: {exc}",
                     file=sys.stderr,
                     flush=True,
                 )
-                lbl = _fmt_labels(base_labels)
                 lines.append(f"cnpg_s3_backup_scrape_success{lbl} 0")
+                if name in _last_known:
+                    _append_location_metrics(lines, base_labels, _last_known[name])
 
-        return "\n".join(lines) + "\n"
+        return "\n".join(lines) + "\n", all_ok
 
 
     def _get_metrics() -> str:
@@ -307,10 +316,11 @@ data:
         with _cache_lock:
             if _cached_body and (now - _cached_at) < CACHE_TTL_SECONDS:
                 return _cached_body
-        body = _build_metrics()
+        body, all_ok = _build_metrics()
         with _cache_lock:
             _cached_body = body
-            _cached_at = time.monotonic()
+            if all_ok:
+                _cached_at = time.monotonic()
         return body
 
 
@@ -381,9 +391,6 @@ spec:
           command:
             - python3
             - /config/exporter.py
-          envFrom:
-            - secretRef:
-                name: postgres-backup-s3
           ports:
             - name: metrics
               containerPort: 9100
@@ -414,7 +421,13 @@ spec:
             - name: config
               mountPath: /config
               readOnly: true
+            - name: tommy-s3
+              mountPath: /secrets/tommy-s3
+              readOnly: true
       volumes:
         - name: config
           configMap:
             name: postgres-backup-exporter
+        - name: tommy-s3
+          secret:
+            secretName: tommy-s3

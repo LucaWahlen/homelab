@@ -3,8 +3,6 @@ kind: VMPodScrape
 metadata:
   name: cloudnative-pg
 spec:
-  # Operator controller metrics (reconcile errors, webhooks) on the chart's
-  # plain-HTTP "metrics" port, for the CloudNativePG dashboard's Operator row.
   namespaceSelector:
     matchNames:
       - cnpg-system

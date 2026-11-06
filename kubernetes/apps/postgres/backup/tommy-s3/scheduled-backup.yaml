@@ -1,0 +1,15 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: tommy-s3
+spec:
+  schedule: "0 0 2 * * *"
+  immediate: true
+  backupOwnerReference: none
+  method: plugin
+  cluster:
+    name: postgres
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+    parameters:
+      barmanObjectName: tommy-s3

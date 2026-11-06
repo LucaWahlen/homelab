@@ -20,10 +20,6 @@ kind: VMPodScrape
 metadata:
   name: postgres-backup
 spec:
-  # S3 backup size and object count metrics per Barman Cloud location
-  # (kubernetes/apps/postgres/backup/exporter.yaml). The exporter caches S3
-  # listings in memory for 5 minutes so 1m scrapes keep series continuous
-  # without spamming S3 LIST calls.
   namespaceSelector:
     matchNames:
       - postgres

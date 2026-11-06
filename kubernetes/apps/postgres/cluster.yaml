@@ -5,36 +5,24 @@ metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
-  # Two instances on one node: no protection against node or disk loss, but a
-  # minor update replaces the replica first and then switches over to it,
-  # instead of restarting the only primary. Pod anti-affinity is "preferred"
-  # by default, so both still schedule on the single node.
   instances: 2
   primaryUpdateMethod: switchover
-  # Renovate bumps minor versions and digests (custom manager in renovate.json).
-  # Major upgrades are disabled there: they are a planned migration.
   imageName: ghcr.io/cloudnative-pg/postgresql:18.6-system-bookworm@sha256:605c6e45e733ce0e908505e9ac3c441637d6794d330ec0e9d8d6f631b6918b1e
   enableSuperuserAccess: false
   certificates:
     serverAltDNSNames:
       - postgres-rw.postgres.svc.cluster.local
-  # Human logins live in users/; each app's database and login in
-  # databases/<app>/. CNPG always creates one database and login at first start
-  # (it cannot be skipped): make it the admin user from users/, with its
-  # password from admin-credentials. CNPG's metrics queries run in it.
   bootstrap:
     initdb:
       database: admin
       owner: admin
       secret:
         name: admin-credentials
-  # WAL is archived continuously to the offsite S3 bucket by the Barman Cloud
-  # plugin. Base backups are scheduled in backup/scheduled-backup.yaml.
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
-        barmanObjectName: offsite-s3
+        barmanObjectName: tommy-s3
   storage:
     storageClass: openebs-lvm
     size: 10Gi
@@ -46,9 +34,6 @@ spec:
       memory: 1Gi
   postgresql:
     pg_hba:
-      # First match wins. App logins reach only the database with their own
-      # name; admin reaches every database. All over TLS; anything else is
-      # rejected instead of falling through to CNPG's default allow-all rule.
       - hostssl sameuser all all scram-sha-256
       - hostssl all admin all scram-sha-256
       - host all all all reject

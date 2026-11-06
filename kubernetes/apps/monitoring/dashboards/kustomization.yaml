@@ -122,15 +122,6 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Blocky
-  # Redesigned for this cluster from cloudnative-pg/grafana-dashboards:
-  # - replaced cramped upstream text-header fake tables and micro-tiles with
-  #   full-width Grafana tables and w=4 stat/gauge cards matching storage.json
-  # - hid single-value cluster/namespace/datasource variables, keeping only the
-  #   Instance filter in the top bar
-  # - added Backups & S3 Storage panels (per-location table, bar gauge, and
-  #   storage evolution charts) backed by Barman Cloud plugin metrics and
-  #   postgres-backup-exporter (../scrapes/postgres.yaml)
-  # The Operator row needs ../scrapes/cloudnative-pg.yaml.
   - name: grafana-dashboard-cloudnative-pg
     files:
       - cloudnative-pg.json

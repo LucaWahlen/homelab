@@ -1,7 +1,7 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: offsite-s3
+  name: tommy-s3
 spec:
   retentionPolicy: "30d"
   configuration:
@@ -9,13 +9,13 @@ spec:
     endpointURL: https://s3.homedrive.dev
     s3Credentials:
       accessKeyId:
-        name: postgres-backup-s3
+        name: tommy-s3
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: postgres-backup-s3
+        name: tommy-s3
         key: ACCESS_SECRET_KEY
       region:
-        name: postgres-backup-s3
+        name: tommy-s3
         key: AWS_REGION
     wal:
       compression: gzip
