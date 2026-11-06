@@ -1,5 +1,5 @@
 variable "cloudflare_api_token" {
-  description = "Cloudflare API token. Needs Account: Cloudflare Tunnel: Edit, and on the zone: DNS: Edit, Config Rules: Edit, Cache Rules: Edit and Rate Limiting: Edit"
+  description = "Cloudflare API token (Account: Cloudflare Tunnel: Edit; Zone: DNS, Config Rules, Cache Rules, Rate Limiting: Edit)"
   type        = string
   sensitive   = true
 }
@@ -11,13 +11,13 @@ variable "cloudflare_account_id" {
 }
 
 variable "cloudflare_zone_id" {
-  description = "Zone ID for the domain (lucawahlen.com)"
+  description = "Zone ID for lucawahlen.com"
   type        = string
   default     = "5a19f3bb1df1a405987998ac9f1773bb"
 }
 
 variable "domain" {
-  description = "Domain to expose cluster services under, e.g. *.lucawahlen.com"
+  description = "Domain to expose cluster services under"
   type        = string
   default     = "lucawahlen.com"
 }
@@ -29,7 +29,7 @@ variable "tunnel_name" {
 }
 
 variable "reverse_proxy_service" {
-  description = "In-cluster address of the reverse proxy the tunnel forwards all hostnames to (k3s's built-in Traefik by default)"
+  description = "In-cluster reverse proxy address forwarded to by the tunnel"
   type        = string
   default     = "http://traefik.kube-system.svc.cluster.local:80"
 }

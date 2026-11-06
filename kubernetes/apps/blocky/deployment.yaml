@@ -6,8 +6,7 @@ metadata:
     app: blocky
 spec:
   replicas: 1
-  # Pods on the host network can't share port 53, so the old pod must stop
-  # before the new one starts.
+  # Host-networked pods cannot share port 53 during rollout.
   strategy:
     type: Recreate
   selector:
@@ -22,8 +21,7 @@ spec:
       dnsPolicy: Default
       automountServiceAccountToken: false
       enableServiceLinks: false
-      # Runs as root: binding :53 on the host network needs NET_BIND_SERVICE,
-      # which a non-root process cannot gain with allowPrivilegeEscalation off.
+      # Root is required to retain NET_BIND_SERVICE with allowPrivilegeEscalation: false.
       securityContext:
         runAsUser: 0
         runAsGroup: 0
@@ -50,8 +48,6 @@ spec:
               protocol: TCP
             - name: http
               containerPort: 4000
-          # Sends a DNS query that blocky answers itself, so a failing
-          # upstream does not restart the pod.
           readinessProbe:
             exec:
               command: ["/app/blocky", "healthcheck"]

@@ -20,13 +20,10 @@ spec:
     remediation:
       retries: 3
   values:
-    # --- Metrics -------------------------------------------------------
     vmsingle:
       spec:
-        # 90d keeps ~a quarter of metric history.
         retentionPeriod: 90d
-        # VM has no hard size cap (unlike VictoriaLogs); instead stop ingesting
-        # before the shared node disk fills up.
+        # Stop ingesting before the shared node disk fills up.
         extraArgs:
           storage.minFreeDiskSpaceBytes: "5GiB"
         storage:
@@ -36,7 +33,6 @@ spec:
           resources:
             requests:
               storage: 10Gi
-        # Right-sized from observed usage; the limit still absorbs query bursts.
         resources:
           requests:
             cpu: 50m
@@ -44,15 +40,11 @@ spec:
           limits:
             cpu: 1000m
             memory: 1Gi
-
-    # --- Logs ----------------------------------------------------------
     vlsingle:
       enabled: true
       spec:
         retentionPeriod: 30d
-        # Cap the log store and drop the oldest partitions before the volume
-        # fills up, independent of the PVC request size.
-        # https://docs.victoriametrics.com/victorialogs/#absolute-disk-space-limit
+        # Drop oldest log partitions when reaching 2GiB.
         extraArgs:
           retention.maxDiskSpaceUsageBytes: "2GiB"
         storage:
@@ -81,7 +73,6 @@ spec:
             memory: 192Mi
         k8sCollector:
           enabled: true
-
     vmagent:
       spec:
         resources:
@@ -91,21 +82,16 @@ spec:
           limits:
             cpu: 500m
             memory: 384Mi
-
-    # --- Alerting disabled for now ------------------------------------
     alertmanager:
       enabled: false
     vmalert:
       enabled: false
     defaultRules:
       enabled: false
-
-    # Dashboards are vendored in this repo (dashboards/), not fetched at deploy time.
     defaultDashboards:
       enabled: false
     syncJob:
       enabled: false
-
     kube-state-metrics:
       resources:
         requests:
@@ -130,16 +116,13 @@ spec:
         limits:
           cpu: 200m
           memory: 256Mi
-
-    # k3s has no separate etcd/controller-manager/scheduler to scrape.
+    # k3s embeds these components; no separate endpoints exist to scrape.
     kubeEtcd:
       enabled: false
     kubeControllerManager:
       enabled: false
     kubeScheduler:
       enabled: false
-
-    # --- Grafana -------------------------------------------------------
     grafana:
       replicas: 1
       resources:
@@ -149,38 +132,25 @@ spec:
         limits:
           cpu: 500m
           memory: 1Gi
-      # The data volume is a single-mount LVM volume (RWO), so a rolling update
-      # deadlocks: the new pod cannot mount the device while the old pod holds
-      # it. Recreate tears the old pod down before starting the new one.
+      # RWO volume cannot be mounted by two pods; null clears the chart's default rollingUpdate block.
       deploymentStrategy:
         type: Recreate
-        # Clear the defaulted rollingUpdate block; it is invalid with Recreate.
         rollingUpdate: null
       admin:
         existingSecret: grafana-admin
-      # Sender credentials for the maddy submission server. The chart injects
-      # them as GF_SMTP_USER/GF_SMTP_PASSWORD from the SOPS-managed Secret.
       smtp:
         existingSecret: grafana-smtp
         userKey: user
         passwordKey: password
-      # VictoriaLogs datasource plugin (the VictoriaMetrics datasource is built in).
       plugins:
         - victoriametrics-logs-datasource
-      # Honor the grafana_folder annotation on dashboard ConfigMaps so the
-      # sidecar files dashboards into folders instead of all landing in General.
       sidecar:
         dashboards:
           folderAnnotation: grafana_folder
           provider:
             foldersFromFilesStructure: true
-      # Whole instance in Berlin local time.
       env:
         TZ: Europe/Berlin
-        # --- Bedrock OIDC (generic OAuth) ------------------------------
-        # Sign-in is delegated to Bedrock; Grafana maps the namespaced roles
-        # claim to its own roles. The client secret is not here: it lives in
-        # the SOPS-encrypted Secret loaded through envFromSecret below.
         GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
         GF_AUTH_GENERIC_OAUTH_NAME: Bedrock
         GF_AUTH_GENERIC_OAUTH_CLIENT_ID: PwlcvpdcoGZNAQQONkaCKgPrMAcMidtt
@@ -189,40 +159,29 @@ spec:
         GF_AUTH_GENERIC_OAUTH_TOKEN_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/token
         GF_AUTH_GENERIC_OAUTH_API_URL: https://bedrock.lucawahlen.com/api/auth/oauth2/userinfo
         GF_AUTH_GENERIC_OAUTH_USE_PKCE: "true"
-        # Makes Grafana enforce the access token's one-hour expiry. Bedrock
-        # issues Grafana no refresh token, so the session ends at expiry and the
-        # next sign-in re-maps roles: a revoked role stops working within an hour.
+        # Enforces the access token's 1h expiry so revoked Bedrock roles take effect.
         GF_AUTH_GENERIC_OAUTH_USE_REFRESH_TOKEN: "true"
         GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
         GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN: "true"
-        # Deny a token that carries no recognised Grafana role, and map the
-        # Grafana-scoped role keys (Granted through a group) to Grafana roles.
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT: "true"
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: >-
           contains("urn:bedrock:roles", 'grafana-admin') && 'GrafanaAdmin' ||
           contains("urn:bedrock:roles", 'grafana-developer') && 'Editor' ||
           contains("urn:bedrock:roles", 'grafana-viewer') && 'Viewer' || 'None'
-      # Alert recipient address, read from the SOPS-managed SMTP Secret so the
-      # personal address is not committed in this file. Provisioning expands
-      # $ALERT_EMAIL in the contact point below.
       envValueFrom:
         ALERT_EMAIL:
           secretKeyRef:
             name: grafana-smtp
             key: alert_email
-      # Grafana OIDC client secret, encrypted with SOPS/age.
       envFromSecret: grafana-oidc
       grafana.ini:
-        # Alert mail goes through maddy (send-only submission server). Port 465
-        # is implicit TLS from the first byte, so there is no STARTTLS upgrade.
         smtp:
           enabled: true
           host: mail.lucawahlen.com:465
           from_address: grafana@mail.lucawahlen.com
           from_name: Grafana
+          # Port 465 uses implicit TLS from the first byte.
           startTLS_policy: NoStartTLS
-        # Experimental visual refresh (new theme, typography and components).
-        # Remove this block to fall back to the previous design.
         feature_toggles:
           enable: grafana.visualDesignRefresh
         server:
@@ -231,16 +190,8 @@ spec:
           allow_sign_up: false
         date_formats:
           default_timezone: Europe/Berlin
-        # Keep only what this stack uses: the Prometheus (VictoriaMetrics) and
-        # VictoriaLogs datasources plus the Metrics/Logs Drilldown apps. Traces
-        # and Profiles have no backend here, and the bundled datasources below
-        # are all unused.
         plugins:
           disable_plugins: grafana-exploretraces-app,grafana-pyroscope-app,grafana-advisor-app,alertmanager,cloudwatch,elasticsearch,grafana-azure-monitor-datasource,grafana-postgresql-datasource,grafana-pyroscope-datasource,grafana-testdata-datasource,graphite,influxdb,jaeger,loki,mssql,mysql,opentsdb,stackdriver,tempo,zipkin  # yamllint disable-line rule:line-length
-      # Email notifications for Grafana's built-in unified alerting. The root
-      # policy is provisioned here, so it replaces the stale ntfy policy left in
-      # the database by the removed ntfy integration; the dead contact point is
-      # deleted in the same pass.
       alerting:
         contactpoints.yaml:
           apiVersion: 1

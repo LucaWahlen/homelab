@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blocky-config
+data:
+  config.yaml: |
+    ports:
+      dns:
+        - 192.168.178.234:53
+        - "[fd14:d507:58a5::234]:53"
+      # Bind even if IPv6 is not up yet at boot.
+      freeBind: true
+      http: 192.168.178.234:4000
+
+    # Blocky lacks Happy Eyeballs; avoid stalling on broken IPv6 routes.
+    connectIPVersion: v4
+
+    upstreams:
+      strategy: random
+      groups:
+        default:
+          - https://cloudflare-dns.com/dns-query
+          - https://dns10.quad9.net/dns-query
+
+    # Must use public resolvers; the FritzBox forwards DNS here.
+    bootstrapDns:
+      - tcp+udp:1.1.1.1
+      - tcp+udp:9.9.9.10
+
+    conditional:
+      mapping:
+        fritz.box: 192.168.178.1
+        178.168.192.in-addr.arpa: 192.168.178.1
+        0.0.0.0.5.a.8.5.7.0.5.d.4.1.d.f.ip6.arpa: 192.168.178.1
+
+    customDNS:
+      mapping:
+        internal.lucawahlen.com: 192.168.178.234
+        proxmox.internal.lucawahlen.com: 192.168.178.210
+        # Route LAN/cluster clients via the node IP so the public TLS cert validates.
+        mail.lucawahlen.com: 192.168.178.234
+
+    blocking:
+      denylists:
+        ads:
+          - https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/multi.txt
+      clientGroupsBlock:
+        default:
+          - ads
+      blockTTL: 1m
+      loading:
+        strategy: fast
+
+    queryLog:
+      type: console
+    log:
+      format: json
+
+    prometheus:
+      enable: true

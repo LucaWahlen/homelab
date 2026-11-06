@@ -1,14 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
-# Each dashboard becomes its own ConfigMap (etcd caps objects at 1MiB).
-# The Grafana sidecar provisions any ConfigMap labeled grafana_dashboard=1
-# from the monitoring namespace and reloads it when the content changes.
-#
-# disableNameSuffixHash keeps the ConfigMap name stable so editing a dashboard
-# updates it in place. Without it, kustomize renames the ConfigMap on every
-# change, and the sidecar briefly deletes then rewrites the provisioned file
-# (the dashboard disappears for a few seconds).
+# disableNameSuffixHash updates ConfigMaps in place so the Grafana sidecar reloads without deleting.
 configMapGenerator:
   - name: grafana-dashboard-victoriametrics-single-node
     files:
@@ -91,8 +83,6 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Kubernetes
-  # Written for this cluster: PVC usage against size (kubelet and
-  # kube-state-metrics), and the OpenEBS LVM data disk (../scrapes/openebs-lvm.yaml).
   - name: grafana-dashboard-storage
     files:
       - storage.json
@@ -102,17 +92,6 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         grafana_folder: Kubernetes
-  # Upstream blocky v0.35.0 docs/blocky-grafana.json, changed to fit this setup:
-  # - removed "Blocking control" and the "Blocking active" timeline: the buttons
-  #   call blocky's plain-HTTP API from the browser, which the HTTPS Grafana page
-  #   can't do
-  # - removed per-client panels (the FritzBox is the only client), panels for
-  #   features that are off (allowlists, prefetching, Redis, DNSSEC, rate limits)
-  #   and the per-group list panels (there is one group)
-  # - removed the job/instance dropdowns; queries select job="blocky", which the
-  #   scrape in ../scrapes/blocky.yaml sets
-  # - added a "Query log" row and top blocked/allowed domains, read from blocky's
-  #   query log in VictoriaLogs
   - name: grafana-dashboard-blocky
     files:
       - blocky.json

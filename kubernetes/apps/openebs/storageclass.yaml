@@ -3,13 +3,11 @@ kind: StorageClass
 metadata:
   name: openebs-lvm
   annotations:
-    # Sole default StorageClass: k3s' bundled local-path provisioner is disabled
-    # (see ansible/roles/k3s), so nothing can silently consume the OS disk.
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: local.csi.openebs.io
 parameters:
   storage: lvm
-  # Volume group created by Ansible (lvm_volume_group in group_vars/all.yml).
+  # Matches lvm_volume_group in ansible/inventory/group_vars/all.yml.
   volgroup: k3s-data
   fsType: ext4
 reclaimPolicy: Delete

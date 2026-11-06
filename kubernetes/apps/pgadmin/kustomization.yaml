@@ -4,14 +4,9 @@ namespace: pgadmin
 resources:
   - namespace.yaml
   - pvc.yaml
+  - configmap.yaml
+  - secret.enc.yaml
   - deployment.yaml
   - service.yaml
   - middleware.yaml
   - ingress.yaml
-  - secret.enc.yaml
-  - servers.yaml
-# Hashed name: a config change rolls the pod, which pgAdmin needs to reload it.
-configMapGenerator:
-  - name: pgadmin-config
-    files:
-      - config_system.py

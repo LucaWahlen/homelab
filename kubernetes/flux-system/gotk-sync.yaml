@@ -19,8 +19,7 @@ spec:
   retryInterval: 5m
   path: ./kubernetes/flux-system
   prune: true
-  # Health-check only the controllers: `wait: true` would also wait on the root
-  # Kustomization this applies, and so on every app.
+  # Only check the controllers; wait: true would also wait on the root Kustomization.
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment

@@ -55,8 +55,7 @@ ARG CNPG_VERSION=1.30.1
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
 ARG OPENCODE_VERSION=2.2.5
 
-# Every download is checked against the SHA-256 its project publishes. Where a
-# release ships no usable checksum list, GitHub's recorded asset digest is used.
+# Verify each download against its published SHA-256 or GitHub release asset digest.
 RUN set -eu; \
     case "$(uname -m)" in \
         x86_64)  k=amd64;  oc=x64;   tv=64bit; kl="";       lh=x86_64 ;; \
@@ -124,7 +123,6 @@ RUN set -eu; \
     cd /; rm -rf "$dl"; \
     chmod +x /usr/local/bin/kubectl /usr/local/bin/helm /usr/local/bin/kustomize /usr/local/bin/flux /usr/local/bin/sops /usr/local/bin/tofu /usr/local/bin/age /usr/local/bin/age-keygen /usr/local/bin/opencode /usr/local/bin/kubeconform /usr/local/bin/yq /usr/local/bin/flate /usr/local/bin/lefthook /usr/local/bin/kube-linter /usr/local/bin/trivy /usr/local/bin/gitleaks /usr/local/bin/k9s /usr/local/bin/kubectl-cnpg
 
-# k9s Vercel skin from the same release; selected with K9S_SKIN in devcontainer.json.
 RUN mkdir -p /home/vscode/.config/k9s/skins \
     && curl -fsSL "https://raw.githubusercontent.com/derailed/k9s/v${K9S_VERSION}/skins/vercel.yaml" \
         -o /home/vscode/.config/k9s/skins/vercel.yaml \

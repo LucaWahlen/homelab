@@ -3,10 +3,5 @@ kind: Kustomization
 namespace: blocky
 resources:
   - namespace.yaml
+  - configmap.yaml
   - deployment.yaml
-configMapGenerator:
-  # The generated name carries a hash of the config, so changing it rolls the
-  # pod.
-  - name: blocky-config
-    files:
-      - config.yaml

@@ -1,7 +1,3 @@
-# Published submission port. k3s ServiceLB binds it on the node; forward 465
-# from the FritzBox to the node's LAN address. The container listens on an
-# unprivileged port, so the targetPort differs. There is no port 25 (no
-# receiving) and no 587 (no STARTTLS listener).
 apiVersion: v1
 kind: Service
 metadata:
@@ -10,7 +6,7 @@ metadata:
     app: maddy
 spec:
   type: LoadBalancer
-  # Keep the client IP so maddy can rate-limit/ban and log real sources.
+  # Preserve client source IPs for rate limiting and logs.
   externalTrafficPolicy: Local
   selector:
     app: maddy

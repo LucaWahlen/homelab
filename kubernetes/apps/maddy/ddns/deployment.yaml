@@ -1,6 +1,3 @@
-# Cloudflare DDNS for the mail hostname. The token lives in maddy-secrets
-# ("Zone - DNS - Edit" on lucawahlen.com). The record must stay DNS-only:
-# Cloudflare's proxy does not carry SMTP/IMAP.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,13 +34,12 @@ spec:
                   key: CLOUDFLARE_API_TOKEN
             - name: DOMAINS
               value: mail.lucawahlen.com
+            # Cloudflare proxy does not carry SMTP traffic.
             - name: PROXIED
               value: "false"
-            # IPv4 only: the PTR and MX setup is IPv4, and an AAAA record that
-            # points at the dynamic prefix would make senders prefer a path
-            # with no matching reverse DNS.
             - name: IP4_PROVIDER
               value: cloudflare.trace
+            # IPv4 only; dynamic IPv6 prefixes lack a matching PTR record.
             - name: IP6_PROVIDER
               value: none
             - name: UPDATE_CRON

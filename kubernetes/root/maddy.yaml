@@ -15,7 +15,6 @@ spec:
     name: flux-system
   dependsOn:
     - name: openebs
-    # The Certificate needs the cert-manager CRDs and the letsencrypt issuer.
     - name: cert-manager
     - name: cert-manager-issuers
   decryption:

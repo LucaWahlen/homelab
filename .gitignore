@@ -1,4 +1,4 @@
-# Terraform
+# OpenTofu
 **/.terraform/
 *.tfstate
 *.tfstate.*
@@ -14,10 +14,8 @@ kubeconfig
 ansible/known_hosts
 *.kubeconfig
 
-# Helm charts pulled by kustomize --enable-helm
+# Kubernetes / local state
 kubernetes/**/charts/
-
-# Local volume backups taken during the OpenEBS migration
 backups/
 
 # Secrets / keys

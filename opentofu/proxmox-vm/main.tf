@@ -1,8 +1,4 @@
-# The image is fetched onto the Proxmox node once and reused. overwrite = false
-# stops the provider from re-downloading when the datastore file size drifts; the
-# pinned, dated URL means a new image is only fetched when that version changes
-# (Renovate opens the bump, and since `url` is ForceNew the resource is replaced
-# and re-downloaded automatically on the next apply).
+# overwrite = false avoids re-downloading when Proxmox reports a different file size.
 resource "proxmox_download_file" "cloud_image" {
   content_type = "import"
   datastore_id = var.image_datastore_id
@@ -53,8 +49,7 @@ resource "proxmox_virtual_environment_vm" "k3s_node" {
     discard      = "on"
   }
 
-  # Raw disk for the OpenEBS LVM volume group; shows up as
-  # /dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1 in the guest.
+  # Backing disk for the OpenEBS LVM volume group (k3s-data).
   disk {
     datastore_id = var.storage_pool
     interface    = "scsi1"

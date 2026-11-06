@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Fails if a secret under kubernetes/ could end up in Git unencrypted.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

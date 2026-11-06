@@ -7,8 +7,7 @@ metadata:
 spec:
   replicas: 1
   revisionHistoryLimit: 3
-  # Single stateless instance with an in-memory queue: recreate rather than
-  # run two pods during a rollout.
+  # Single instance with an in-memory delivery queue.
   strategy:
     type: Recreate
   selector:
@@ -22,8 +21,7 @@ spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       terminationGracePeriodSeconds: 30
-      # Absolute lookups first: maddy resolves MX hosts and MTA-STS endpoints,
-      # and the default ndots:5 wastes a search-domain round trip per name.
+      # Skip cluster search-domain lookups for MX and MTA-STS queries.
       dnsConfig:
         options:
           - name: ndots
@@ -78,6 +76,7 @@ spec:
               mountPath: /etc/maddy/secret
               readOnly: true
             - name: dkim
+              # Path expected by maddy's "dkim <domain> <domains> default" directive.
               mountPath: /data/dkim_keys/mail.lucawahlen.com_default.key
               subPath: dkim.key
               readOnly: true
@@ -100,8 +99,6 @@ spec:
             items:
               - key: credentials
                 path: credentials
-        # The DKIM private key is a SOPS-managed Secret, mounted read-only at
-        # the path maddy's default "dkim <domain> <domains> default" expects.
         - name: dkim
           secret:
             secretName: maddy-secrets
@@ -111,7 +108,6 @@ spec:
         - name: tls
           secret:
             secretName: maddy-mail-tls
-        # Stateless: the queue, buffer and MTA-STS cache live in RAM only.
         - name: data
           emptyDir:
             medium: Memory

@@ -1,11 +1,4 @@
 #!/usr/bin/env bash
-# OpenTofu external key provider: wraps a fresh AES-256 data key with age.
-#
-# Configured from opentofu/*/encryption.tf. On every state/plan write OpenTofu
-# asks this program for a key; we generate a random 32-byte key and age-encrypt
-# it to the configured recipient(s), storing only the wrapped key in the state
-# metadata. Decryption unwraps it with the age identity (the sops key by
-# default), so recovering state needs nothing but the sops key.
 set -euo pipefail
 
 usage() {
@@ -43,13 +36,9 @@ if [ -z "$identity_file" ]; then
     identity_file="${AGE_IDENTITY_FILE:-${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}}"
 fi
 
-# Protocol step 1: header.
 printf '%s\n' '{"magic":"OpenTofu-External-Key-Provider","version":1}'
-
-# Protocol step 2: input metadata (`null` when only encrypting).
 input=$(cat)
 
-# Protocol step 3: emit keys.
 if [ "$(jq -r 'type' <<<"$input")" = "null" ]; then
     (( ${#recipients[@]} )) || { echo "${0##*/}: no age recipients configured" >&2; exit 1; }
 

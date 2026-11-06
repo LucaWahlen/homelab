@@ -42,9 +42,7 @@ spec:
         memory: 384Mi
       limits:
         memory: 768Mi
-    # Defined in ingress.yaml: the chart puts both hosts behind one TLS ingress,
-    # but s3.lucawahlen.com arrives as plain HTTP from the tunnel and must not
-    # get the HTTPS redirect the internal console needs.
+    # Managed in ingress.yaml so s3.lucawahlen.com (Cloudflare tunnel HTTP) is not redirected to HTTPS.
     ingress:
       enabled: false
     extraEnv:
@@ -72,8 +70,6 @@ spec:
         value: urn:bedrock:roles
       - name: RUSTFS_IDENTITY_OPENID_EMAIL_CLAIM
         value: email
-      # Bedrock signs email/name into the ID token but never preferred_username,
-      # so the default leaves the username empty and the Console falls back to
-      # showing a derived identity hash instead of a name.
+      # Bedrock ID tokens omit preferred_username.
       - name: RUSTFS_IDENTITY_OPENID_USERNAME_CLAIM
         value: email

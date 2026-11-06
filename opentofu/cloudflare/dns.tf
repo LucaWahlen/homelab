@@ -1,16 +1,12 @@
-# DNS records for the zone. Add a record by adding an entry to the map below;
-# remove it to delete it. Records owned by other systems are deliberately not
-# listed here so OpenTofu never fights them:
+# Records owned by other systems are omitted so OpenTofu never overwrites them:
+#   - *.lucawahlen.com        tunnel CNAME, defined in main.tf
+#   - mail.lucawahlen.com A   updated dynamically by cloudflare-ddns
+#   - _acme-challenge.*       managed by cert-manager for DNS-01
 #
-#   - *.lucawahlen.com        the tunnel CNAME, defined in main.tf (tied to the tunnel)
-#   - mail.lucawahlen.com A   rewritten by the cloudflare-ddns deployment
-#   - _acme-challenge.*       created/removed by cert-manager for DNS-01
-#
-# Names are relative to the zone ("@" for the apex). Values are stored exactly
-# as Cloudflare returns them, including the surrounding quotes on TXT records.
+# Names are relative to the zone ("@" for apex); TXT values include surrounding quotes.
 locals {
   dns_records = {
-    # Proton Mail DKIM / verification
+    # Proton Mail DKIM
     "protonmail._domainkey" = {
       name    = "protonmail._domainkey"
       type    = "CNAME"
@@ -42,7 +38,7 @@ locals {
       content = "dkim03._domainkey.alias.proton.me"
     }
 
-    # Proton Mail MX (root stays on Proton; the alias subdomain too)
+    # Proton Mail MX (apex and alias subdomain)
     "apex-mx-primary" = {
       name     = "@"
       type     = "MX"

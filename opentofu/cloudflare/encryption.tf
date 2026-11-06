@@ -1,9 +1,4 @@
-# State and plan files are encrypted at rest with a fresh AES-256 data key that
-# scripts/tofu-state-key.sh wraps with the homelab age recipient. Recovery needs
-# only the sops age key.
-#
-# Do not rename the key provider or method: their names are stored in the
-# encrypted state metadata and renaming makes the state unreadable.
+# Do not rename the key provider or method; their names are embedded in encrypted state metadata.
 terraform {
   encryption {
     key_provider "external" "age" {

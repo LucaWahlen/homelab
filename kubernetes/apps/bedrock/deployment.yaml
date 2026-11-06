@@ -23,12 +23,7 @@ spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
       terminationGracePeriodSeconds: 30
-      # Resolve dotted names absolutely first. With the default ndots:5 the
-      # resolver tries the search domains (…svc.cluster.local and the node's
-      # domains) before the name actually queried, so every FQDN the app uses
-      # (Postgres, S3, SMTP, OIDC) pays a CoreDNS forward to the upstream
-      # resolver — and fails with getaddrinfo EAI_AGAIN when that upstream is
-      # slow. ndots:1 skips the search list for anything with a dot.
+      # Skip cluster search-domain lookups for external FQDNs.
       dnsConfig:
         options:
           - name: ndots
@@ -49,12 +44,10 @@ spec:
               app: bedrock
       containers:
         - name: bedrock
-          # No versioned releases yet; edge is pinned by digest and Renovate
-          # can bump it. Do not replace this with a floating tag.
+          # Pinned by digest until versioned releases exist.
           image: ghcr.io/lucawahlen/bedrock:edge@sha256:ff74fd2e25bd69adef1c817fbbe72e9a6ca6f9edbe9a78f9070f0bb6473ef27d
           env:
-            # The runtime sets HOSTNAME to the pod name; listen on every
-            # interface so probes and the Service both reach the server.
+            # Kubernetes sets HOSTNAME to the pod name; Next.js binds to it unless overridden.
             - name: HOSTNAME
               value: 0.0.0.0
           envFrom:
@@ -70,8 +63,7 @@ spec:
             readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
-          # Start-up applies pending migrations and creates the instance, so
-          # allow up to ten minutes before liveness begins.
+          # Allow up to 10m for initial database migrations.
           startupProbe:
             httpGet:
               path: /api/health
@@ -85,8 +77,6 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 3
-          # 503 until migrations and initial setup have finished, and while
-          # the database does not answer.
           readinessProbe:
             httpGet:
               path: /api/ready

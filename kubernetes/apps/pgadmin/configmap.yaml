@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-config
+data:
+  config_system.py: |
+    import os
+
+    AUTHENTICATION_SOURCES = ['oauth2']
+    OAUTH2_AUTO_LOGIN = True
+    OAUTH2_AUTO_CREATE_USER = True
+    # OAuth2 provides no login password to derive a master key from.
+    MASTER_PASSWORD_REQUIRED = False
+
+    OAUTH2_CONFIG = [{
+        'OAUTH2_NAME': 'bedrock',
+        'OAUTH2_DISPLAY_NAME': 'Bedrock',
+        'OAUTH2_CLIENT_ID': 'pBgGuDgDfWVJIGRKwKqrevgwAQhTrYTI',
+        'OAUTH2_CLIENT_SECRET': os.environ['OAUTH2_CLIENT_SECRET'],
+        'OAUTH2_SERVER_METADATA_URL': 'https://bedrock.lucawahlen.com/api/auth/.well-known/openid-configuration',
+        # pgAdmin does not read userinfo_endpoint from OIDC discovery.
+        'OAUTH2_USERINFO_ENDPOINT': 'https://bedrock.lucawahlen.com/api/auth/oauth2/userinfo',
+        'OAUTH2_SCOPE': 'openid profile email roles',
+        'OAUTH2_USERNAME_CLAIM': 'email',
+        'OAUTH2_CHALLENGE_METHOD': 'S256',
+        'OAUTH2_RESPONSE_TYPE': 'code',
+        'OAUTH2_ADDITIONAL_CLAIMS': {'urn:bedrock:roles': ['pgadmin-access']},
+        'OAUTH2_LOGOUT_URL': 'https://bedrock.lucawahlen.com/api/auth/oauth2/end-session?id_token_hint={id_token}',
+        'OAUTH2_ICON': 'fa-key',
+    }]
+  servers.json: |
+    {
+      "Servers": {
+        "1": {
+          "Name": "PostgreSQL",
+          "Group": "PostgreSQL",
+          "Host": "postgres-rw.postgres.svc.cluster.local",
+          "Port": 5432,
+          "MaintenanceDB": "postgres",
+          "Username": "admin",
+          "SSLMode": "require",
+          "Shared": true,
+          "Comment": "CloudNativePG cluster (postgres-rw). TLS required."
+        }
+      }
+    }

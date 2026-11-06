@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# Seals the tunnel token from tofu state into Git; Flux syncs from the remote, so it is pushed.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -25,7 +24,6 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: cloudflared-credentials
-  namespace: cloudflared
 type: Opaque
 stringData:
   TUNNEL_TOKEN: $token

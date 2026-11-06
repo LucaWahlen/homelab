@@ -1,9 +1,3 @@
-# Zone entrypoint rulesets. Each phase has exactly one "default" ruleset, and
-# the rules below are its entire content, so edits made in the dashboard are
-# reverted on the next apply. Add a rule by adding to the list.
-
-# Cache Rules: bypass the cache for the S3 API host so Cloudflare never turns a
-# signed HEAD into a GET (which breaks SigV4).
 resource "cloudflare_ruleset" "cache" {
   zone_id = var.cloudflare_zone_id
   name    = "default"
@@ -23,8 +17,6 @@ resource "cloudflare_ruleset" "cache" {
   ]
 }
 
-# Config Rules: keep Email Obfuscation off for Bedrock (it rewrites the JS it
-# serves).
 resource "cloudflare_ruleset" "config" {
   zone_id = var.cloudflare_zone_id
   name    = "default"
@@ -44,7 +36,6 @@ resource "cloudflare_ruleset" "config" {
   ]
 }
 
-# Rate limiting rules: block the leaked-credential check result.
 resource "cloudflare_ruleset" "ratelimit" {
   zone_id = var.cloudflare_zone_id
   name    = "default"

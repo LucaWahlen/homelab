@@ -1,5 +1,3 @@
-# Single source of truth for linting. Git hooks run these locally; CI enforces
-# the same config with `lefthook run <hook> --all-files --force`.
 min_version: 2.0.0
 
 pre-commit:
@@ -20,11 +18,9 @@ pre-commit:
         done
       glob: "opentofu/**"
     sops:
-      # Fails if a secret under kubernetes/ could reach Git unencrypted.
       run: scripts/check-sops.sh
       glob: "kubernetes/**"
     tofu-state:
-      # Fails if committed state is unencrypted or a plaintext tfvars is staged.
       run: scripts/check-tofu-state.sh
       glob: "opentofu/**"
 
@@ -38,7 +34,5 @@ pre-push:
       run: ansible-lint
       glob: "ansible/**"
     kubernetes:
-      # Renders the Flux graph offline (flate), schema-checks with kubeconform,
-      # then reports kube-linter/trivy findings.
       run: scripts/kubernetes-lint.sh
       glob: "kubernetes/**"
