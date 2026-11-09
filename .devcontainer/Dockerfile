@@ -39,7 +39,7 @@ ARG KUBECONFORM_VERSION=0.8.0
 # renovate: datasource=github-releases depName=mikefarah/yq extractVersion=^v(?<version>.*)$
 ARG YQ_VERSION=4.54.2
 # renovate: datasource=github-releases depName=home-operations/flate extractVersion=^v(?<version>.*)$
-ARG FLATE_VERSION=0.6.5
+ARG FLATE_VERSION=0.7.1
 # renovate: datasource=github-releases depName=evilmartians/lefthook extractVersion=^v(?<version>.*)$
 ARG LEFTHOOK_VERSION=2.2.2
 # renovate: datasource=github-releases depName=stackrox/kube-linter extractVersion=^v(?<version>.*)$
@@ -53,7 +53,7 @@ ARG K9S_VERSION=0.51.0
 # renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg extractVersion=^v(?<version>.*)$
 ARG CNPG_VERSION=1.30.1
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
-ARG OPENCODE_VERSION=2.2.5
+ARG OPENCODE_VERSION=2.2.6
 
 # Verify each download against its published SHA-256 or GitHub release asset digest.
 RUN set -eu; \
