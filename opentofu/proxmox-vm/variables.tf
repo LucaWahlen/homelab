@@ -26,7 +26,7 @@ variable "proxmox_node" {
 variable "cloud_image_url" {
   description = "Cloud-init disk image URL"
   type        = string
-  default     = "https://cloud.debian.org/images/cloud/trixie/20261103-2651/debian-13-genericcloud-amd64-20261103-2651.qcow2"
+  default     = "https://cloud.debian.org/images/cloud/trixie/20261111-2659/debian-13-genericcloud-amd64-20261111-2659.qcow2"
 }
 
 variable "cloud_image_file_name" {
