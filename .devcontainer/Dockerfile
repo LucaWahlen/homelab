@@ -53,7 +53,7 @@ ARG K9S_VERSION=0.51.0
 # renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg extractVersion=^v(?<version>.*)$
 ARG CNPG_VERSION=1.30.1
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
-ARG OPENCODE_VERSION=2.2.7
+ARG OPENCODE_VERSION=2.3.0
 
 # Verify each download against its published SHA-256 or GitHub release asset digest.
 RUN set -eu; \
