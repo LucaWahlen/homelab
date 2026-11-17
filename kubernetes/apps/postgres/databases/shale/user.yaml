@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: shale
+spec:
+  cluster:
+    name: postgres
+  name: shale
+  login: true
+  passwordSecret:
+    name: shale-credentials
+  databaseRoleReclaimPolicy: retain

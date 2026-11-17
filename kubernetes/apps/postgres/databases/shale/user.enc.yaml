@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: shale-credentials
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:aYkmOvk=,iv:TZF8srqvOupLTMZpsGQNBS50CeOk5NURf5DBdtahu7E=,tag:GnI6vKoWjQxLZpR3IhVeDw==,type:str]
+    password: ENC[AES256_GCM,data:Oi1wF205tAsIK3x3mtv/oZsdjcDVoUmQKLIyXfLL+Q100hHE9umiuw9JYkXH98Lw2eom3QHN2orfWSWKpo6NEg==,iv:j+QgmG1AGIc9C1Y7f1OMP4XlItrVB9Nq9rsFlgDu8JU=,tag:0IioF2vY66F2vtwQsK3TBQ==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBST1JZekEycWhkNXFIN3lo
+            SG9qdDg1NktzclpCMWVQbzRJUXJNNkdBcWtBCjV3V2dYQmxTR1V0QmJHTldSYXhk
+            MzNHaUNZT2ZuSkowMTVvVUZjNUxIc00KLS0tIHliWDBIWXg3S3gyM2t3L0FIaHVt
+            bU42aUhlZHNvaWtrbDJVNXV5ck1hV3cKRHYLw6FsrQ/lXswlQxdEGn/9jg244s4N
+            bdibGC6Eq9aEo/G+eDx3qs3WrL2m9fvNKNZvwYKRqmJL2fhnU9atbA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1fwn0l05325gc4p827dgqw5s0k38an0cuum87pj2359ugyd0rhc6s50yqn9
+    lastmodified: "2026-11-17T15:28:58Z"
+    mac: ENC[AES256_GCM,data:GDDxs9mWaxGc2wNeQcqZYKkv0vHMblnxLCAXVO0HaN5DDyUOBCmN0lk5W7jt82QjqBcspMDBUDlkSdu9SqQTJp7QgNe8DbtzTSvX96FCgjNE+CbUsM6dCiB10UQ+/NYqcIllkzA83UPW/5GF8EdIMq0yuiz8bH2IFs8YnOy5q0E=,iv:2bK3z8fIwwvy+11n+eP6NFTvS3f+QAamXbvQJM0tczI=,tag:UtBVLMfjUzLJivdXh4v1jQ==,type:str]
+    unencrypted_regex: ^(apiVersion|kind|metadata|type)$
+    version: 3.13.3
