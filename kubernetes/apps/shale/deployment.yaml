@@ -28,14 +28,17 @@ spec:
           type: RuntimeDefault
       containers:
         - name: shale
-          image: ghcr.io/lucawahlen/shale:v1.4.0
+          image: ghcr.io/lucawahlen/shale:v2.0.0
           env:
-            - name: SHALE_DB_PATH
-              value: /data/shale.db
+            - name: SHALE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: shale-secrets
+                  key: DATABASE_URL
             - name: SHALE_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: shale-admin
+                  name: shale-secrets
                   key: SHALE_ADMIN_PASSWORD
           ports:
             - name: http
@@ -45,17 +48,22 @@ spec:
             readOnlyRootFilesystem: true
             capabilities:
               drop: ["ALL"]
+          # Allow time for database migrations on first start.
+          startupProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/v1/health
               port: http
-            initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/v1/health
               port: http
-            initialDelaySeconds: 15
             periodSeconds: 20
           resources:
             requests:
@@ -64,13 +72,8 @@ spec:
             limits:
               memory: 128Mi
           volumeMounts:
-            - name: data
-              mountPath: /data
             - name: tmp
               mountPath: /tmp
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: shale
         - name: tmp
           emptyDir: {}
