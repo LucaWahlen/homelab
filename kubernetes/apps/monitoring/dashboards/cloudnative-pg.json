@@ -1741,7 +1741,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "dateTimeAsIso",
+          "unit": "dateTimeAsLocal",
           "color": {
             "mode": "thresholds"
           },
@@ -1805,7 +1805,7 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "none",
+          "unit": "dateTimeAsLocal",
           "color": {
             "mode": "thresholds"
           },
@@ -1860,7 +1860,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "max(barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp{namespace=~\"$namespace\",pod=~\"$instances\"})",
+          "expr": "max(barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp{namespace=~\"$namespace\",pod=~\"$instances\"}) * 1000",
           "refId": "A",
           "range": false,
           "instant": true
