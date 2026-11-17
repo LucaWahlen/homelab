@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: shale
 resources:
   - namespace.yaml
-  - pvc.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
