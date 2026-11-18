@@ -162,10 +162,11 @@ spec:
         GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
         GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN: "true"
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT: "true"
+        # Bedrock exposes application roles as the standard roles claim.
         GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: >-
-          contains("urn:bedrock:roles", 'grafana-admin') && 'GrafanaAdmin' ||
-          contains("urn:bedrock:roles", 'grafana-developer') && 'Editor' ||
-          contains("urn:bedrock:roles", 'grafana-viewer') && 'Viewer' || 'None'
+          contains("roles", 'grafana-admin') && 'GrafanaAdmin' ||
+          contains("roles", 'grafana-developer') && 'Editor' ||
+          contains("roles", 'grafana-viewer') && 'Viewer' || 'None'
       envValueFrom:
         ALERT_EMAIL:
           secretKeyRef:

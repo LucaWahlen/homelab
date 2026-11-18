@@ -62,14 +62,14 @@ spec:
         value: "off"
       - name: RUSTFS_IDENTITY_OPENID_DISPLAY_NAME
         value: Bedrock
+      # Bedrock exposes application roles as the standard roles claim.
       - name: RUSTFS_IDENTITY_OPENID_GROUPS_CLAIM
-        value: urn:bedrock:roles
+        value: roles
       - name: RUSTFS_IDENTITY_OPENID_CLAIM_NAME
-        value: urn:bedrock:roles
+        value: roles
       - name: RUSTFS_IDENTITY_OPENID_ROLES_CLAIM
-        value: urn:bedrock:roles
+        value: roles
       - name: RUSTFS_IDENTITY_OPENID_EMAIL_CLAIM
         value: email
-      # Bedrock ID tokens omit preferred_username.
       - name: RUSTFS_IDENTITY_OPENID_USERNAME_CLAIM
-        value: email
+        value: preferred_username

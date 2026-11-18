@@ -24,7 +24,7 @@ data:
         'OAUTH2_USERNAME_CLAIM': 'email',
         'OAUTH2_CHALLENGE_METHOD': 'S256',
         'OAUTH2_RESPONSE_TYPE': 'code',
-        'OAUTH2_ADDITIONAL_CLAIMS': {'urn:bedrock:roles': ['pgadmin-access']},
+        'OAUTH2_ADDITIONAL_CLAIMS': {'roles': ['pgadmin-access']},
         'OAUTH2_LOGOUT_URL': 'https://bedrock.lucawahlen.com/api/auth/oauth2/end-session?id_token_hint={id_token}',
         'OAUTH2_ICON': 'fa-key',
     }]
