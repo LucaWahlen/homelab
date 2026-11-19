@@ -23,16 +23,16 @@ spec:
     vmsingle:
       spec:
         retentionPeriod: 90d
-        # Stop ingesting before the shared node disk fills up.
+        # Go read-only before the dedicated LV fills, leaving room for merges.
         extraArgs:
-          storage.minFreeDiskSpaceBytes: "5GiB"
+          storage.minFreeDiskSpaceBytes: "2GiB"
         storage:
           storageClassName: openebs-lvm
           accessModes:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 10Gi
+              storage: 20Gi
         resources:
           requests:
             cpu: 50m
@@ -44,9 +44,9 @@ spec:
       enabled: true
       spec:
         retentionPeriod: 30d
-        # Drop oldest log partitions when reaching 2GiB.
+        # Drop oldest log partitions when reaching 1.5GiB.
         extraArgs:
-          retention.maxDiskSpaceUsageBytes: "2GiB"
+          retention.maxDiskSpaceUsageBytes: "1.5GiB"
         storage:
           storageClassName: openebs-lvm
           accessModes:
@@ -106,7 +106,7 @@ spec:
           cpu: 10m
           memory: 32Mi
         limits:
-          cpu: 100m
+          cpu: 250m
           memory: 96Mi
     victoria-metrics-operator:
       resources:
