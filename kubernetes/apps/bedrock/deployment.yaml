@@ -44,7 +44,7 @@ spec:
               app: bedrock
       containers:
         - name: bedrock
-          image: ghcr.io/lucawahlen/bedrock:nightly@sha256:2f4c2d0543b1b0c0b4cbf21301209de22f76dfe5ae6b214d51995ea8dec7049b
+          image: ghcr.io/lucawahlen/bedrock:nightly@sha256:d71a698b90282e046226591dc6cdcf03ca788e1f995d19f4d675f9787249b79a
           env:
             # Kubernetes sets HOSTNAME to the pod name; Next.js binds to it unless overridden.
             - name: HOSTNAME
