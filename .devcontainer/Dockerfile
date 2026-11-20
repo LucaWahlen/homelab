@@ -39,7 +39,7 @@ ARG KUBECONFORM_VERSION=0.8.0
 # renovate: datasource=github-releases depName=mikefarah/yq extractVersion=^v(?<version>.*)$
 ARG YQ_VERSION=4.54.3
 # renovate: datasource=github-releases depName=home-operations/flate extractVersion=^v(?<version>.*)$
-ARG FLATE_VERSION=0.7.3
+ARG FLATE_VERSION=0.8.0
 # renovate: datasource=github-releases depName=evilmartians/lefthook extractVersion=^v(?<version>.*)$
 ARG LEFTHOOK_VERSION=2.2.2
 # renovate: datasource=github-releases depName=stackrox/kube-linter extractVersion=^v(?<version>.*)$
