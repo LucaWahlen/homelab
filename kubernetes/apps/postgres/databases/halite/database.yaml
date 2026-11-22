@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: halite
+spec:
+  cluster:
+    name: postgres
+  name: halite
+  owner: halite
+  databaseReclaimPolicy: retain

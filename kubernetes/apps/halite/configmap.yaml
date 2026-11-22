@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: halite-config
+data:
+  HALITE_ADDR: ":8080"
+  HALITE_S3_ENDPOINT: https://s3.lucawahlen.com
+  HALITE_S3_REGION: us-east-1
+  HALITE_S3_BUCKET: halite-media
+  HALITE_S3_FORCE_PATH_STYLE: "true"
+  HALITE_S3_PUBLIC_URL: https://s3.lucawahlen.com/halite-media

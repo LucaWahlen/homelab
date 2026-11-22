@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: halite
+spec:
+  cluster:
+    name: postgres
+  name: halite
+  login: true
+  passwordSecret:
+    name: halite-credentials
+  databaseRoleReclaimPolicy: retain
