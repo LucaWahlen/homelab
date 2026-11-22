@@ -28,7 +28,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: halite
-          image: ghcr.io/lucawahlen/halite:v2.0.0
+          image: ghcr.io/lucawahlen/halite:v2.0.1
           envFrom:
             - configMapRef:
                 name: halite-config
