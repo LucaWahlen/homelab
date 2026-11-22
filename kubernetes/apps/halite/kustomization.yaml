@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: halite
 resources:
   - namespace.yaml
-  - pvc.yaml
+  - configmap.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
