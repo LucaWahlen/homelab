@@ -7,7 +7,7 @@ metadata:
 spec:
   instances: 2
   primaryUpdateMethod: switchover
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.7-system-bookworm@sha256:e6770e842a0a6eabe2029dd5cc3153d6b34a5aec7197b88330005a5ecf5edacd
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.7-system-bookworm@sha256:17b1b2d8b41398e4a5aa5466b49c866cb500dcaf08e9a4923ca443f2cd13c25a
   enableSuperuserAccess: false
   certificates:
     serverAltDNSNames:
