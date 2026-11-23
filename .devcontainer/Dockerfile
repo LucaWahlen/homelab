@@ -31,7 +31,7 @@ ARG FLUX_VERSION=2.10.1
 # renovate: datasource=github-releases depName=getsops/sops extractVersion=^v(?<version>.*)$
 ARG SOPS_VERSION=3.13.3
 # renovate: datasource=github-releases depName=opentofu/opentofu extractVersion=^v(?<version>.*)$
-ARG OPENTOFU_VERSION=1.13.9
+ARG OPENTOFU_VERSION=1.13.10
 # renovate: datasource=github-releases depName=FiloSottile/age extractVersion=^v(?<version>.*)$
 ARG AGE_VERSION=1.3.2
 # renovate: datasource=github-releases depName=yannh/kubeconform extractVersion=^v(?<version>.*)$
@@ -53,7 +53,7 @@ ARG K9S_VERSION=0.51.0
 # renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg extractVersion=^v(?<version>.*)$
 ARG CNPG_VERSION=1.30.2
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
-ARG OPENCODE_VERSION=2.4.0
+ARG OPENCODE_VERSION=2.4.1
 
 # Verify each download against its published SHA-256 or GitHub release asset digest.
 RUN set -eu; \
