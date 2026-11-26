@@ -41,7 +41,7 @@ ARG YQ_VERSION=4.54.3
 # renovate: datasource=github-releases depName=home-operations/flate extractVersion=^v(?<version>.*)$
 ARG FLATE_VERSION=0.8.0
 # renovate: datasource=github-releases depName=evilmartians/lefthook extractVersion=^v(?<version>.*)$
-ARG LEFTHOOK_VERSION=2.2.2
+ARG LEFTHOOK_VERSION=2.2.3
 # renovate: datasource=github-releases depName=stackrox/kube-linter extractVersion=^v(?<version>.*)$
 ARG KUBE_LINTER_VERSION=0.8.3
 # renovate: datasource=github-releases depName=aquasecurity/trivy extractVersion=^v(?<version>.*)$
@@ -53,7 +53,7 @@ ARG K9S_VERSION=0.51.0
 # renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg extractVersion=^v(?<version>.*)$
 ARG CNPG_VERSION=1.30.2
 # renovate: datasource=github-releases depName=anomalyco/opencode extractVersion=^v(?<version>.*)$
-ARG OPENCODE_VERSION=2.4.1
+ARG OPENCODE_VERSION=2.4.2
 
 # Verify each download against its published SHA-256 or GitHub release asset digest.
 RUN set -eu; \
