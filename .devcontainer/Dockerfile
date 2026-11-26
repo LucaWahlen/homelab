@@ -41,7 +41,7 @@ ARG YQ_VERSION=4.54.3
 # renovate: datasource=github-releases depName=home-operations/flate extractVersion=^v(?<version>.*)$
 ARG FLATE_VERSION=0.8.0
 # renovate: datasource=github-releases depName=evilmartians/lefthook extractVersion=^v(?<version>.*)$
-ARG LEFTHOOK_VERSION=2.2.3
+ARG LEFTHOOK_VERSION=2.2.4
 # renovate: datasource=github-releases depName=stackrox/kube-linter extractVersion=^v(?<version>.*)$
 ARG KUBE_LINTER_VERSION=0.8.3
 # renovate: datasource=github-releases depName=aquasecurity/trivy extractVersion=^v(?<version>.*)$
